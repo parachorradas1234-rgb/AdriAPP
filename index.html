@@ -1,3 +1,642 @@
-<div style="background:var(--surface-container-high); padding:12px; border-radius:8px; border:1px solid var(--stroke-emphasis); margin-bottom:10px; font-family:sans-serif; font-size:14px;"> <label>Ejercicio</label> <select id="ex-select" style="width:100%; padding:8px; margin:4px 0 12px 0; background:var(--surface); color:var(--on-surface-default); border:1px solid var(--stroke-default); border-radius:4px; box-sizing:border-box;"> <option value="Press Banca">Press Banca</option><option value="Sentadilla">Sentadilla</option><option value="Peso Muerto">Peso Muerto</option><option value="Press Militar">Press Militar</option><option value="Remo con Barra">Remo con Barra</option><option value="Dominadas">Dominadas</option><option value="Zancadas">Zancadas</option> </select> <div style="display:flex; gap:10px;"> <div style="flex:1"><label>Peso (kg)</label><input id="ex-weight" type="number" inputmode="decimal" value="0" style="width:100%; padding:8px; margin:4px 0 12px 0; background:var(--surface); color:var(--on-surface-default); border:1px solid var(--stroke-default); border-radius:4px; box-sizing:border-box;"></div> <div style="flex:1"><label>Reps</label><input id="ex-reps" type="number" inputmode="numeric" value="0" style="width:100%; padding:8px; margin:4px 0 12px 0; background:var(--surface); color:var(--on-surface-default); border:1px solid var(--stroke-default); border-radius:4px; box-sizing:border-box;"></div> </div> <label style="display:flex; align-items:center; gap:8px; margin-bottom:12px;"> <input id="ex-fail" type="checkbox"> Al Fallo </label> <button id="add-btn" style="width:100%; padding:10px; background:var(--chart-2); color:black; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">REGISTRAR SERIE</button> </div>
-<div style="background:var(--surface-container-high); padding:12px; border-radius:8px; border:1px solid var(--stroke-emphasis); margin-bottom:10px; font-family:sans-serif; font-size:14px;"> <label>Comida</label> <select id="nu-select" style="width:100%; padding:8px; margin:4px 0 12px 0; background:var(--surface); color:var(--on-surface-default); border:1px solid var(--stroke-default); border-radius:4px; box-sizing:border-box;"> <option value="Desayuno">Desayuno</option><option value="Almuerzo">Almuerzo</option><option value="Cena">Cena</option><option value="Snack">Snack</option><option value="Post-Entreno">Post-Entreno</option> </select> <label>Calorías (kcal)</label> <input id="nu-kcal" type="number" inputmode="numeric" value="0" style="width:100%; padding:8px; margin:4px 0 12px 0; background:var(--surface); color:var(--on-surface-default); border:1px solid var(--stroke-default); border-radius:4px; box-sizing:border-box;"> <button id="add-btn" style="width:100%; padding:10px; background:var(--chart-2); color:black; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">REGISTRAR CALORÍAS</button> </div>
-<div style="background:var(--surface-container-high); padding:12px; border-radius:8px; border:1px solid var(--stroke-emphasis); margin-bottom:10px; font-family:sans-serif; font-size:14px;"> <label>Filtrar por Fecha</label> <input id="date-picker" type="date" value="2026-07-02" style="width:100%; padding:8px; margin:4px 0 12px 0; background:var(--surface); color:var(--on-surface-default); border:1px solid var(--stroke-default); border-radius:4px; box-sizing:border-box;"> <p style="font-size:12px; color:var(--on-surface-variant);">Mostrando historial completo del día seleccionado.</p> </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AdriAPP - Entreno & Nutrición</title>
+    <!-- Iconos de Google -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #000000;
+            --card-bg: #1c1c1e;
+            --card-bg-inner: #2c2c2e;
+            --accent-color: #30d158; /* Verde fitness */
+            --text-color: #ffffff;
+            --text-secondary: #8e8e93;
+            --danger: #ff453a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: 80px; /* Espacio para el menú inferior */
+        }
+
+        /* Cabecera */
+        header {
+            background-color: var(--card-bg);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #2c2c2e;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            color: var(--accent-color);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        /* Contenedor de pantallas */
+        .container {
+            padding: 16px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Tarjetas y Formularios */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .card h2 {
+            font-size: 1.1rem;
+            margin-bottom: 14px;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        /* inputs estilo iOS */
+        input, select, textarea {
+            width: 100%;
+            background-color: var(--card-bg-inner);
+            border: 1px solid #3a3a3c;
+            border-radius: 10px;
+            padding: 12px;
+            color: var(--text-color);
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent-color);
+        }
+
+        .row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .row .form-group {
+            flex: 1;
+        }
+
+        /* Switch Estilo iOS */
+        .switch-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--card-bg-inner);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #3a3a3c;
+            margin-bottom: 14px;
+        }
+
+        .switch-group span {
+            font-size: 0.95rem;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 51px;
+            height: 31px;
+        }
+
+        .switch input { display: none; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #3a3a3c;
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 27px; width: 27px;
+            left: 2px; bottom: 2px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Botón de acción grande */
+        .btn {
+            background-color: var(--accent-color);
+            color: #000000;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(48, 209, 88, 0.2);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background-color: var(--card-bg-inner);
+            color: var(--text-color);
+            border: 1px solid #3a3a3c;
+            box-shadow: none;
+            margin-top: 10px;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+            box-shadow: none;
+        }
+
+        /* Elementos del historial */
+        .log-item {
+            background-color: var(--card-bg-inner);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .log-item.comida {
+            border-left-color: #ff9500; /* Naranja para comidas */
+        }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .log-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .log-details {
+            font-size: 0.9rem;
+            margin-top: 2px;
+            color: #e5e5ea;
+        }
+
+        .fallo-badge {
+            background-color: rgba(255, 69, 58, 0.2);
+            color: var(--danger);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        /* Menú de navegación inferior estilo iPhone */
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--card-bg);
+            border-top: 1px solid #2c2c2e;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); /* Respeta el notch inferior del iPhone */
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-secondary);
+            background: none;
+            border: none;
+            font-size: 0.7rem;
+            font-weight: 500;
+            cursor: pointer;
+            width: 25%;
+        }
+
+        .nav-item .material-icons-round {
+            font-size: 1.6rem;
+            margin-bottom: 2px;
+        }
+
+        .nav-item.active {
+            color: var(--accent-color);
+        }
+
+        /* Notificación Flotante */
+        #toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background-color: var(--accent-color);
+            color: black;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="toast">Guardado con éxito</div>
+
+    <header>
+        <h1>AdriAPP</h1>
+        <p id="current-date-header"></p>
+    </header>
+
+    <div class="container">
+        
+        <!-- PANTALLA 1: REGISTRO DE ENTRENO -->
+        <div id="screen-entreno" class="screen active">
+            <div class="card">
+                <h2><span class="material-icons-round" style="color: var(--accent-color)">fitness_center</span> Nueva Serie</h2>
+                
+                <div class="form-group">
+                    <label>Tipo de Día / Bloque</label>
+                    <select id="entreno-bloque">
+                        <option value="Rutina de Fuerza">Rutina de Fuerza</option>
+                        <option value="Cardio">Cardio / Resistencia</option>
+                        <option value="Recuperación Activa">Recuperación Activa</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Ejercicio</label>
+                    <input type="text" id="entreno-ejercicio" placeholder="Ej: Press de Banca, Sentadilla..." autocomplete="off">
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label>Nº Serie</label>
+                        <input type="number" id="entreno-serie" value="1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Peso (kg)</label>
+                        <input type="number" id="entreno-peso" placeholder="0" step="0.5">
+                    </div>
+                    <div class="form-group">
+                        <label>Repeticiones</label>
+                        <input type="number" id="entreno-repes" placeholder="0">
+                    </div>
+                </div>
+
+                <div class="switch-group">
+                    <span>¿Serie al Fallo?</span>
+                    <label class="switch">
+                        <input type="checkbox" id="entreno-fallo">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label>Notas (Opcional)</label>
+                    <input type="text" id="entreno-notas" placeholder="Buenas sensaciones, RPE...">
+                </div>
+
+                <button class="btn" onclick="guardarEntreno()">
+                    <span class="material-icons-round">add_circle</span> Registrar Serie
+                </button>
+            </div>
+        </div>
+
+        <!-- PANTALLA 2: REGISTRO DE COMIDAS -->
+        <div id="screen-comidas" class="screen">
+            <div class="card">
+                <h2><span class="material-icons-round" style="color: #ff9500">local_fire_department</span> Registro de Kcal</h2>
+                
+                <div class="form-group">
+                    <label>Comida / Momento</label>
+                    <select id="comida-momento">
+                        <option value="Comida 1">Comida 1</option>
+                        <option value="Comida 2">Comida 2</option>
+                        <option value="Comida 3">Comida 3</option>
+                        <option value="Comida 4">Comida 4</option>
+                        <option value="Snack / Pre-Entreno">Snack / Pre-Entreno</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Calorías (kcal)</label>
+                    <input type="number" id="comida-kcal" placeholder="Ej: 450" inputmode="numeric">
+                </div>
+
+                <div class="form-group">
+                    <label>Detalle corto (Opcional)</label>
+                    <input type="text" id="comida-detalle" placeholder="Ej: Arroz con pollo y aguacate">
+                </div>
+
+                <button class="btn" style="background-color: #ff9500; color: black; box-shadow: 0 4px 12px rgba(255, 149, 0, 0.2);" onclick="guardarComida()">
+                    <span class="material-icons-round">restaurant</span> Añadir Calorías
+                </button>
+            </div>
+        </div>
+
+        <!-- PANTALLA 3: HISTORIAL -->
+        <div id="screen-historial" class="screen">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <h2 style="font-size: 1.2rem;">Tu Historial Registrado</h2>
+                <button class="btn btn-secondary" style="width: auto; padding: 6px 12px; margin: 0; font-size: 0.8rem;" onclick="exportarDatos()">Exportar Datos</button>
+            </div>
+            
+            <div id="lista-historial">
+                <!-- Los registros aparecerán aquí dinámicamente -->
+            </div>
+        </div>
+
+        <!-- PANTALLA 4: AJUSTES / RESET -->
+        <div id="screen-ajustes" class="screen">
+            <div class="card">
+                <h2><span class="material-icons-round">settings</span> Configuración</h2>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px;">Los datos se guardan de forma 100% privada localmente en el Safari de tu iPhone.</p>
+                
+                <button class="btn btn-danger" onclick="borrarTodo()">
+                    <span class="material-icons-round">delete_forever</span> Borrar Todos los Datos
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MENÚ INFERIOR ESTILO NATIVO APP -->
+    <nav>
+        <button class="nav-item active" onclick="cambiarPantalla('screen-entreno', this)">
+            <span class="material-icons-round">fitness_center</span>
+            Entreno
+        </button>
+        <button class="nav-item" onclick="cambiarPantalla('screen-comidas', this)">
+            <span class="material-icons-round">local_dining</span>
+            Calorías
+        </button>
+        <button class="nav-item" onclick="cambiarPantalla('screen-historial', this)">
+            <span class="material-icons-round">history</span>
+            Historial
+        </button>
+        <button class="nav-item" onclick="cambiarPantalla('screen-ajustes', this)">
+            <span class="material-icons-round">settings</span>
+            Ajustes
+        </button>
+    </nav>
+
+    <script>
+        // Mostrar fecha actual en la cabecera
+        const opcionesFecha = { weekday: 'long', day: 'numeric', month: 'short' };
+        document.getElementById('current-date-header').innerText = new Date().toLocaleDateString('es-ES', opcionesFecha).toUpperCase();
+
+        // Sistema para cambiar de pantalla
+        function cambiarPantalla(screenId, boton) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(screenId).classList.add('active');
+            boton.classList.add('active');
+
+            if(screenId === 'screen-historial') {
+                renderHistorial();
+            }
+        }
+
+        // Mostrar aviso de guardado
+        function showToast(mensaje, color = '#30d158') {
+            const toast = document.getElementById('toast');
+            toast.innerText = mensaje;
+            toast.style.backgroundColor = color;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // --- LÓGICA DE ALMACENAMIENTO (LOCALSTORAGE) ---
+
+        function obtenerDatos() {
+            return JSON.parse(localStorage.getItem('adriapp_datos')) || { entrenos: [], comidas: [] };
+        }
+
+        function guardarDatos(nuevosDatos) {
+            localStorage.setItem('adriapp_datos', JSON.stringify(nuevosDatos));
+        }
+
+        // Guardar serie de entrenamiento
+        function guardarEntreno() {
+            const ejercicio = document.getElementById('entreno-ejercicio').value.trim();
+            const peso = document.getElementById('entreno-peso').value;
+            const repes = document.getElementById('entreno-repes').value;
+
+            if (!ejercicio || !peso || !repes) {
+                showToast('Por favor, rellena Ejercicio, Peso y Repes', '#ff453a');
+                return;
+            }
+
+            const registro = {
+                id: Date.now(),
+                tipo: 'entreno',
+                fecha: new Date().toLocaleString('es-ES', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }),
+                bloque: document.getElementById('entreno-bloque').value,
+                ejercicio: ejercicio,
+                serie: document.getElementById('entreno-serie').value,
+                peso: peso,
+                repes: repes,
+                fallo: document.getElementById('entreno-fallo').checked,
+                notas: document.getElementById('entreno-notas').value.trim()
+            };
+
+            const datos = obtenerDatos();
+            datos.entrenos.unshift(registro); // Añade al principio
+            guardarDatos(datos);
+
+            showToast('Serie registrada con éxito');
+            
+            // Auto-incrementar el número de serie para facilitarte la siguiente
+            document.getElementById('entreno-serie').value = parseInt(document.getElementById('entreno-serie').value) + 1;
+            document.getElementById('entreno-notas').value = '';
+            document.getElementById('entreno-fallo').checked = false;
+        }
+
+        // Guardar registro de calorías
+        function guardarComida() {
+            const kcal = document.getElementById('comida-kcal').value;
+
+            if (!kcal) {
+                showToast('Introduce la cantidad de kcal', '#ff453a');
+                return;
+            }
+
+            const registro = {
+                id: Date.now(),
+                tipo: 'comida',
+                fecha: new Date().toLocaleString('es-ES', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }),
+                momento: document.getElementById('comida-momento').value,
+                kcal: kcal,
+                detalle: document.getElementById('comida-detalle').value.trim()
+            };
+
+            const datos = obtenerDatos();
+            datos.comidas.unshift(registro);
+            guardarDatos(datos);
+
+            showToast('Calorías anotadas', '#ff9500');
+
+            document.getElementById('comida-kcal').value = '';
+            document.getElementById('comida-detalle').value = '';
+        }
+
+        // Dibujar el historial en pantalla
+        function renderHistorial() {
+            const lista = document.getElementById('lista-historial');
+            lista.innerHTML = '';
+            const datos = obtenerDatos();
+
+            // Combinar ambos registros y ordenarlos por el ID de tiempo (más nuevo primero)
+            const todoJunto = [...datos.entrenos, ...datos.comidas].sort((a,b) => b.id - a.id);
+
+            if (todoJunto.length === 0) {
+                lista.innerHTML = `<p style="color: var(--text-secondary); text-align:center; margin-top:20px;">Aún no hay registros guardados.</p>`;
+                return;
+            }
+
+            todoJunto.forEach(item => {
+                const div = document.createElement('div');
+                if (item.tipo === 'entreno') {
+                    div.className = 'log-item';
+                    div.innerHTML = `
+                        <div class="log-header">
+                            <span>${item.fecha} - ${item.bloque}</span>
+                            <span onclick="eliminarRegistro('entrenos', ${item.id})" class="material-icons-round" style="font-size:1rem; color:var(--danger); cursor:pointer;">delete</span>
+                        </div>
+                        <div class="log-title">${item.ejercicio}</div>
+                        <div class="log-details">
+                            Serie ${item.serie}: <strong>${item.peso} kg</strong> x <strong>${item.repes} repes</strong> 
+                            ${item.fallo ? '<span class="fallo-badge">FALLO</span>' : ''}
+                        </div>
+                        ${item.notas ? `<div style="font-size:0.8rem; color:var(--text-secondary); margin-top:4px;">💬 ${item.notas}</div>` : ''}
+                    `;
+                } else {
+                    div.className = 'log-item comida';
+                    div.innerHTML = `
+                        <div class="log-header">
+                            <span>${item.fecha} - Nutrición</span>
+                            <span onclick="eliminarRegistro('comidas', ${item.id})" class="material-icons-round" style="font-size:1rem; color:var(--danger); cursor:pointer;">delete</span>
+                        </div>
+                        <div class="log-title">${item.momento}: <span style="color:#ff9500">${item.kcal} kcal</span></div>
+                        ${item.detalle ? `<div style="font-size:0.85rem; color: #e5e5ea; margin-top:20px4px;">${item.detalle}</div>` : ''}
+                    `;
+                }
+                lista.appendChild(div);
+            });
+        }
+
+        // Eliminar un único registro
+        function eliminarRegistro(tipo, id) {
+            if(confirm('¿Seguro que quieres borrar este registro?')) {
+                const datos = obtenerDatos();
+                datos[tipo] = datos[tipo].filter(item => item.id !== id);
+                guardarDatos(datos);
+                renderHistorial();
+                showToast('Registro eliminado', '#ff453a');
+            }
+        }
+
+        // Borrar todo
+        function borrarTodo() {
+            if (confirm('¿ESTÁS SEGURO? Se borrará todo tu historial de entrenamientos y comidas de forma permanente.')) {
+                localStorage.removeItem('adriapp_datos');
+                showToast('Todos los datos borrados', '#ff453a');
+                renderHistorial();
+            }
+        }
+
+        // Exportar datos como texto para copiar y pegar de seguridad
+        function exportarDatos() {
+            const datos = localStorage.getItem('adriapp_datos');
+            if (!datos) {
+                alert('No hay datos para exportar.');
+                return;
+            }
+            
+            const blob = new Blob([datos], { type: 'text/json' });
+            const e = document.createEvent('MouseEvents');
+            const a = document.createElement('a');
+            
+            a.download = "historial_adriapp.json";
+            a.href = window.URL.createObjectURL(blob);
+            a.dataset.downloadurl = ['text/json', a.download, a.href].join(':');
+            e.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+            a.dispatchEvent(e);
+        }
+    </script>
+</body>
+</html>
