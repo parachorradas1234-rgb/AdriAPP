@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     
     <style>
-        /* ... (CSS sin cambios, se mantiene igual) ... */
         :root { 
             --bg-color: #000000; 
             --card-bg: #1c1c1e; 
@@ -84,16 +83,13 @@
 </head>
 <body>
 
-    <!-- Indicador de carga para la IA -->
     <div id="loader">
         <div class="spinner"></div>
         <p style="margin-top: 15px; font-weight: 600; color: white; text-align: center; padding: 0 20px;" id="loader-text">Analizando tu plato con IA...</p>
     </div>
 
-    <!-- Alerta flotante -->
     <div id="toast">¡Registrado!</div>
 
-    <!-- Modal Detalle Feedback Coach -->
     <div id="feedback-modal" class="modal-overlay">
         <div class="modal-card" style="max-width: 450px;">
             <h3 style="color: var(--coach-color); display:flex; align-items:center; gap:8px;">
@@ -104,7 +100,6 @@
         </div>
     </div>
 
-    <!-- Modal de Confirmación Nivel App -->
     <div id="confirm-modal" class="modal-overlay">
         <div class="modal-card">
             <h3 id="confirm-title">¿Estás seguro?</h3>
@@ -116,7 +111,6 @@
         </div>
     </div>
 
-    <!-- Modal para configurar API Key de Gemini -->
     <div id="api-modal" class="modal-overlay">
         <div class="modal-card">
             <h3>Activar Escáner IA</h3>
@@ -136,7 +130,6 @@
 
     <div class="container">
         
-        <!-- PANTALLA ENTRENOS -->
         <div id="screen-entreno" class="screen active">
             <div class="card">
                 <h2><span class="material-icons-round" style="color: var(--accent-color)">fitness_center</span> Nueva Serie</h2>
@@ -172,7 +165,6 @@
             </div>
         </div>
 
-        <!-- PANTALLA COMIDAS -->
         <div id="screen-comidas" class="screen">
             <div class="card">
                 <h2><span class="material-icons-round" style="color: var(--nutrition-color)">local_dining</span> Seguimiento de Calorías</h2>
@@ -219,7 +211,6 @@
             </div>
         </div>
 
-        <!-- PANTALLA COACH (ASESORÍA) -->
         <div id="screen-coach" class="screen">
             <div id="coach-onboarding" style="display: none;">
                 <div class="card" style="border-top: 4px solid var(--coach-color);">
@@ -406,7 +397,6 @@
             </div>
         </div>
 
-        <!-- PANTALLA HISTORIAL -->
         <div id="screen-historial" class="screen">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                 <h2 style="font-size:1.2rem;">Historial Diario</h2>
@@ -415,7 +405,6 @@
             <div id="lista-historial"></div>
         </div>
 
-        <!-- PANTALLA AJUSTES -->
         <div id="screen-ajustes" class="screen">
             <div class="card">
                 <h2><span class="material-icons-round" style="color: #5ac8fa">scale</span> Control de Peso</h2>
@@ -508,7 +497,10 @@
     </nav>
 
     <script>
-        // Ejercicios base mapeados de tu rutina nativa
+        // Configuración global
+        const API_TIMEOUT = 30000; // 30 segundos de timeout
+        
+        // Ejercicios base
         const ejerciciosDB_Original = {
             "Torso": [
                 "Press de banca con mancuernas",
@@ -553,17 +545,81 @@
             ]
         };
 
-        // Mostrar fecha formateada
+        // Inicialización
         document.getElementById('header-date').innerText = new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'short' }).toUpperCase();
         
-        // Sincronizar campo de filtro del historial con la fecha de hoy por defecto
         const hoyIso = new Date().toISOString().split('T')[0];
         document.getElementById('historial-fecha-filtro').value = hoyIso;
 
-        // Obtener base de datos unificada (con los personalizados que el usuario agregue)
+        // Funciones de utilidad
+        function showToast(msj, color = '#30d158') {
+            const t = document.getElementById('toast');
+            t.innerText = msj;
+            t.style.backgroundColor = color;
+            t.style.color = (color === '#30d158' || color === '#ff9500' || color === '#5ac8fa' || color === '#bf5af2' || color === '#0b57d0') ? 'black' : 'white';
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        function showLoader(texto) {
+            document.getElementById('loader-text').innerText = texto;
+            document.getElementById('loader').style.display = 'flex';
+        }
+
+        function hideLoader() {
+            document.getElementById('loader').style.display = 'none';
+        }
+
+        // Función para fetch con timeout
+        async function fetchWithTimeout(url, options, timeout = API_TIMEOUT) {
+            const controller = new AbortController();
+            const id = setTimeout(() => controller.abort(), timeout);
+            
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    signal: controller.signal
+                });
+                clearTimeout(id);
+                return response;
+            } catch (error) {
+                clearTimeout(id);
+                if (error.name === 'AbortError') {
+                    throw new Error('La solicitud excedió el tiempo de espera');
+                }
+                throw error;
+            }
+        }
+
+        // Sistema de confirmación
+        let callbackConfirmacion = null;
+        function mostrarConfirmacion(titulo, texto, callback) {
+            document.getElementById('confirm-title').innerText = titulo;
+            document.getElementById('confirm-text').innerText = texto;
+            callbackConfirmacion = callback;
+            document.getElementById('confirm-modal').style.display = 'flex';
+        }
+
+        document.getElementById('confirm-btn').onclick = function() {
+            if(callbackConfirmacion) {
+                try {
+                    callbackConfirmacion();
+                } catch(e) {
+                    console.error('Error en callback:', e);
+                }
+            }
+            cerrarConfirmacion();
+        };
+
+        function cerrarConfirmacion() {
+            document.getElementById('confirm-modal').style.display = 'none';
+            callbackConfirmacion = null;
+        }
+
+        // Ejercicios
         function obtenerEjerciciosUnificados() {
             const custom = JSON.parse(localStorage.getItem('adri_ejercicios_custom') || '{}');
-            const unificados = JSON.parse(JSON.stringify(ejerciciosDB_Original)); // clonar objeto base
+            const unificados = JSON.parse(JSON.stringify(ejerciciosDB_Original));
             
             for (const bloque in custom) {
                 if (unificados[bloque]) {
@@ -585,58 +641,27 @@
             if (db[bloque]) {
                 db[bloque].forEach(ej => {
                     const opt = document.createElement('option');
-                    opt.value = ej; opt.innerText = ej;
+                    opt.value = ej; 
+                    opt.innerText = ej;
                     selector.appendChild(opt);
                 });
             }
         }
 
+        // Navegación
         function cambiarPantalla(sId, btn) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
             document.getElementById(sId).classList.add('active');
             if (btn) btn.classList.add('active');
+            
             if(sId === 'screen-historial') renderHistorial();
             if(sId === 'screen-comidas') actualizarBarraDeCalorias();
             if(sId === 'screen-coach') renderCoachUI();
+            if(sId === 'screen-ajustes') inicializarAjustesValores();
         }
 
-        function showToast(msj, color = '#30d158') {
-            const t = document.getElementById('toast');
-            t.innerText = msj;
-            t.style.backgroundColor = color;
-            // Determinar color de texto apropiado
-            const darkColors = ['#30d158', '#ff9500', '#5ac8fa', '#bf5af2', '#0b57d0'];
-            t.style.color = darkColors.includes(color) ? 'black' : 'white';
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2000);
-        }
-
-        // Sistema de Confirmación Nativo con Modales
-        let callbackConfirmacion = null;
-        function mostrarConfirmacion(titulo, texto, callback) {
-            document.getElementById('confirm-title').innerText = titulo;
-            document.getElementById('confirm-text').innerText = texto;
-            callbackConfirmacion = callback;
-            document.getElementById('confirm-modal').style.display = 'flex';
-        }
-
-        document.getElementById('confirm-btn').onclick = function() {
-            if(callbackConfirmacion) {
-                try {
-                    callbackConfirmacion();
-                } catch(e) {
-                    console.error('Error en callback de confirmación:', e);
-                }
-            }
-            cerrarConfirmacion();
-        };
-
-        function cerrarConfirmacion() {
-            document.getElementById('confirm-modal').style.display = 'none';
-            callbackConfirmacion = null;
-        }
-
+        // Entrenos
         function guardarEntreno() {
             const bloque = document.getElementById('entreno-bloque').value;
             const ejercicio = document.getElementById('entreno-ejercicio').value;
@@ -668,6 +693,7 @@
             showToast('Serie Guardada con Éxito');
         }
 
+        // Comidas
         function guardarComidaManual() {
             const nombre = document.getElementById('comida-nombre').value.trim();
             const kcal = document.getElementById('comida-kcal').value;
@@ -689,7 +715,6 @@
             hist.unshift(comidaLog);
             localStorage.setItem('adri_datos', JSON.stringify(hist));
 
-            // Limpiar inputs
             document.getElementById('comida-nombre').value = '';
             document.getElementById('comida-kcal').value = '';
 
@@ -697,7 +722,7 @@
             showToast('Alimento Registrado', '#ff9500');
         }
 
-        function analizarComidaConIA(event) {
+        async function analizarComidaConIA(event) {
             const file = event.target.files[0];
             if (!file) return;
 
@@ -705,12 +730,18 @@
             if(!apiKey) {
                 showToast('Configura tu API Key en Ajustes primero', '#ff453a');
                 abrirConfiguracionApi();
-                // Limpiar el input file
                 event.target.value = '';
                 return;
             }
 
-            // Mostrar preview local de la imagen
+            // Validar tamaño de imagen (máximo 4MB)
+            if (file.size > 4 * 1024 * 1024) {
+                showToast('La imagen es demasiado grande. Máximo 4MB', '#ff453a');
+                event.target.value = '';
+                return;
+            }
+
+            // Mostrar preview
             const readerLocal = new FileReader();
             readerLocal.onload = function(e) {
                 document.getElementById('preview-foto-comida').src = e.target.result;
@@ -718,16 +749,22 @@
             };
             readerLocal.readAsDataURL(file);
 
-            document.getElementById('loader-text').innerText = "Nuestra IA está analizando tu plato...";
-            document.getElementById('loader').style.display = 'flex';
+            showLoader('Analizando tu plato con IA...');
 
-            const readerBase64 = new FileReader();
-            readerBase64.onload = function() {
-                const base64Data = readerBase64.result.split(',')[1];
-                
-                // Corregido: Usar modelo correcto de Gemini
+            try {
+                // Convertir a base64
+                const base64Data = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        const result = reader.result.split(',')[1];
+                        resolve(result);
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-                const prompt = "Analiza detalladamente esta foto de comida. Estima de forma realista las calorías totales (kcal). Devuelve ESTRICTAMENTE un objeto JSON válido con las claves: 'comida' (nombre del plato estructurado), 'kcal' (número), 'explicacion' (breve resumen nutricional en una línea). No incluyas explicaciones de texto adicionales fuera del JSON.";
+                const prompt = "Analiza esta foto de comida. Devuelve SOLO un JSON con: comida (nombre), kcal (número), explicacion (breve). Sin texto adicional.";
 
                 const payload = {
                     contents: [{
@@ -746,60 +783,50 @@
                     }
                 };
 
-                fetch(url, {
+                const response = await fetchWithTimeout(url, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
-                })
-                .then(res => {
-                    if (!res.ok) {
-                        throw new Error(`Error HTTP: ${res.status}`);
-                    }
-                    return res.json();
-                })
-                .then(data => {
-                    document.getElementById('loader').style.display = 'none';
-                    
-                    // Validar estructura de respuesta
-                    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-                        throw new Error('Respuesta de API inválida');
-                    }
-                    
-                    try {
-                        const responseText = data.candidates[0].content.parts[0].text;
-                        const responseJson = JSON.parse(responseText);
-                        
-                        // Validar campos requeridos
-                        if (!responseJson.comida || !responseJson.kcal) {
-                            throw new Error('JSON incompleto');
-                        }
-                        
-                        // Auto-rellenar formulario manual con las sugerencias
-                        document.getElementById('comida-nombre').value = responseJson.comida;
-                        document.getElementById('comida-kcal').value = responseJson.kcal;
-
-                        showToast("¡Análisis completado! Confirma y añade tu plato.", "#ff9500");
-                    } catch(e) {
-                        console.error('Error parseando respuesta:', e);
-                        showToast("No se pudo estructurar el plato. Inténtalo de nuevo.", "#ff453a");
-                    }
-                })
-                .catch(err => {
-                    document.getElementById('loader').style.display = 'none';
-                    console.error('Error en fetch:', err);
-                    showToast("Error de conexión con la IA. Verifica tu API Key.", "#ff453a");
-                })
-                .finally(() => {
-                    // Limpiar el input file para permitir re-seleccionar
-                    event.target.value = '';
                 });
-            };
-            readerBase64.onerror = function() {
-                document.getElementById('loader').style.display = 'none';
-                showToast("Error al leer la imagen", "#ff453a");
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error?.message || `Error HTTP: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                if (!data.candidates || !data.candidates[0]?.content?.parts?.[0]?.text) {
+                    throw new Error('Respuesta de IA inválida');
+                }
+
+                const responseText = data.candidates[0].content.parts[0].text;
+                const result = JSON.parse(responseText);
+
+                if (!result.comida || !result.kcal) {
+                    throw new Error('Datos incompletos en la respuesta');
+                }
+
+                document.getElementById('comida-nombre').value = result.comida;
+                document.getElementById('comida-kcal').value = result.kcal;
+
+                hideLoader();
+                showToast("¡Análisis completado! Revisa y confirma.", "#ff9500");
+                
+            } catch (error) {
+                hideLoader();
+                console.error('Error en análisis IA:', error);
+                
+                if (error.message.includes('tiempo de espera')) {
+                    showToast('La IA tardó demasiado. Intenta con otra imagen.', '#ff453a');
+                } else if (error.message.includes('API key')) {
+                    showToast('API Key inválida. Verifica en Ajustes.', '#ff453a');
+                } else {
+                    showToast('Error al analizar. Intenta de nuevo.', '#ff453a');
+                }
+            } finally {
                 event.target.value = '';
-            };
-            readerBase64.readAsDataURL(file);
+            }
         }
 
         function actualizarBarraDeCalorias() {
@@ -810,14 +837,12 @@
             document.getElementById('meta-calorias-input').value = metaKcal;
 
             let consumido = 0;
-
             data.forEach(item => {
                 if(item.tipo === 'comida' && item.fecha === hoyStr) {
                     consumido += (item.kcal || 0);
                 }
             });
 
-            // Actualizar interfaz
             document.getElementById('progreso-kcal-texto').innerText = `${consumido} / ${metaKcal} kcal`;
             
             let porcentaje = (consumido / metaKcal) * 100;
@@ -835,6 +860,7 @@
             }
         }
 
+        // Peso
         function guardarPeso() {
             const p = document.getElementById('peso-corporal').value;
             if(!p || p <= 0) {
@@ -857,6 +883,7 @@
             showToast('Peso corporal registrado', '#5ac8fa');
         }
 
+        // Ejercicios personalizados
         function crearEjercicioCustom() {
             const bloque = document.getElementById('custom-ejercicio-bloque').value;
             const nombre = document.getElementById('custom-ejercicio-nombre').value.trim();
@@ -869,14 +896,12 @@
             let custom = JSON.parse(localStorage.getItem('adri_ejercicios_custom') || '{}');
             if(!custom[bloque]) custom[bloque] = [];
             
-            // Evitar duplicados
             if(custom[bloque].includes(nombre)) {
                 showToast('Este ejercicio ya existe en este bloque', '#ff453a');
                 return;
             }
             
             custom[bloque].push(nombre);
-
             localStorage.setItem('adri_ejercicios_custom', JSON.stringify(custom));
             document.getElementById('custom-ejercicio-nombre').value = '';
 
@@ -884,6 +909,7 @@
             showToast('Ejercicio añadido con éxito');
         }
 
+        // Historial
         function renderHistorial() {
             const filtroFechaInput = document.getElementById('historial-fecha-filtro').value;
             let fechaObjetivo = new Date().toLocaleDateString('es-ES');
@@ -915,26 +941,26 @@
                 let inner = '';
                 if(item.tipo === 'entreno') {
                     inner = `
-                        <div class="log-header"><span>${item.bloque || 'Entrenamiento'} - Entrenamiento</span></div>
+                        <div class="log-header"><span>${item.bloque || 'Entrenamiento'}</span></div>
                         <div class="log-title">${item.ejercicio || 'Ejercicio'}</div>
                         <div class="log-details">${item.peso || 0} kg x ${item.repes || 0} reps</div>
                     `;
                 } else if(item.tipo === 'comida') {
                     inner = `
-                        <div class="log-header"><span>Nutrición - Calorías</span></div>
+                        <div class="log-header"><span>Nutrición</span></div>
                         <div class="log-title" style="color: var(--nutrition-color)">${item.comida || 'Comida'}</div>
                         <div class="log-details">⚡ ${item.kcal || 0} kcal</div>
                     `;
                 } else if(item.tipo === 'peso') {
                     inner = `
-                        <div class="log-header"><span>Biométrico - Peso</span></div>
+                        <div class="log-header"><span>Biométrico</span></div>
                         <div class="log-title" style="color: #5ac8fa">${item.peso || 0} kg</div>
-                        <div class="log-details">Peso corporal diario registrado</div>
+                        <div class="log-details">Peso corporal</div>
                     `;
                 } else if(item.tipo === 'reporte_semanal') {
                     inner = `
-                        <div class="log-header"><span>Seguimiento - Reporte Semanal</span></div>
-                        <div class="log-title" style="color: var(--coach-color)">Peso Promedio: ${item.pesoMedio || 0} kg</div>
+                        <div class="log-header"><span>Reporte Semanal</span></div>
+                        <div class="log-title" style="color: var(--coach-color)">Peso: ${item.pesoMedio || 0} kg</div>
                         <div class="log-details">Evaluación completada</div>
                     `;
                 }
@@ -950,7 +976,7 @@
         }
 
         function borrarLogItem(id) {
-            mostrarConfirmacion('¿Eliminar registro?', 'Este elemento se eliminará permanentemente de tu historial diario.', () => {
+            mostrarConfirmacion('¿Eliminar registro?', 'Este elemento se eliminará permanentemente.', () => {
                 let hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
                 hist = hist.filter(item => item.id !== id);
                 localStorage.setItem('adri_datos', JSON.stringify(hist));
@@ -960,6 +986,7 @@
             });
         }
 
+        // Backup
         function exportarHistorial() {
             try {
                 const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(localStorage));
@@ -989,12 +1016,11 @@
                 try {
                     const parsed = JSON.parse(e.target.result);
                     
-                    // Validar que sea un objeto válido
                     if (typeof parsed !== 'object' || parsed === null) {
                         throw new Error('Formato inválido');
                     }
                     
-                    mostrarConfirmacion('¿Importar Datos?', 'Esta acción reemplazará la base de datos actual por completo.', () => {
+                    mostrarConfirmacion('¿Importar Datos?', 'Se reemplazará la base de datos actual.', () => {
                         try {
                             localStorage.clear();
                             for (const key in parsed) {
@@ -1009,18 +1035,17 @@
                     });
                 } catch(err) {
                     console.error('Error importando:', err);
-                    showToast('Copia de seguridad inválida o corrupta', '#ff453a');
+                    showToast('Archivo inválido o corrupto', '#ff453a');
                 }
             };
             reader.onerror = function() {
                 showToast('Error al leer el archivo', '#ff453a');
             };
             reader.readAsText(file);
-            
-            // Limpiar input
             event.target.value = '';
         }
 
+        // API Key
         function abrirConfiguracionApi() {
             const key = localStorage.getItem('adri_gemini_key') || '';
             document.getElementById('api-key-input').value = key;
@@ -1038,17 +1063,17 @@
                 return;
             }
             if(!k.startsWith('AIza')) {
-                showToast('La Clave no parece una API Key de Google válida', '#ff453a');
+                showToast('Clave no válida. Debe empezar con AIza', '#ff453a');
                 return;
             }
             localStorage.setItem('adri_gemini_key', k);
             cerrarApiModal();
             actualizarEstadoApiKey();
-            showToast('Clave API guardada con éxito');
+            showToast('Clave API guardada');
         }
 
         function borrarApiKey() {
-            mostrarConfirmacion('¿Borrar API Key?', 'Esto desactivará los escáneres inteligentes y feedbacks automáticos del coach.', () => {
+            mostrarConfirmacion('¿Borrar API Key?', 'Se desactivarán los escáneres y feedbacks IA.', () => {
                 localStorage.removeItem('adri_gemini_key');
                 actualizarEstadoApiKey();
                 showToast('Clave API eliminada', '#ff453a');
@@ -1059,16 +1084,16 @@
             const k = localStorage.getItem('adri_gemini_key');
             const el = document.getElementById('api-status-text');
             if (k) {
-                el.innerText = '✅ API Activa (Escáner e Inteligencia Artificial Habilitados)';
+                el.innerText = '✅ API Activa';
                 el.style.color = '#30d158';
             } else {
-                el.innerText = '❌ Sin API Key (Escáner e Inteligencia Artificial Deshabilitados)';
+                el.innerText = '❌ Sin API Key';
                 el.style.color = '#8e8e93';
             }
         }
 
         function confirmarBorradoCompleto() {
-            mostrarConfirmacion('¿BORRAR TODO EL HISTORIAL?', 'Esta acción restablecerá AdriAPP de fábrica eliminando todas las series, comidas, pesos y perfiles.', () => {
+            mostrarConfirmacion('¿BORRAR TODO?', 'Se eliminará todo el historial y configuraciones.', () => {
                 localStorage.clear();
                 location.reload();
             });
@@ -1080,7 +1105,7 @@
             actualizarEstadoApiKey();
         }
 
-        // LÓGICA DE COACHING INTELIGENTE (COACH)
+        // COACH
         function renderCoachUI() {
             const ficha = localStorage.getItem('adri_fase_inicial');
             
@@ -1116,7 +1141,7 @@
             const estres = document.getElementById('coach-ini-estres').value;
 
             if(!edad || !estatura || !peso) {
-                showToast('Rellena al menos Edad, Estatura y Peso', '#ff453a');
+                showToast('Rellena Edad, Estatura y Peso', '#ff453a');
                 return;
             }
 
@@ -1127,7 +1152,7 @@
             };
 
             localStorage.setItem('adri_fase_inicial', JSON.stringify(ficha));
-            showToast('Perfil de Asesoría guardado', '#bf5af2');
+            showToast('Perfil guardado', '#bf5af2');
             
             const apiKey = localStorage.getItem('adri_gemini_key');
             if(apiKey) {
@@ -1137,64 +1162,50 @@
             }
         }
 
-        function analizarFaseInicialConIA(ficha) {
+        async function analizarFaseInicialConIA(ficha) {
             const apiKey = localStorage.getItem('adri_gemini_key');
             if(!apiKey) return;
 
-            document.getElementById('loader-text').innerText = "Tu Coach de IA está analizando tu perfil y diseñando tu plan...";
-            document.getElementById('loader').style.display = 'flex';
+            showLoader('Analizando tu perfil...');
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-            const prompt = `Actúa como un preparador físico y nutricionista deportivo de élite. Analiza la siguiente ficha inicial del cliente y diseña un breve plan introductorio en español:
-            - Edad: ${ficha.edad} años, Sexo: ${ficha.sexo}, Altura: ${ficha.estatura}cm, Peso: ${ficha.peso}kg.
-            - Nivel de actividad diaria: ${ficha.sedentarismo}
-            - Disponibilidad: ${ficha.dias} para entrenar, durante ${ficha.tiempo} por sesión.
-            - Historial de entrenamiento: ${ficha.experiencia}. Técnica de básicos: ${ficha.tecnica}.
-            - Alimentación actual: ${ficha.nutricion}
-            - Lesiones o molestias: ${ficha.lesiones}
-            - Sueño diario: ${ficha.sueno} horas de media. Nivel de estrés: ${ficha.estres}.
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+                const prompt = `Como preparador físico profesional, analiza este perfil y da recomendaciones breves (150-200 palabras) en español:
+                Edad: ${ficha.edad}, Sexo: ${ficha.sexo}, Altura: ${ficha.estatura}cm, Peso: ${ficha.peso}kg.
+                Actividad: ${ficha.sedentarismo}. Disponibilidad: ${ficha.dias}, ${ficha.tiempo}/sesión.
+                Experiencia: ${ficha.experiencia}. Técnica: ${ficha.tecnica}.
+                Alimentación: ${ficha.nutricion}. Lesiones: ${ficha.lesiones}.
+                Sueño: ${ficha.sueno}h. Estrés: ${ficha.estres}.
+                Incluye: 1) Recomendación nutricional 2) Directrices de entrenamiento 3) Hábitos de recuperación.
+                Usa **negritas** para puntos clave.`;
 
-            Proporciona una respuesta motivadora de unas 150-200 palabras. Divide la respuesta en:
-            1. **Análisis y Recomendación de Calorías y Macronutrientes** (Propón metas aproximadas para un objetivo de recomposición corporal).
-            2. **Directrices de Entrenamiento** (Teniendo en cuenta su experiencia, lesiones y días disponibles).
-            3. **Hábitos y Recuperación** (Pautas para el sueño/estrés).
-            Usa un tono profesional, cercano, motivador e instructivo. Usa negrita para los puntos importantes. No uses encabezados markdown raros.`;
+                const response = await fetchWithTimeout(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
 
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }]
-            };
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-            fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            })
-            .then(res => {
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                return res.json();
-            })
-            .then(data => {
-                document.getElementById('loader').style.display = 'none';
-                try {
-                    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-                        throw new Error('Respuesta inválida');
-                    }
-                    const responseText = data.candidates[0].content.parts[0].text;
-                    localStorage.setItem('adri_coach_feedback_inicial', responseText);
-                    
-                    abrirFeedbackModal(responseText);
-                    renderCoachUI();
-                } catch(e) {
-                    console.error('Error procesando respuesta:', e);
-                    renderCoachUI();
+                const data = await response.json();
+                
+                if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
+                    throw new Error('Respuesta inválida');
                 }
-            })
-            .catch(err => {
-                document.getElementById('loader').style.display = 'none';
-                console.error('Error en fetch:', err);
-                showToast('Error al conectar con la IA', '#ff453a');
+
+                const responseText = data.candidates[0].content.parts[0].text;
+                localStorage.setItem('adri_coach_feedback_inicial', responseText);
+                
+                hideLoader();
+                abrirFeedbackModal(responseText);
                 renderCoachUI();
-            });
+                
+            } catch (error) {
+                hideLoader();
+                console.error('Error:', error);
+                showToast('Error al conectar con IA. Perfil guardado sin análisis.', '#ff453a');
+                renderCoachUI();
+            }
         }
 
         function obtenerPesosRecientes() {
@@ -1210,7 +1221,7 @@
             const pesosSemana = pesos.filter(p => p.id >= sieteDiasAtras);
 
             if (pesosSemana.length === 0) {
-                return Number(pesos[0].peso);
+                return Number(pesos[0].peso).toFixed(2);
             }
 
             const suma = pesosSemana.reduce((sum, p) => sum + Number(p.peso), 0);
@@ -1226,22 +1237,20 @@
             
             if (pesoMedio) {
                 document.getElementById('coach-rep-peso').value = pesoMedio;
-                helper.innerText = `Autocalculado en base a tus registros de peso recientes en la app.`;
+                helper.innerText = 'Calculado con tus registros de peso recientes.';
                 helper.style.color = "#30d158";
             } else {
                 document.getElementById('coach-rep-peso').value = '';
-                helper.innerText = `No has registrado pesos esta semana en Ajustes. Introduce un peso promedio estimado manualmente.`;
+                helper.innerText = 'No hay registros. Introduce un peso estimado.';
                 helper.style.color = "#8e8e93";
             }
 
-            document.getElementById('coach-rep-energia').value = 8;
-            document.getElementById('val-energia').innerText = 8;
-            document.getElementById('coach-rep-sueno').value = 8;
-            document.getElementById('val-sueno').innerText = 8;
-            document.getElementById('coach-rep-saciedad').value = 8;
-            document.getElementById('val-saciedad').innerText = 8;
-            document.getElementById('coach-rep-adherencia').value = 9;
-            document.getElementById('val-adherencia').innerText = 9;
+            // Resetear sliders
+            ['energia', 'sueno', 'saciedad', 'adherencia'].forEach((tipo, i) => {
+                const val = [8, 8, 8, 9][i];
+                document.getElementById(`coach-rep-${tipo}`).value = val;
+                document.getElementById(`val-${tipo}`).innerText = val;
+            });
 
             document.getElementById('coach-rep-fuerza').value = '';
             document.getElementById('coach-rep-medidas').value = '';
@@ -1276,14 +1285,13 @@
                 energia,
                 sueno,
                 saciedad,
-                adherencia,
-                feedback: null
+                adherencia
             };
 
             let hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
             hist.unshift(reporte);
             localStorage.setItem('adri_datos', JSON.stringify(hist));
-            showToast('Reporte guardado con éxito', '#bf5af2');
+            showToast('Reporte guardado', '#bf5af2');
 
             const apiKey = localStorage.getItem('adri_gemini_key');
             if (apiKey) {
@@ -1293,79 +1301,56 @@
             }
         }
 
-        function generarFeedbackReporteIA(reporte) {
+        async function generarFeedbackReporteIA(reporte) {
             const apiKey = localStorage.getItem('adri_gemini_key');
             if(!apiKey) return;
 
-            document.getElementById('loader-text').innerText = "Tu Coach de IA está evaluando tu semana y redactando tus pautas de ajuste...";
-            document.getElementById('loader').style.display = 'flex';
+            showLoader('Generando feedback...');
 
-            const ficha = JSON.parse(localStorage.getItem('adri_fase_inicial') || '{}');
+            try {
+                const ficha = JSON.parse(localStorage.getItem('adri_fase_inicial') || '{}');
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+                
+                const prompt = `Como preparador físico, analiza este reporte semanal en español (150-180 palabras):
+                Perfil: ${ficha.edad || '?'}a, ${ficha.sexo || '?'}, ${ficha.estatura || '?'}cm, ${ficha.peso || '?'}kg.
+                Peso semanal: ${reporte.pesoMedio}kg. Fuerza: ${reporte.fuerza || 'No especificada'}.
+                Medidas: ${reporte.medidas || 'No especificadas'}.
+                Energía: ${reporte.energia}/10, Sueño: ${reporte.sueno}/10, Saciedad: ${reporte.saciedad}/10, Adherencia: ${reporte.adherencia}/10.
+                Da evaluación del progreso, análisis de sensaciones y ajustes recomendados. Usa **negritas**.`;
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-            const prompt = `Actúa como un preparador físico de élite y asesor nutricional. Evalúa el reporte semanal de tu atleta con los siguientes datos:
-            
-            **Contexto inicial del atleta:**
-            - Edad: ${ficha.edad || 'No especificada'} años, Sexo: ${ficha.sexo || 'No especificado'}, Altura: ${ficha.estatura || 'No especificada'}cm, Peso Inicial: ${ficha.peso || 'No especificado'}kg. Molestias/Lesiones: ${ficha.lesiones || 'Ninguna'}.
+                const response = await fetchWithTimeout(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
 
-            **Datos del reporte semanal de esta semana:**
-            - Peso Medio Semanal: ${reporte.pesoMedio} kg
-            - Progreso en Fuerza/Gimnasio: ${reporte.fuerza || 'No especifica'}
-            - Medidas corporales: ${reporte.medidas || 'No especificadas'}
-            
-            **Métricas cualitativas de la semana (escala 1 a 10):**
-            - Nivel de energía y fatiga: ${reporte.energia}/10 (Bajo significa muy cansado, alto excelente energía).
-            - Calidad del sueño: ${reporte.sueno}/10
-            - Saciedad y hambre: ${reporte.saciedad}/10 (Bajo significa mucha hambre, alto excelente saciedad).
-            - Adherencia general: ${reporte.adherencia}/10
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-            Proporciona un feedback constructivo y profesional de 150-180 palabras en español.
-            1. **Evaluación del progreso**: Analiza si el peso fluctúa bien, evalúa las medidas o la fuerza reportada de manera científica.
-            2. **Análisis de sensaciones**: Valora su energía, sueño, saciedad y adherencia. Dale consejos prácticos para mejorar aquello en lo que tenga menor puntuación.
-            3. **Ajustes y motivación**: Indica de forma asertiva si mantenemos pautas, reajustamos calorías o cambiamos alguna variable del entreno/descanso.
-            Sé sumamente alentador, profesional y directo. No uses sintaxis markdown compleja, sólo negritas para resaltar ideas clave.`;
-
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }]
-            };
-
-            fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            })
-            .then(res => {
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                return res.json();
-            })
-            .then(data => {
-                document.getElementById('loader').style.display = 'none';
-                try {
-                    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-                        throw new Error('Respuesta inválida');
-                    }
-                    const fb = data.candidates[0].content.parts[0].text;
-                    
-                    let hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
-                    const idx = hist.findIndex(item => item.id === reporte.id);
-                    if(idx !== -1) {
-                        hist[idx].feedback = fb;
-                        localStorage.setItem('adri_datos', JSON.stringify(hist));
-                    }
-                    
-                    abrirFeedbackModal(fb);
-                    renderCoachUI();
-                } catch(e) {
-                    console.error('Error procesando feedback:', e);
-                    renderCoachUI();
+                const data = await response.json();
+                
+                if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
+                    throw new Error('Respuesta inválida');
                 }
-            })
-            .catch(err => {
-                document.getElementById('loader').style.display = 'none';
-                console.error('Error generando feedback:', err);
-                showToast('Error al generar feedback con IA', '#ff453a');
+
+                const fb = data.candidates[0].content.parts[0].text;
+                
+                let hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
+                const idx = hist.findIndex(item => item.id === reporte.id);
+                if(idx !== -1) {
+                    hist[idx].feedback = fb;
+                    localStorage.setItem('adri_datos', JSON.stringify(hist));
+                }
+                
+                hideLoader();
+                abrirFeedbackModal(fb);
                 renderCoachUI();
-            });
+                
+            } catch (error) {
+                hideLoader();
+                console.error('Error:', error);
+                showToast('Reporte guardado sin feedback IA', '#ff453a');
+                renderCoachUI();
+            }
         }
 
         function renderHistorialReportes() {
@@ -1378,7 +1363,7 @@
             if(reportes.length === 0) {
                 listContainer.innerHTML = `
                     <p style="color: var(--text-secondary); font-size: 0.85rem; text-align: center; padding: 20px 0;">
-                        Todavía no has enviado ningún reporte semanal. Haz clic en "Nuevo Reporte Semanal" para mandar tus datos al Coach IA.
+                        No hay reportes. ¡Envía tu primer reporte semanal!
                     </p>
                 `;
                 return;
@@ -1388,52 +1373,46 @@
                 const card = document.createElement('div');
                 card.className = 'log-item reporte';
                 
-                let feedbackPreview = '';
+                let feedbackHTML = '';
                 if(rep.feedback) {
-                    // Corregido: Usar data attribute para almacenar el feedback de forma segura
-                    const feedbackId = `feedback-${rep.id}`;
-                    feedbackPreview = `
+                    feedbackHTML = `
                         <div class="feedback-box">
                             <span class="coach-badge">COACH IA</span>
                             <p style="font-size: 0.82rem; color: #fff; line-height: 1.45;">${rep.feedback.substring(0, 150)}...</p>
-                            <button class="btn btn-secondary" style="margin-top: 10px; padding: 6px; font-size: 0.75rem;" data-feedback-id="${feedbackId}">Leer análisis completo</button>
+                            <button class="btn btn-secondary ver-feedback-btn" style="margin-top: 10px; padding: 6px; font-size: 0.75rem;">Leer análisis completo</button>
                         </div>
                     `;
-                    
-                    // Almacenar el feedback completo temporalmente
-                    setTimeout(() => {
-                        const btn = card.querySelector(`[data-feedback-id="${feedbackId}"]`);
-                        if (btn) {
-                            btn.addEventListener('click', () => abrirFeedbackModal(rep.feedback));
-                        }
-                    }, 0);
                 } else {
-                    feedbackPreview = `
+                    feedbackHTML = `
                         <div style="background-color: var(--card-bg-inner); padding: 10px; border-radius: 8px; margin-top: 10px; text-align: center; font-size: 0.75rem; color: var(--text-secondary);">
-                            No hay análisis disponible. Configura tu API Key en Ajustes para recibir feedback del Coach IA.
+                            Sin análisis IA. Configura tu API Key en Ajustes.
                         </div>
                     `;
                 }
 
                 card.innerHTML = `
-                    <div class="log-header"><span>${rep.fecha} - Reporte de Seguimiento</span></div>
-                    <div class="log-title" style="color: var(--coach-color)">Peso Promedio: ${rep.pesoMedio} kg</div>
+                    <div class="log-header"><span>${rep.fecha}</span></div>
+                    <div class="log-title" style="color: var(--coach-color)">Peso: ${rep.pesoMedio} kg</div>
                     <div class="log-details" style="font-size: 0.85rem; margin-top: 5px;">
-                        <div>⚡ Energía: <strong>${rep.energia}/10</strong> | 😴 Sueño: <strong>${rep.sueno}/10</strong></div>
-                        <div>🍎 Saciedad: <strong>${rep.saciedad}/10</strong> | 🎯 Adherencia: <strong>${rep.adherencia}/10</strong></div>
-                        ${rep.fuerza ? `<div style="margin-top:4px; font-style: italic; color: var(--text-secondary);">"Fuerza: ${rep.fuerza}"</div>` : ''}
-                        ${rep.medidas ? `<div style="margin-top:2px; font-size: 0.75rem; color: var(--text-secondary);">Medidas: ${rep.medidas}</div>` : ''}
+                        <div>⚡ ${rep.energia}/10 | 😴 ${rep.sueno}/10 | 🍎 ${rep.saciedad}/10 | 🎯 ${rep.adherencia}/10</div>
+                        ${rep.fuerza ? `<div style="margin-top:4px; font-style: italic;">"${rep.fuerza}"</div>` : ''}
                     </div>
-                    ${feedbackPreview}
+                    ${feedbackHTML}
                     <button class="btn-delete" onclick="borrarReporte(${rep.id})"><span class="material-icons-round">delete</span></button>
                 `;
+
+                // Añadir evento al botón de ver feedback
+                const verBtn = card.querySelector('.ver-feedback-btn');
+                if (verBtn) {
+                    verBtn.addEventListener('click', () => abrirFeedbackModal(rep.feedback));
+                }
 
                 listContainer.appendChild(card);
             });
         }
 
         function borrarReporte(id) {
-            mostrarConfirmacion('¿Eliminar reporte?', 'Esta acción borrará este reporte semanal y su feedback asociado permanentemente.', () => {
+            mostrarConfirmacion('¿Eliminar reporte?', 'Se borrará este reporte y su feedback.', () => {
                 let hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
                 hist = hist.filter(item => item.id !== id);
                 localStorage.setItem('adri_datos', JSON.stringify(hist));
@@ -1445,15 +1424,15 @@
         function abrirFeedbackModal(texto) {
             const content = document.getElementById('feedback-modal-content');
             
-            // Sanitizar y formatear el texto
-            let formatted = texto
+            // Sanitizar texto
+            const sanitized = texto
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 .replace(/\n/g, '<br>')
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             
-            content.innerHTML = formatted;
+            content.innerHTML = sanitized;
             document.getElementById('feedback-modal').style.display = 'flex';
         }
 
@@ -1467,28 +1446,24 @@
 
             let contenido = `
                 <div style="font-size:0.85rem; background-color: var(--card-bg-inner); padding: 12px; border-radius: 8px; margin-bottom: 15px;">
-                    <div><strong>Edad:</strong> ${ficha.edad || 'N/A'} años | <strong>Sexo:</strong> ${ficha.sexo || 'N/A'}</div>
-                    <div><strong>Estatura:</strong> ${ficha.estatura || 'N/A'} cm | <strong>Peso Inicial:</strong> ${ficha.peso || 'N/A'} kg</div>
+                    <div><strong>Edad:</strong> ${ficha.edad || 'N/A'} | <strong>Sexo:</strong> ${ficha.sexo || 'N/A'}</div>
+                    <div><strong>Estatura:</strong> ${ficha.estatura || 'N/A'} cm | <strong>Peso:</strong> ${ficha.peso || 'N/A'} kg</div>
                     <div><strong>Experiencia:</strong> ${ficha.experiencia || 'N/A'}</div>
-                    <div><strong>Técnica de Básicos:</strong> ${ficha.tecnica || 'N/A'}</div>
-                    <div><strong>Actividad diaria:</strong> ${ficha.sedentarismo || 'N/A'}</div>
-                    <div><strong>Disponibilidad:</strong> ${ficha.dias || 'N/A'} (${ficha.tiempo || 'N/A'}/sesión)</div>
-                    <div style="margin-top: 5px;"><strong>Nutrición actual:</strong> ${ficha.nutricion || 'No especificada'}</div>
-                    <div style="margin-top: 5px;"><strong>Molestias/Lesiones:</strong> ${ficha.lesiones || 'Ninguna'}</div>
-                    <div style="margin-top: 5px;"><strong>Sueño diario:</strong> ${ficha.sueno || 'N/A'}h de media | <strong>Estrés:</strong> ${ficha.estres || 'N/A'}</div>
+                    <div><strong>Disponibilidad:</strong> ${ficha.dias || 'N/A'} (${ficha.tiempo || 'N/A'})</div>
+                    <div style="margin-top:5px;"><strong>Lesiones:</strong> ${ficha.lesiones || 'Ninguna'}</div>
                 </div>
             `;
 
             if(feedbackInicial) {
                 contenido += `
-                    <h4 style="font-size:0.9rem; color: var(--coach-color); margin-bottom: 5px; border-top: 1px solid #3a3a3c; padding-top:10px;">Análisis Inicial del Coach:</h4>
-                    <div style="font-size:0.85rem; line-height:1.4; color: #f2f2f7;">${feedbackInicial.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+                    <h4 style="color: var(--coach-color); margin-bottom: 5px;">Análisis del Coach:</h4>
+                    <div style="font-size:0.85rem; line-height:1.4;">${feedbackInicial.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
                 `;
             }
 
             contenido += `
-                <button class="btn btn-danger btn-secondary" style="margin-top:15px; background-color:#3a3a3c; border-color:#3a3a3c;" onclick="confirmarReiniciarFicha()">
-                    Reiniciar Ficha y Empezar de Nuevo
+                <button class="btn btn-secondary" style="margin-top:15px; background-color:#3a3a3c;" onclick="confirmarReiniciarFicha()">
+                    Reiniciar Ficha
                 </button>
             `;
 
@@ -1497,15 +1472,15 @@
 
         function confirmarReiniciarFicha() {
             cerrarFeedbackModal();
-            mostrarConfirmacion('¿Reiniciar Ficha de Asesoría?', 'Esto eliminará tu perfil inicial de coach. No afectará tus series registradas.', () => {
+            mostrarConfirmacion('¿Reiniciar?', 'Se eliminará tu perfil de coach.', () => {
                 localStorage.removeItem('adri_fase_inicial');
                 localStorage.removeItem('adri_coach_feedback_inicial');
                 renderCoachUI();
-                showToast('Ficha de inicio eliminada', '#ff453a');
+                showToast('Ficha eliminada', '#ff453a');
             });
         }
 
-        // Inicialización básica
+        // Inicialización final
         actualizarEjercicios();
         inicializarAjustesValores();
         actualizarBarraDeCalorias();
