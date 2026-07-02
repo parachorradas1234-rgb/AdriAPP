@@ -85,11 +85,12 @@
 
     <div id="loader">
         <div class="spinner"></div>
-        <p style="margin-top: 15px; font-weight: 600; color: white; text-align: center; padding: 0 20px;" id="loader-text">Analizando tu plato con IA...</p>
+        <p style="margin-top: 15px; font-weight: 600; color: white; text-align: center; padding: 0 20px;" id="loader-text">Cargando...</p>
     </div>
 
     <div id="toast">¡Registrado!</div>
 
+    <!-- Modal de Feedback -->
     <div id="feedback-modal" class="modal-overlay">
         <div class="modal-card" style="max-width: 450px;">
             <h3 style="color: var(--coach-color); display:flex; align-items:center; gap:8px;">
@@ -100,6 +101,7 @@
         </div>
     </div>
 
+    <!-- Modal de Confirmación -->
     <div id="confirm-modal" class="modal-overlay">
         <div class="modal-card">
             <h3 id="confirm-title">¿Estás seguro?</h3>
@@ -111,6 +113,7 @@
         </div>
     </div>
 
+    <!-- Modal API Key -->
     <div id="api-modal" class="modal-overlay">
         <div class="modal-card">
             <h3>Activar Escáner IA</h3>
@@ -130,6 +133,7 @@
 
     <div class="container">
         
+        <!-- PANTALLA ENTRENOS -->
         <div id="screen-entreno" class="screen active">
             <div class="card">
                 <h2><span class="material-icons-round" style="color: var(--accent-color)">fitness_center</span> Nueva Serie</h2>
@@ -165,6 +169,7 @@
             </div>
         </div>
 
+        <!-- PANTALLA COMIDAS -->
         <div id="screen-comidas" class="screen">
             <div class="card">
                 <h2><span class="material-icons-round" style="color: var(--nutrition-color)">local_dining</span> Seguimiento de Calorías</h2>
@@ -182,7 +187,7 @@
             <div class="card" style="border: 1px dashed var(--nutrition-color); background-color: rgba(255, 149, 0, 0.05);">
                 <h2 style="color: var(--nutrition-color);"><span class="material-icons-round">photo_camera</span> Escáner de Comida IA</h2>
                 <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.35;">
-                    Saca una foto o selecciona una imagen de tu plato. Nuestra IA analizará la imagen, estimará las calorías y extraerá los macronutrientes aproximados.
+                    Saca una foto o selecciona una imagen de tu plato. La IA analizará la imagen y estimará las calorías.
                 </p>
                 <div style="display: flex; gap: 10px; align-items: center; justify-content: center; background-color: var(--card-bg-inner); border-radius: 10px; padding: 15px; cursor: pointer; border: 1px solid #3a3a3c;" onclick="document.getElementById('input-foto-comida').click()">
                     <span class="material-icons-round" style="font-size: 2.2rem; color: var(--nutrition-color);">add_a_photo</span>
@@ -190,8 +195,8 @@
                         <div style="font-size: 0.9rem; font-weight: 600;">Escanear plato</div>
                         <div style="font-size: 0.75rem; color: var(--text-secondary);">Cámara o galería</div>
                     </div>
-                    <input type="file" id="input-foto-comida" accept="image/*" style="display: none;" onchange="analizarComidaConIA(event)">
                 </div>
+                <input type="file" id="input-foto-comida" accept="image/*" style="display: none;" onchange="analizarComidaConIA(event)">
                 <div id="preview-contenedor" style="display: none; margin-top: 12px; text-align: center;">
                     <img id="preview-foto-comida" style="max-height: 150px; border-radius: 8px; border: 1px solid #3a3a3c; width: auto; max-width: 100%; object-fit: cover;">
                 </div>
@@ -211,20 +216,21 @@
             </div>
         </div>
 
+        <!-- PANTALLA COACH -->
         <div id="screen-coach" class="screen">
             <div id="coach-onboarding" style="display: none;">
                 <div class="card" style="border-top: 4px solid var(--coach-color);">
                     <h2 style="color: var(--coach-color);"><span class="material-icons-round">support_agent</span> Fase Inicial: Tu Punto de Partida</h2>
                     <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.4; margin-bottom: 15px;">
-                        Antes de entrenar o pautar nutrición, necesito analizar tu contexto actual para darte un plan personalizado óptimo.
+                        Antes de entrenar o pautar nutrición, necesito analizar tu contexto actual.
                     </p>
                     
                     <div style="background-color: var(--card-bg-inner); padding: 12px; border-radius: 10px; margin-bottom: 15px; border-left: 3px solid var(--coach-color);">
                         <span style="font-size:0.75rem; font-weight:700; color:var(--coach-color);">¿TIENES API KEY?</span>
-                        <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:2px;">El coach usará la misma API Key de Gemini que configures en Ajustes para darte análisis detallados.</p>
+                        <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:2px;">Configúrala en Ajustes para recibir análisis detallados.</p>
                     </div>
 
-                    <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 15px; display: flex; align-items: center; gap: 6px;"><span class="material-icons-round" style="font-size: 1.1rem; color: var(--coach-color);">person_outline</span> 1. Datos Biométricos</h3>
+                    <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 15px;">1. Datos Biométricos</h3>
                     <div style="display: flex; gap: 10px;">
                         <div style="flex: 1;">
                             <label>Edad</label>
@@ -250,44 +256,42 @@
                         </div>
                     </div>
 
-                    <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 20px; display: flex; align-items: center; gap: 6px;"><span class="material-icons-round" style="font-size: 1.1rem; color: var(--coach-color);">fitness_center</span> 2. Experiencia deportiva</h3>
+                    <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 20px;">2. Experiencia deportiva</h3>
                     <label>¿Cuánto tiempo llevas entrenando?</label>
                     <select id="coach-ini-experiencia">
                         <option value="Empiezo de cero">Empiezo de cero</option>
-                        <option value="Menos de 6 meses (Principiante)">Menos de 6 meses (Principiante)</option>
-                        <option value="Entre 6 meses y 2 años (Intermedio)">Entre 6 meses y 2 años (Intermedio)</option>
-                        <option value="Más de 2 años entrenando duro (Avanzado)">Más de 2 años entrenando duro (Avanzado)</option>
+                        <option value="Menos de 6 meses">Menos de 6 meses</option>
+                        <option value="Entre 6 meses y 2 años">Entre 6 meses y 2 años</option>
+                        <option value="Más de 2 años">Más de 2 años</option>
                     </select>
 
-                    <label>¿Conoces la técnica de Sentadilla, Peso Muerto o Banca?</label>
+                    <label>¿Conoces la técnica de ejercicios básicos?</label>
                     <select id="coach-ini-tecnica">
                         <option value="No conozco la técnica">No, no los he hecho nunca</option>
-                        <option value="Conozco la técnica pero me falta práctica">Conozco la técnica pero me falta práctica</option>
+                        <option value="Conozco la técnica pero me falta práctica">Me falta práctica</option>
                         <option value="Tengo buena técnica dominada">Sí, la tengo dominada</option>
                     </select>
 
-                    <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 20px; display: flex; align-items: center; gap: 6px;"><span class="material-icons-round" style="font-size: 1.1rem; color: var(--coach-color);">calendar_today</span> 3. Disponibilidad y Rutina</h3>
-                    <label>Tu ocupación diaria es normalmente:</label>
+                    <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 20px;">3. Disponibilidad</h3>
+                    <label>Tu ocupación diaria:</label>
                     <select id="coach-ini-sedentarismo">
-                        <option value="Muy sedentario (Trabajo de oficina / Sentado todo el día)">Muy sedentario (Oficina / sentado)</option>
-                        <option value="Moderadamente activo (De pie a ratos / Pasos moderados)">Moderadamente activo</option>
-                        <option value="Muy activo (Trabajo físico / Mover bultos / No paro)">Muy activo (Trabajo físico)</option>
+                        <option value="Muy sedentario">Muy sedentario (oficina)</option>
+                        <option value="Moderadamente activo">Moderadamente activo</option>
+                        <option value="Muy activo">Muy activo (trabajo físico)</option>
                     </select>
 
                     <div style="display: flex; gap: 10px;">
                         <div style="flex: 1.2;">
                             <label>Días para entrenar</label>
                             <select id="coach-ini-dias">
-                                <option value="2 días a la semana">2 días / semana</option>
-                                <option value="3 días a la semana">3 días / semana</option>
-                                <option value="4 días a la semana">4 días / semana</option>
-                                <option value="5 días a la semana">5 días / semana</option>
-                                <option value="6 días a la semana">6 días / semana</option>
-                                <option value="7 días a la semana">7 días / semana</option>
+                                <option value="2">2 días</option>
+                                <option value="3">3 días</option>
+                                <option value="4">4 días</option>
+                                <option value="5">5 días</option>
                             </select>
                         </div>
                         <div style="flex: 0.8;">
-                            <label>Tiempo / Sesión</label>
+                            <label>Tiempo/Sesión</label>
                             <select id="coach-ini-tiempo">
                                 <option value="45 min">45 min</option>
                                 <option value="1 hora">1 hora</option>
@@ -296,21 +300,21 @@
                         </div>
                     </div>
 
-                    <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 20px; display: flex; align-items: center; gap: 6px;"><span class="material-icons-round" style="font-size: 1.1rem; color: var(--coach-color);">local_dining</span> 4. Nutrición, Lesiones y Descanso</h3>
+                    <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 20px;">4. Nutrición y Salud</h3>
                     
-                    <label>¿Cómo comes normalmente? (Preferencias / alergias / si cocinas o comes fuera)</label>
-                    <textarea id="coach-ini-nutricion" placeholder="Ej: Como de todo, sin alergias. Suelo cocinar en casa entre semana pero los fines de semana ceno fuera."></textarea>
+                    <label>¿Cómo comes normalmente?</label>
+                    <textarea id="coach-ini-nutricion" placeholder="Ej: Como de todo, sin alergias..."></textarea>
                     
-                    <label>¿Tienes alguna molestia, lesión o dolor articular?</label>
-                    <textarea id="coach-ini-lesiones" placeholder="Ej: Ligera molestia en rodilla derecha al bajar profundo, nada grave. Sin lesiones de espalda."></textarea>
+                    <label>¿Lesiones o molestias?</label>
+                    <textarea id="coach-ini-lesiones" placeholder="Ej: Molestia en rodilla derecha..."></textarea>
 
                     <div style="display: flex; gap: 10px;">
                         <div style="flex: 1.2;">
-                            <label>Horas de sueño media</label>
+                            <label>Horas de sueño</label>
                             <input type="number" id="coach-ini-sueno" placeholder="Ej: 7" min="4" max="12">
                         </div>
                         <div style="flex: 0.8;">
-                            <label>Nivel de Estrés</label>
+                            <label>Estrés</label>
                             <select id="coach-ini-estres">
                                 <option value="Bajo">Bajo</option>
                                 <option value="Medio">Medio</option>
@@ -331,9 +335,9 @@
                     
                     <div style="display: flex; gap: 10px; margin-top: 10px;">
                         <button class="btn btn-coach" style="margin-top:0; flex:1;" onclick="abrirReporteSemanal()">
-                            <span class="material-icons-round">assignment_turned_in</span> Nuevo Reporte Semanal
+                            <span class="material-icons-round">assignment_turned_in</span> Nuevo Reporte
                         </button>
-                        <button class="btn btn-secondary" style="margin-top:0; width:auto; padding: 10px 15px;" onclick="verFichaInicial()" title="Ver mi Ficha de Inicio">
+                        <button class="btn btn-secondary" style="margin-top:0; width:auto; padding: 10px 15px;" onclick="verFichaInicial()">
                             <span class="material-icons-round">assignment_ind</span> Ficha
                         </button>
                     </div>
@@ -348,55 +352,56 @@
             <div id="coach-report-form" style="display: none;">
                 <div class="card">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <h2 style="color: var(--coach-color); margin-bottom: 0;"><span class="material-icons-round">edit_note</span> Reporte Semanal</h2>
-                        <button class="btn-secondary" style="margin-top: 0; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem;" onclick="volverAlCoachDashboard()">Cancelar</button>
+                        <h2 style="color: var(--coach-color); margin-bottom: 0;">Reporte Semanal</h2>
+                        <button class="btn-secondary" style="margin-top: 0; padding: 6px 12px; font-size: 0.8rem;" onclick="volverAlCoachDashboard()">Cancelar</button>
                     </div>
 
-                    <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 15px; display: flex; align-items: center; gap: 6px;"><span class="material-icons-round" style="font-size: 1.1rem; color: var(--coach-color);">analytics</span> Datos Cuantitativos</h3>
+                    <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 15px;">Datos Cuantitativos</h3>
                     
                     <label>Peso Medio Semanal (kg)</label>
                     <input type="number" id="coach-rep-peso" placeholder="Autocalculado..." step="0.1">
                     <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;" id="coach-rep-peso-helper"></p>
 
-                    <label>Progreso de Fuerza y Entrenamiento (¿Levantas más peso/reps?)</label>
-                    <textarea id="coach-rep-fuerza" placeholder="Ej: He subido 2kg en el press de banca y he hecho una repetición extra en sentadillas."></textarea>
+                    <label>Progreso de Fuerza</label>
+                    <textarea id="coach-rep-fuerza" placeholder="Ej: He subido 2kg en press banca..."></textarea>
 
-                    <label>Medidas Corporales en cm (Opcional - cuello, cintura, etc.)</label>
-                    <input type="text" id="coach-rep-medidas" placeholder="Ej: Cintura: 82cm, Pecho: 98cm, Brazo: 35cm">
+                    <label>Medidas (opcional)</label>
+                    <input type="text" id="coach-rep-medidas" placeholder="Ej: Cintura: 82cm">
 
-                    <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 20px; display: flex; align-items: center; gap: 6px;"><span class="material-icons-round" style="font-size: 1.1rem; color: var(--coach-color);">psychology</span> Datos Cualitativos (Tus sensaciones)</h3>
+                    <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 20px;">Sensaciones (1-10)</h3>
                     
-                    <label>Nivel de Energía y Fatiga (1 = Cansado, 10 = A tope)</label>
+                    <label>Energía</label>
                     <div class="ios-slider">
                         <input type="range" id="coach-rep-energia" min="1" max="10" value="8" oninput="document.getElementById('val-energia').innerText = this.value">
                         <span id="val-energia">8</span>
                     </div>
 
-                    <label>Calidad del Sueño (1 = Fatal, 10 = Excelente)</label>
+                    <label>Sueño</label>
                     <div class="ios-slider">
                         <input type="range" id="coach-rep-sueno" min="1" max="10" value="8" oninput="document.getElementById('val-sueno').innerText = this.value">
                         <span id="val-sueno">8</span>
                     </div>
 
-                    <label>Saciedad y Hambre (1 = Mucha hambre, 10 = Satisfecho)</label>
+                    <label>Saciedad</label>
                     <div class="ios-slider">
                         <input type="range" id="coach-rep-saciedad" min="1" max="10" value="8" oninput="document.getElementById('val-saciedad').innerText = this.value">
                         <span id="val-saciedad">8</span>
                     </div>
 
-                    <label>Adherencia al plan (1 = Nula, 10 = Total cumplimiento)</label>
+                    <label>Adherencia</label>
                     <div class="ios-slider">
                         <input type="range" id="coach-rep-adherencia" min="1" max="10" value="9" oninput="document.getElementById('val-adherencia').innerText = this.value">
                         <span id="val-adherencia">9</span>
                     </div>
 
                     <button class="btn btn-coach" onclick="guardarReporteSemanal()">
-                        <span class="material-icons-round">cloud_upload</span> Enviar Reporte a Coach IA
+                        <span class="material-icons-round">cloud_upload</span> Enviar Reporte
                     </button>
                 </div>
             </div>
         </div>
 
+        <!-- PANTALLA HISTORIAL -->
         <div id="screen-historial" class="screen">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                 <h2 style="font-size:1.2rem;">Historial Diario</h2>
@@ -405,6 +410,7 @@
             <div id="lista-historial"></div>
         </div>
 
+        <!-- PANTALLA AJUSTES -->
         <div id="screen-ajustes" class="screen">
             <div class="card">
                 <h2><span class="material-icons-round" style="color: #5ac8fa">scale</span> Control de Peso</h2>
@@ -426,8 +432,8 @@
             </div>
 
             <div class="card">
-                <h2><span class="material-icons-round" style="color: var(--accent-color)">add_task</span> Añadir Ejercicio Personalizado</h2>
-                <label>Bloque al que pertenece</label>
+                <h2><span class="material-icons-round" style="color: var(--accent-color)">add_task</span> Añadir Ejercicio</h2>
+                <label>Bloque</label>
                 <select id="custom-ejercicio-bloque">
                     <option value="Torso">Torso</option>
                     <option value="Espalda y Bíceps">Espalda y Bíceps</option>
@@ -444,40 +450,41 @@
 
             <div class="card">
                 <h2><span class="material-icons-round" style="color: #0b57d0">backup</span> Copia de Seguridad</h2>
-                <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.4; margin-bottom: 12px;">Descarga tus datos en un archivo para guardarlos a buen recaudo o pasarlos a otro móvil.</p>
+                <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.4; margin-bottom: 12px;">Descarga o carga tus datos.</p>
                 <div style="display: flex; gap: 10px;">
-                    <button class="btn btn-secondary" style="flex: 1; margin-top: 0; font-size: 0.9rem;" onclick="exportarHistorial()">
-                        <span class="material-icons-round">download</span> Guardar Copia
+                    <button class="btn btn-secondary" style="flex: 1; margin-top: 0;" onclick="exportarHistorial()">
+                        <span class="material-icons-round">download</span> Guardar
                     </button>
-                    <button class="btn btn-secondary" style="flex: 1; margin-top: 0; font-size: 0.9rem;" onclick="activarSelectorArchivo()">
-                        <span class="material-icons-round">upload</span> Cargar Copia
+                    <button class="btn btn-secondary" style="flex: 1; margin-top: 0;" onclick="activarSelectorArchivo()">
+                        <span class="material-icons-round">upload</span> Cargar
                     </button>
                 </div>
                 <input type="file" id="importar-archivo" accept=".json" style="display:none;" onchange="importarHistorial(event)">
             </div>
 
             <div class="card">
-                <h2><span class="material-icons-round" style="color: var(--accent-color)">settings</span> Ajustes Generales</h2>
-                <label>Estado de Gemini Vision IA</label>
+                <h2><span class="material-icons-round" style="color: var(--accent-color)">settings</span> Ajustes</h2>
+                <label>API Gemini</label>
                 <div style="display: flex; gap: 10px; margin-top: 6px;">
-                    <button class="btn btn-secondary" style="margin-top: 0; padding: 10px; font-size: 0.9rem; flex: 1;" onclick="abrirConfiguracionApi()">
-                        <span class="material-icons-round">vpn_key</span> Clave API Gemini
+                    <button class="btn btn-secondary" style="margin-top: 0; padding: 10px; flex: 1;" onclick="abrirConfiguracionApi()">
+                        <span class="material-icons-round">vpn_key</span> Configurar
                     </button>
-                    <button class="btn btn-danger" style="margin-top:0; padding: 10px; width: auto; font-size: 0.9rem;" onclick="borrarApiKey()">
+                    <button class="btn btn-danger" style="margin-top:0; padding: 10px; width: auto;" onclick="borrarApiKey()">
                         <span class="material-icons-round">delete_outline</span>
                     </button>
                 </div>
-                <div id="api-status-text" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 6px;">Cargando estado...</div>
+                <div id="api-status-text" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 6px;">Cargando...</div>
 
                 <hr style="border: 0; border-top: 1px solid #2c2c2e; margin: 25px 0;">
 
-                <button class="btn btn-danger" style="background-color: #3a3a3c; color: var(--danger); border: 1px solid #3a3a3c;" onclick="confirmarBorradoCompleto()">
-                    <span class="material-icons-round">delete_forever</span> Borrar Todo el Historial
+                <button class="btn btn-danger" style="background-color: #3a3a3c; color: var(--danger);" onclick="confirmarBorradoCompleto()">
+                    <span class="material-icons-round">delete_forever</span> Borrar Todo
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- NAVEGACIÓN -->
     <nav>
         <button class="nav-item active" onclick="cambiarPantalla('screen-entreno', this)">
             <span class="material-icons-round">fitness_center</span>Entreno
@@ -497,10 +504,7 @@
     </nav>
 
     <script>
-        // Configuración global
-        const API_TIMEOUT = 30000; // 30 segundos de timeout
-        
-        // Ejercicios base
+        // ============ EJERCICIOS BASE ============
         const ejerciciosDB_Original = {
             "Torso": [
                 "Press de banca con mancuernas",
@@ -509,54 +513,54 @@
                 "Extensiones de tríceps en polea con cuerda"
             ],
             "Espalda y Bíceps": [
-                "Jalón al pecho en polea (agarre amplio)",
-                "Remo en máquina (soporte al pecho)",
-                "Pájaros con mancuernas (hombro posterior)",
+                "Jalón al pecho en polea",
+                "Remo en máquina",
+                "Pájaros con mancuernas",
                 "Curl de bíceps alterno con mancuernas"
             ],
             "Recuperación Activa y Core": [
-                "Cardio: Bicicleta estática o elíptica",
+                "Cardio: Bicicleta estática",
                 "Core: Plancha abdominal",
                 "Core: Press Pallof"
             ],
             "Torso Completo": [
                 "Press inclinado con mancuernas",
-                "Remo en polea baja (agarre estrecho/gironda)",
-                "Cruces en polea alta (pecho inferior)",
-                "Jalón al pecho (agarre invertido/estrecho)"
+                "Remo en polea baja",
+                "Cruces en polea alta",
+                "Jalón al pecho"
             ],
             "Hombros y Brazos": [
-                "Elevaciones laterales con mancuernas",
-                "Press francés con barra Z o mancuernas",
+                "Elevaciones laterales",
+                "Press francés con barra Z",
                 "Curl de bíceps en banco inclinado",
-                "Extensiones de tríceps en polea invertidas (unilateral)"
+                "Extensiones de tríceps en polea"
             ],
             "Pierna Completa": [
-                "Prensa de piernas a 45°",
-                "Curl de piernas sentado (Femoral)",
-                "Extensión de cuádriceps en máquina",
-                "Elevación de talones (Gemelos) de pie"
+                "Prensa de piernas 45°",
+                "Curl de piernas sentado",
+                "Extensión de cuádriceps",
+                "Elevación de talones"
             ],
             "Full Body + Cardio": [
-                "Prensa de piernas (peso moderado)",
+                "Prensa de piernas",
                 "Remo en máquina",
                 "Press de banca con mancuernas",
-                "Cardio Final: Elíptica"
+                "Cardio: Elíptica"
             ]
         };
 
-        // Inicialización
+        // ============ INICIALIZACIÓN ============
         document.getElementById('header-date').innerText = new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'short' }).toUpperCase();
         
         const hoyIso = new Date().toISOString().split('T')[0];
         document.getElementById('historial-fecha-filtro').value = hoyIso;
 
-        // Funciones de utilidad
+        // ============ FUNCIONES ÚTILES ============
         function showToast(msj, color = '#30d158') {
             const t = document.getElementById('toast');
             t.innerText = msj;
             t.style.backgroundColor = color;
-            t.style.color = (color === '#30d158' || color === '#ff9500' || color === '#5ac8fa' || color === '#bf5af2' || color === '#0b57d0') ? 'black' : 'white';
+            t.style.color = ['#30d158', '#ff9500', '#5ac8fa', '#bf5af2', '#0b57d0'].includes(color) ? 'black' : 'white';
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 2000);
         }
@@ -570,28 +574,7 @@
             document.getElementById('loader').style.display = 'none';
         }
 
-        // Función para fetch con timeout
-        async function fetchWithTimeout(url, options, timeout = API_TIMEOUT) {
-            const controller = new AbortController();
-            const id = setTimeout(() => controller.abort(), timeout);
-            
-            try {
-                const response = await fetch(url, {
-                    ...options,
-                    signal: controller.signal
-                });
-                clearTimeout(id);
-                return response;
-            } catch (error) {
-                clearTimeout(id);
-                if (error.name === 'AbortError') {
-                    throw new Error('La solicitud excedió el tiempo de espera');
-                }
-                throw error;
-            }
-        }
-
-        // Sistema de confirmación
+        // ============ SISTEMA DE CONFIRMACIÓN ============
         let callbackConfirmacion = null;
         function mostrarConfirmacion(titulo, texto, callback) {
             document.getElementById('confirm-title').innerText = titulo;
@@ -602,11 +585,7 @@
 
         document.getElementById('confirm-btn').onclick = function() {
             if(callbackConfirmacion) {
-                try {
-                    callbackConfirmacion();
-                } catch(e) {
-                    console.error('Error en callback:', e);
-                }
+                try { callbackConfirmacion(); } catch(e) { console.error(e); }
             }
             cerrarConfirmacion();
         };
@@ -616,7 +595,7 @@
             callbackConfirmacion = null;
         }
 
-        // Ejercicios
+        // ============ EJERCICIOS ============
         function obtenerEjerciciosUnificados() {
             const custom = JSON.parse(localStorage.getItem('adri_ejercicios_custom') || '{}');
             const unificados = JSON.parse(JSON.stringify(ejerciciosDB_Original));
@@ -648,7 +627,7 @@
             }
         }
 
-        // Navegación
+        // ============ NAVEGACIÓN ============
         function cambiarPantalla(sId, btn) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
@@ -661,7 +640,7 @@
             if(sId === 'screen-ajustes') inicializarAjustesValores();
         }
 
-        // Entrenos
+        // ============ ENTRENOS ============
         function guardarEntreno() {
             const bloque = document.getElementById('entreno-bloque').value;
             const ejercicio = document.getElementById('entreno-ejercicio').value;
@@ -690,10 +669,10 @@
             document.getElementById('entreno-peso').value = '';
             document.getElementById('entreno-repes').value = '';
 
-            showToast('Serie Guardada con Éxito');
+            showToast('Serie Guardada');
         }
 
-        // Comidas
+        // ============ COMIDAS ============
         function guardarComidaManual() {
             const nombre = document.getElementById('comida-nombre').value.trim();
             const kcal = document.getElementById('comida-kcal').value;
@@ -722,6 +701,7 @@
             showToast('Alimento Registrado', '#ff9500');
         }
 
+        // ============ ANÁLISIS DE COMIDA CON IA (CORREGIDO) ============
         async function analizarComidaConIA(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -734,9 +714,9 @@
                 return;
             }
 
-            // Validar tamaño de imagen (máximo 4MB)
-            if (file.size > 4 * 1024 * 1024) {
-                showToast('La imagen es demasiado grande. Máximo 4MB', '#ff453a');
+            // Validar que sea una imagen
+            if (!file.type.startsWith('image/')) {
+                showToast('Selecciona un archivo de imagen', '#ff453a');
                 event.target.value = '';
                 return;
             }
@@ -749,41 +729,39 @@
             };
             readerLocal.readAsDataURL(file);
 
-            showLoader('Analizando tu plato con IA...');
+            showLoader('Analizando tu plato... (puede tardar)');
 
             try {
-                // Convertir a base64
+                // Convertir imagen a base64
                 const base64Data = await new Promise((resolve, reject) => {
                     const reader = new FileReader();
                     reader.onload = () => {
                         const result = reader.result.split(',')[1];
                         resolve(result);
                     };
-                    reader.onerror = reject;
+                    reader.onerror = () => reject(new Error('Error al leer la imagen'));
                     reader.readAsDataURL(file);
                 });
 
+                // Llamar a la API de Gemini
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-                const prompt = "Analiza esta foto de comida. Devuelve SOLO un JSON con: comida (nombre), kcal (número), explicacion (breve). Sin texto adicional.";
-
+                
                 const payload = {
                     contents: [{
                         parts: [
-                            { text: prompt },
+                            { text: "Analiza esta foto de comida. Devuelve SOLO un JSON con: comida (nombre del plato), kcal (número), explicacion (breve descripción). Sin texto adicional." },
                             {
                                 inlineData: {
-                                    mimeType: file.type,
+                                    mimeType: file.type || 'image/jpeg',
                                     data: base64Data
                                 }
                             }
                         ]
-                    }],
-                    generationConfig: {
-                        responseMimeType: "application/json"
-                    }
+                    }]
                 };
 
-                const response = await fetchWithTimeout(url, {
+                // Usar fetch normal sin timeout
+                const response = await fetch(url, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
@@ -791,38 +769,71 @@
 
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => ({}));
-                    throw new Error(errorData.error?.message || `Error HTTP: ${response.status}`);
+                    console.error('Error API:', errorData);
+                    
+                    if (response.status === 400) {
+                        throw new Error('Imagen no válida o demasiado grande');
+                    } else if (response.status === 403) {
+                        throw new Error('API Key no válida. Verifícala en Ajustes.');
+                    } else if (response.status === 429) {
+                        throw new Error('Demasiadas solicitudes. Espera un minuto.');
+                    } else {
+                        throw new Error(`Error del servidor (${response.status})`);
+                    }
                 }
 
                 const data = await response.json();
                 
                 if (!data.candidates || !data.candidates[0]?.content?.parts?.[0]?.text) {
-                    throw new Error('Respuesta de IA inválida');
+                    throw new Error('La IA no pudo analizar la imagen');
                 }
 
                 const responseText = data.candidates[0].content.parts[0].text;
-                const result = JSON.parse(responseText);
-
-                if (!result.comida || !result.kcal) {
-                    throw new Error('Datos incompletos en la respuesta');
+                console.log('Respuesta IA:', responseText);
+                
+                // Intentar extraer JSON
+                let result;
+                try {
+                    // Limpiar posibles marcas de código
+                    const cleanText = responseText.replace(/```json\n?|\n?```/g, '').trim();
+                    result = JSON.parse(cleanText);
+                } catch (parseError) {
+                    // Intentar extraer datos con expresiones regulares
+                    const comidaMatch = responseText.match(/comida["\s:]+["']([^"']+)["']/i);
+                    const kcalMatch = responseText.match(/kcal["\s:]+(\d+)/i);
+                    
+                    if (comidaMatch && kcalMatch) {
+                        result = {
+                            comida: comidaMatch[1],
+                            kcal: parseInt(kcalMatch[1]),
+                            explicacion: 'Análisis aproximado'
+                        };
+                    } else {
+                        throw new Error('No se pudieron extraer los datos');
+                    }
                 }
 
+                if (!result.comida || !result.kcal) {
+                    throw new Error('Datos incompletos');
+                }
+
+                // Rellenar formulario
                 document.getElementById('comida-nombre').value = result.comida;
                 document.getElementById('comida-kcal').value = result.kcal;
 
                 hideLoader();
-                showToast("¡Análisis completado! Revisa y confirma.", "#ff9500");
+                showToast(`¡Analizado! ${result.comida}: ${result.kcal} kcal`, "#ff9500");
                 
             } catch (error) {
                 hideLoader();
-                console.error('Error en análisis IA:', error);
+                console.error('Error:', error);
                 
-                if (error.message.includes('tiempo de espera')) {
-                    showToast('La IA tardó demasiado. Intenta con otra imagen.', '#ff453a');
-                } else if (error.message.includes('API key')) {
-                    showToast('API Key inválida. Verifica en Ajustes.', '#ff453a');
+                if (error.message.includes('Failed to fetch')) {
+                    showToast('Error de conexión. Verifica tu internet.', '#ff453a');
+                } else if (error.message.includes('API Key')) {
+                    showToast(error.message, '#ff453a');
                 } else {
-                    showToast('Error al analizar. Intenta de nuevo.', '#ff453a');
+                    showToast(error.message || 'Error al analizar', '#ff453a');
                 }
             } finally {
                 event.target.value = '';
@@ -856,11 +867,11 @@
             if (m && m > 0) {
                 localStorage.setItem('adri_meta_calorias', m);
                 actualizarBarraDeCalorias();
-                showToast('Meta de calorías actualizada');
+                showToast('Meta actualizada');
             }
         }
 
-        // Peso
+        // ============ PESO ============
         function guardarPeso() {
             const p = document.getElementById('peso-corporal').value;
             if(!p || p <= 0) {
@@ -880,16 +891,16 @@
             localStorage.setItem('adri_datos', JSON.stringify(hist));
 
             document.getElementById('peso-corporal').value = '';
-            showToast('Peso corporal registrado', '#5ac8fa');
+            showToast('Peso registrado', '#5ac8fa');
         }
 
-        // Ejercicios personalizados
+        // ============ EJERCICIOS CUSTOM ============
         function crearEjercicioCustom() {
             const bloque = document.getElementById('custom-ejercicio-bloque').value;
             const nombre = document.getElementById('custom-ejercicio-nombre').value.trim();
 
             if(!nombre) {
-                showToast('Escribe el nombre del ejercicio', '#ff453a');
+                showToast('Escribe el nombre', '#ff453a');
                 return;
             }
 
@@ -897,7 +908,7 @@
             if(!custom[bloque]) custom[bloque] = [];
             
             if(custom[bloque].includes(nombre)) {
-                showToast('Este ejercicio ya existe en este bloque', '#ff453a');
+                showToast('Ya existe', '#ff453a');
                 return;
             }
             
@@ -906,10 +917,10 @@
             document.getElementById('custom-ejercicio-nombre').value = '';
 
             actualizarEjercicios();
-            showToast('Ejercicio añadido con éxito');
+            showToast('Ejercicio añadido');
         }
 
-        // Historial
+        // ============ HISTORIAL ============
         function renderHistorial() {
             const filtroFechaInput = document.getElementById('historial-fecha-filtro').value;
             let fechaObjetivo = new Date().toLocaleDateString('es-ES');
@@ -926,11 +937,7 @@
             const logsHoy = hist.filter(item => item.fecha === fechaObjetivo);
 
             if(logsHoy.length === 0) {
-                list.innerHTML = `
-                    <p style="text-align: center; color: var(--text-secondary); padding: 40px 0; font-size: 0.9rem;">
-                        No hay registros para este día.<br>¡Comienza a entrenar o registra tu nutrición!
-                    </p>
-                `;
+                list.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 40px 0;">No hay registros para este día.</p>';
                 return;
             }
 
@@ -940,53 +947,41 @@
                 
                 let inner = '';
                 if(item.tipo === 'entreno') {
-                    inner = `
-                        <div class="log-header"><span>${item.bloque || 'Entrenamiento'}</span></div>
-                        <div class="log-title">${item.ejercicio || 'Ejercicio'}</div>
-                        <div class="log-details">${item.peso || 0} kg x ${item.repes || 0} reps</div>
-                    `;
+                    inner = `<div class="log-header"><span>${item.bloque || 'Entreno'}</span></div>
+                             <div class="log-title">${item.ejercicio}</div>
+                             <div class="log-details">${item.peso} kg x ${item.repes} reps</div>`;
                 } else if(item.tipo === 'comida') {
-                    inner = `
-                        <div class="log-header"><span>Nutrición</span></div>
-                        <div class="log-title" style="color: var(--nutrition-color)">${item.comida || 'Comida'}</div>
-                        <div class="log-details">⚡ ${item.kcal || 0} kcal</div>
-                    `;
+                    inner = `<div class="log-header"><span>Nutrición</span></div>
+                             <div class="log-title" style="color: var(--nutrition-color)">${item.comida}</div>
+                             <div class="log-details">⚡ ${item.kcal} kcal</div>`;
                 } else if(item.tipo === 'peso') {
-                    inner = `
-                        <div class="log-header"><span>Biométrico</span></div>
-                        <div class="log-title" style="color: #5ac8fa">${item.peso || 0} kg</div>
-                        <div class="log-details">Peso corporal</div>
-                    `;
+                    inner = `<div class="log-header"><span>Peso</span></div>
+                             <div class="log-title" style="color: #5ac8fa">${item.peso} kg</div>`;
                 } else if(item.tipo === 'reporte_semanal') {
-                    inner = `
-                        <div class="log-header"><span>Reporte Semanal</span></div>
-                        <div class="log-title" style="color: var(--coach-color)">Peso: ${item.pesoMedio || 0} kg</div>
-                        <div class="log-details">Evaluación completada</div>
-                    `;
+                    inner = `<div class="log-header"><span>Reporte</span></div>
+                             <div class="log-title" style="color: var(--coach-color)">Peso: ${item.pesoMedio} kg</div>`;
                 }
 
-                div.innerHTML = `
-                    ${inner}
+                div.innerHTML = `${inner}
                     <button class="btn-delete" onclick="borrarLogItem(${item.id})">
                         <span class="material-icons-round">delete</span>
-                    </button>
-                `;
+                    </button>`;
                 list.appendChild(div);
             });
         }
 
         function borrarLogItem(id) {
-            mostrarConfirmacion('¿Eliminar registro?', 'Este elemento se eliminará permanentemente.', () => {
+            mostrarConfirmacion('¿Eliminar?', 'Se eliminará permanentemente.', () => {
                 let hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
                 hist = hist.filter(item => item.id !== id);
                 localStorage.setItem('adri_datos', JSON.stringify(hist));
                 renderHistorial();
                 actualizarBarraDeCalorias();
-                showToast('Registro eliminado', '#ff453a');
+                showToast('Eliminado', '#ff453a');
             });
         }
 
-        // Backup
+        // ============ BACKUP ============
         function exportarHistorial() {
             try {
                 const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(localStorage));
@@ -998,8 +993,7 @@
                 document.body.removeChild(dlAnchor);
                 showToast('Copia descargada', '#0b57d0');
             } catch(e) {
-                console.error('Error exportando:', e);
-                showToast('Error al exportar datos', '#ff453a');
+                showToast('Error al exportar', '#ff453a');
             }
         }
 
@@ -1016,36 +1010,24 @@
                 try {
                     const parsed = JSON.parse(e.target.result);
                     
-                    if (typeof parsed !== 'object' || parsed === null) {
-                        throw new Error('Formato inválido');
-                    }
-                    
-                    mostrarConfirmacion('¿Importar Datos?', 'Se reemplazará la base de datos actual.', () => {
-                        try {
-                            localStorage.clear();
-                            for (const key in parsed) {
-                                if (parsed.hasOwnProperty(key)) {
-                                    localStorage.setItem(key, parsed[key]);
-                                }
+                    mostrarConfirmacion('¿Importar?', 'Se reemplazarán todos los datos.', () => {
+                        localStorage.clear();
+                        for (const key in parsed) {
+                            if (parsed.hasOwnProperty(key)) {
+                                localStorage.setItem(key, parsed[key]);
                             }
-                            location.reload();
-                        } catch(err) {
-                            showToast('Error al importar datos', '#ff453a');
                         }
+                        location.reload();
                     });
                 } catch(err) {
-                    console.error('Error importando:', err);
-                    showToast('Archivo inválido o corrupto', '#ff453a');
+                    showToast('Archivo inválido', '#ff453a');
                 }
-            };
-            reader.onerror = function() {
-                showToast('Error al leer el archivo', '#ff453a');
             };
             reader.readAsText(file);
             event.target.value = '';
         }
 
-        // API Key
+        // ============ API KEY ============
         function abrirConfiguracionApi() {
             const key = localStorage.getItem('adri_gemini_key') || '';
             document.getElementById('api-key-input').value = key;
@@ -1058,42 +1040,33 @@
 
         function guardarApiKey() {
             const k = document.getElementById('api-key-input').value.trim();
-            if(!k) {
-                showToast('Introduce una API Key', '#ff453a');
-                return;
-            }
-            if(!k.startsWith('AIza')) {
-                showToast('Clave no válida. Debe empezar con AIza', '#ff453a');
+            if(!k || !k.startsWith('AIza')) {
+                showToast('Clave no válida', '#ff453a');
                 return;
             }
             localStorage.setItem('adri_gemini_key', k);
             cerrarApiModal();
             actualizarEstadoApiKey();
-            showToast('Clave API guardada');
+            showToast('Clave guardada');
         }
 
         function borrarApiKey() {
-            mostrarConfirmacion('¿Borrar API Key?', 'Se desactivarán los escáneres y feedbacks IA.', () => {
+            mostrarConfirmacion('¿Borrar API Key?', 'Se desactivará la IA.', () => {
                 localStorage.removeItem('adri_gemini_key');
                 actualizarEstadoApiKey();
-                showToast('Clave API eliminada', '#ff453a');
+                showToast('Clave eliminada', '#ff453a');
             });
         }
 
         function actualizarEstadoApiKey() {
             const k = localStorage.getItem('adri_gemini_key');
             const el = document.getElementById('api-status-text');
-            if (k) {
-                el.innerText = '✅ API Activa';
-                el.style.color = '#30d158';
-            } else {
-                el.innerText = '❌ Sin API Key';
-                el.style.color = '#8e8e93';
-            }
+            el.innerText = k ? '✅ API Activa' : '❌ Sin API Key';
+            el.style.color = k ? '#30d158' : '#8e8e93';
         }
 
         function confirmarBorradoCompleto() {
-            mostrarConfirmacion('¿BORRAR TODO?', 'Se eliminará todo el historial y configuraciones.', () => {
+            mostrarConfirmacion('¿BORRAR TODO?', 'Se eliminará todo.', () => {
                 localStorage.clear();
                 location.reload();
             });
@@ -1105,7 +1078,7 @@
             actualizarEstadoApiKey();
         }
 
-        // COACH
+        // ============ COACH ============
         function renderCoachUI() {
             const ficha = localStorage.getItem('adri_fase_inicial');
             
@@ -1153,59 +1126,7 @@
 
             localStorage.setItem('adri_fase_inicial', JSON.stringify(ficha));
             showToast('Perfil guardado', '#bf5af2');
-            
-            const apiKey = localStorage.getItem('adri_gemini_key');
-            if(apiKey) {
-                analizarFaseInicialConIA(ficha);
-            } else {
-                renderCoachUI();
-            }
-        }
-
-        async function analizarFaseInicialConIA(ficha) {
-            const apiKey = localStorage.getItem('adri_gemini_key');
-            if(!apiKey) return;
-
-            showLoader('Analizando tu perfil...');
-
-            try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-                const prompt = `Como preparador físico profesional, analiza este perfil y da recomendaciones breves (150-200 palabras) en español:
-                Edad: ${ficha.edad}, Sexo: ${ficha.sexo}, Altura: ${ficha.estatura}cm, Peso: ${ficha.peso}kg.
-                Actividad: ${ficha.sedentarismo}. Disponibilidad: ${ficha.dias}, ${ficha.tiempo}/sesión.
-                Experiencia: ${ficha.experiencia}. Técnica: ${ficha.tecnica}.
-                Alimentación: ${ficha.nutricion}. Lesiones: ${ficha.lesiones}.
-                Sueño: ${ficha.sueno}h. Estrés: ${ficha.estres}.
-                Incluye: 1) Recomendación nutricional 2) Directrices de entrenamiento 3) Hábitos de recuperación.
-                Usa **negritas** para puntos clave.`;
-
-                const response = await fetchWithTimeout(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
-
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-                const data = await response.json();
-                
-                if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
-                    throw new Error('Respuesta inválida');
-                }
-
-                const responseText = data.candidates[0].content.parts[0].text;
-                localStorage.setItem('adri_coach_feedback_inicial', responseText);
-                
-                hideLoader();
-                abrirFeedbackModal(responseText);
-                renderCoachUI();
-                
-            } catch (error) {
-                hideLoader();
-                console.error('Error:', error);
-                showToast('Error al conectar con IA. Perfil guardado sin análisis.', '#ff453a');
-                renderCoachUI();
-            }
+            renderCoachUI();
         }
 
         function obtenerPesosRecientes() {
@@ -1220,9 +1141,7 @@
             const sieteDiasAtras = Date.now() - (7 * 24 * 60 * 60 * 1000);
             const pesosSemana = pesos.filter(p => p.id >= sieteDiasAtras);
 
-            if (pesosSemana.length === 0) {
-                return Number(pesos[0].peso).toFixed(2);
-            }
+            if (pesosSemana.length === 0) return Number(pesos[0].peso).toFixed(2);
 
             const suma = pesosSemana.reduce((sum, p) => sum + Number(p.peso), 0);
             return (suma / pesosSemana.length).toFixed(2);
@@ -1237,15 +1156,14 @@
             
             if (pesoMedio) {
                 document.getElementById('coach-rep-peso').value = pesoMedio;
-                helper.innerText = 'Calculado con tus registros de peso recientes.';
+                helper.innerText = 'Calculado con tus registros recientes.';
                 helper.style.color = "#30d158";
             } else {
                 document.getElementById('coach-rep-peso').value = '';
-                helper.innerText = 'No hay registros. Introduce un peso estimado.';
+                helper.innerText = 'Introduce un peso estimado.';
                 helper.style.color = "#8e8e93";
             }
 
-            // Resetear sliders
             ['energia', 'sueno', 'saciedad', 'adherencia'].forEach((tipo, i) => {
                 const val = [8, 8, 8, 9][i];
                 document.getElementById(`coach-rep-${tipo}`).value = val;
@@ -1271,7 +1189,7 @@
             const adherencia = document.getElementById('coach-rep-adherencia').value;
 
             if(!peso || peso <= 0) {
-                showToast('Introduce tu peso medio semanal', '#ff453a');
+                showToast('Introduce tu peso', '#ff453a');
                 return;
             }
 
@@ -1292,65 +1210,7 @@
             hist.unshift(reporte);
             localStorage.setItem('adri_datos', JSON.stringify(hist));
             showToast('Reporte guardado', '#bf5af2');
-
-            const apiKey = localStorage.getItem('adri_gemini_key');
-            if (apiKey) {
-                generarFeedbackReporteIA(reporte);
-            } else {
-                renderCoachUI();
-            }
-        }
-
-        async function generarFeedbackReporteIA(reporte) {
-            const apiKey = localStorage.getItem('adri_gemini_key');
-            if(!apiKey) return;
-
-            showLoader('Generando feedback...');
-
-            try {
-                const ficha = JSON.parse(localStorage.getItem('adri_fase_inicial') || '{}');
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-                
-                const prompt = `Como preparador físico, analiza este reporte semanal en español (150-180 palabras):
-                Perfil: ${ficha.edad || '?'}a, ${ficha.sexo || '?'}, ${ficha.estatura || '?'}cm, ${ficha.peso || '?'}kg.
-                Peso semanal: ${reporte.pesoMedio}kg. Fuerza: ${reporte.fuerza || 'No especificada'}.
-                Medidas: ${reporte.medidas || 'No especificadas'}.
-                Energía: ${reporte.energia}/10, Sueño: ${reporte.sueno}/10, Saciedad: ${reporte.saciedad}/10, Adherencia: ${reporte.adherencia}/10.
-                Da evaluación del progreso, análisis de sensaciones y ajustes recomendados. Usa **negritas**.`;
-
-                const response = await fetchWithTimeout(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
-
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-                const data = await response.json();
-                
-                if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
-                    throw new Error('Respuesta inválida');
-                }
-
-                const fb = data.candidates[0].content.parts[0].text;
-                
-                let hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
-                const idx = hist.findIndex(item => item.id === reporte.id);
-                if(idx !== -1) {
-                    hist[idx].feedback = fb;
-                    localStorage.setItem('adri_datos', JSON.stringify(hist));
-                }
-                
-                hideLoader();
-                abrirFeedbackModal(fb);
-                renderCoachUI();
-                
-            } catch (error) {
-                hideLoader();
-                console.error('Error:', error);
-                showToast('Reporte guardado sin feedback IA', '#ff453a');
-                renderCoachUI();
-            }
+            renderCoachUI();
         }
 
         function renderHistorialReportes() {
@@ -1361,11 +1221,7 @@
             const reportes = hist.filter(item => item.tipo === 'reporte_semanal');
 
             if(reportes.length === 0) {
-                listContainer.innerHTML = `
-                    <p style="color: var(--text-secondary); font-size: 0.85rem; text-align: center; padding: 20px 0;">
-                        No hay reportes. ¡Envía tu primer reporte semanal!
-                    </p>
-                `;
+                listContainer.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 20px 0;">No hay reportes todavía.</p>';
                 return;
             }
 
@@ -1373,46 +1229,24 @@
                 const card = document.createElement('div');
                 card.className = 'log-item reporte';
                 
-                let feedbackHTML = '';
-                if(rep.feedback) {
-                    feedbackHTML = `
-                        <div class="feedback-box">
-                            <span class="coach-badge">COACH IA</span>
-                            <p style="font-size: 0.82rem; color: #fff; line-height: 1.45;">${rep.feedback.substring(0, 150)}...</p>
-                            <button class="btn btn-secondary ver-feedback-btn" style="margin-top: 10px; padding: 6px; font-size: 0.75rem;">Leer análisis completo</button>
-                        </div>
-                    `;
-                } else {
-                    feedbackHTML = `
-                        <div style="background-color: var(--card-bg-inner); padding: 10px; border-radius: 8px; margin-top: 10px; text-align: center; font-size: 0.75rem; color: var(--text-secondary);">
-                            Sin análisis IA. Configura tu API Key en Ajustes.
-                        </div>
-                    `;
-                }
-
                 card.innerHTML = `
                     <div class="log-header"><span>${rep.fecha}</span></div>
                     <div class="log-title" style="color: var(--coach-color)">Peso: ${rep.pesoMedio} kg</div>
-                    <div class="log-details" style="font-size: 0.85rem; margin-top: 5px;">
-                        <div>⚡ ${rep.energia}/10 | 😴 ${rep.sueno}/10 | 🍎 ${rep.saciedad}/10 | 🎯 ${rep.adherencia}/10</div>
-                        ${rep.fuerza ? `<div style="margin-top:4px; font-style: italic;">"${rep.fuerza}"</div>` : ''}
+                    <div class="log-details">
+                        ⚡ ${rep.energia}/10 | 😴 ${rep.sueno}/10 | 🍎 ${rep.saciedad}/10 | 🎯 ${rep.adherencia}/10
+                        ${rep.fuerza ? `<div style="margin-top:4px;">"${rep.fuerza}"</div>` : ''}
                     </div>
-                    ${feedbackHTML}
-                    <button class="btn-delete" onclick="borrarReporte(${rep.id})"><span class="material-icons-round">delete</span></button>
+                    <button class="btn-delete" onclick="borrarReporte(${rep.id})">
+                        <span class="material-icons-round">delete</span>
+                    </button>
                 `;
-
-                // Añadir evento al botón de ver feedback
-                const verBtn = card.querySelector('.ver-feedback-btn');
-                if (verBtn) {
-                    verBtn.addEventListener('click', () => abrirFeedbackModal(rep.feedback));
-                }
 
                 listContainer.appendChild(card);
             });
         }
 
         function borrarReporte(id) {
-            mostrarConfirmacion('¿Eliminar reporte?', 'Se borrará este reporte y su feedback.', () => {
+            mostrarConfirmacion('¿Eliminar reporte?', 'Se borrará permanentemente.', () => {
                 let hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
                 hist = hist.filter(item => item.id !== id);
                 localStorage.setItem('adri_datos', JSON.stringify(hist));
@@ -1423,8 +1257,6 @@
 
         function abrirFeedbackModal(texto) {
             const content = document.getElementById('feedback-modal-content');
-            
-            // Sanitizar texto
             const sanitized = texto
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
@@ -1442,26 +1274,15 @@
 
         function verFichaInicial() {
             const ficha = JSON.parse(localStorage.getItem('adri_fase_inicial') || '{}');
-            const feedbackInicial = localStorage.getItem('adri_coach_feedback_inicial') || '';
-
+            
             let contenido = `
                 <div style="font-size:0.85rem; background-color: var(--card-bg-inner); padding: 12px; border-radius: 8px; margin-bottom: 15px;">
                     <div><strong>Edad:</strong> ${ficha.edad || 'N/A'} | <strong>Sexo:</strong> ${ficha.sexo || 'N/A'}</div>
                     <div><strong>Estatura:</strong> ${ficha.estatura || 'N/A'} cm | <strong>Peso:</strong> ${ficha.peso || 'N/A'} kg</div>
                     <div><strong>Experiencia:</strong> ${ficha.experiencia || 'N/A'}</div>
-                    <div><strong>Disponibilidad:</strong> ${ficha.dias || 'N/A'} (${ficha.tiempo || 'N/A'})</div>
+                    <div><strong>Disponibilidad:</strong> ${ficha.dias || 'N/A'} días (${ficha.tiempo || 'N/A'})</div>
                     <div style="margin-top:5px;"><strong>Lesiones:</strong> ${ficha.lesiones || 'Ninguna'}</div>
                 </div>
-            `;
-
-            if(feedbackInicial) {
-                contenido += `
-                    <h4 style="color: var(--coach-color); margin-bottom: 5px;">Análisis del Coach:</h4>
-                    <div style="font-size:0.85rem; line-height:1.4;">${feedbackInicial.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
-                `;
-            }
-
-            contenido += `
                 <button class="btn btn-secondary" style="margin-top:15px; background-color:#3a3a3c;" onclick="confirmarReiniciarFicha()">
                     Reiniciar Ficha
                 </button>
@@ -1472,15 +1293,14 @@
 
         function confirmarReiniciarFicha() {
             cerrarFeedbackModal();
-            mostrarConfirmacion('¿Reiniciar?', 'Se eliminará tu perfil de coach.', () => {
+            mostrarConfirmacion('¿Reiniciar?', 'Se eliminará tu perfil.', () => {
                 localStorage.removeItem('adri_fase_inicial');
-                localStorage.removeItem('adri_coach_feedback_inicial');
                 renderCoachUI();
                 showToast('Ficha eliminada', '#ff453a');
             });
         }
 
-        // Inicialización final
+        // ============ INICIAR APP ============
         actualizarEjercicios();
         inicializarAjustesValores();
         actualizarBarraDeCalorias();
