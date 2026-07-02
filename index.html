@@ -60,12 +60,15 @@
             <div class="card">
                 <h2><span class="material-icons-round" style="color: var(--accent-color)">fitness_center</span> Nueva Serie</h2>
                 
-                <label>Tipo de Día / Bloque</label>
+                <label>Bloque de Entrenamiento</label>
                 <select id="entreno-bloque" onchange="actualizarEjercicios()">
-                    <option value="Lunes: Torso">Lunes: Torso</option>
-                    <option value="Martes: Espalda y Bíceps">Martes: Espalda y Bíceps</option>
-                    <option value="Miércoles: Recuperación Activa y Core">Miércoles: Recuperación Activa y Core</option>
-                    <option value="Jueves: Torso Completo">Jueves: Torso Completo</option>
+                    <option value="Torso">Torso</option>
+                    <option value="Espalda y Bíceps">Espalda y Bíceps</option>
+                    <option value="Recuperación Activa y Core">Recuperación Activa y Core</option>
+                    <option value="Torso Completo">Torso Completo</option>
+                    <option value="Hombros y Brazos">Hombros y Brazos</option>
+                    <option value="Pierna Completa">Pierna Completa</option>
+                    <option value="Full Body + Cardio">Full Body + Cardio</option>
                 </select>
                 
                 <label>Ejercicio</label>
@@ -132,29 +135,48 @@
     </nav>
 
     <script>
-        // Base de datos de ejercicios extraídos de tu rutina nativa
+        // Base de datos de ejercicios completa de tu rutina (sin días de la semana fijos)
         const ejerciciosDB = {
-            "Lunes: Torso": [
+            "Torso": [
                 "Press de banca con mancuernas",
                 "Press militar sentado con mancuernas",
                 "Aperturas en máquina (Pec Deck)",
                 "Extensiones de tríceps en polea con cuerda"
             ],
-            "Martes: Espalda y Bíceps": [
+            "Espalda y Bíceps": [
                 "Jalón al pecho en polea (agarre amplio)",
                 "Remo en máquina (soporte al pecho)",
                 "Pájaros con mancuernas (hombro posterior)",
                 "Curl de bíceps alterno con mancuernas"
             ],
-            "Miércoles: Recuperación Activa y Core": [
+            "Recuperación Activa y Core": [
                 "Cardio: Bicicleta estática o elíptica",
                 "Core: Plancha abdominal",
                 "Core: Press Pallof"
             ],
-            "Jueves: Torso Completo": [
+            "Torso Completo": [
                 "Press inclinado con mancuernas",
                 "Remo en polea baja (agarre estrecho/gironda)",
-                "Cruces en polea alta (pecho inferior)"
+                "Cruces en polea alta (pecho inferior)",
+                "Jalón al pecho (agarre invertido/estrecho)"
+            ],
+            "Hombros y Brazos": [
+                "Elevaciones laterales con mancuernas",
+                "Press francés con barra Z o mancuernas",
+                "Curl de bíceps en banco inclinado",
+                "Extensiones de tríceps en polea invertidas (unilateral)"
+            ],
+            "Pierna Completa": [
+                "Prensa de piernas a 45°",
+                "Curl de piernas sentado (Femoral)",
+                "Extensión de cuádriceps en máquina",
+                "Elevación de talones (Gemelos) de pie"
+            ],
+            "Full Body + Cardio": [
+                "Prensa de piernas (peso moderado)",
+                "Remo en máquina",
+                "Press de banca con mancuernas",
+                "Cardio Final: Elíptica"
             ]
         };
 
