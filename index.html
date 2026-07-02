@@ -15,6 +15,7 @@
             --text-secondary: #8e8e93; 
             --danger: #ff453a; 
             --nutrition-color: #ff9500;
+            --ia-color: #5ea8ff;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 90px; }
@@ -43,6 +44,11 @@
         .nav-item.active { color: var(--accent-color); }
         #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background-color: var(--accent-color); color: black; padding: 12px 24px; border-radius: 30px; font-weight: 600; z-index: 1000; transition: transform 0.3s; }
         #toast.show { transform: translateX(-50%) translateY(0); }
+        
+        /* Nuevos estilos para la IA */
+        .btn-ia { background-color: var(--ia-color); color: #000; font-weight: 700; margin-top: 12px; }
+        #ia-status { font-size: 0.85rem; color: var(--ia-color); margin-top: 8px; text-align: center; display: none; font-weight: 500; }
+        .config-link { font-size: 0.7rem; color: #3a3a3c; text-align: center; margin-top: 25px; cursor: pointer; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -55,7 +61,6 @@
     </header>
 
     <div class="container">
-        <!-- PANTALLA ENTRENO -->
         <div id="screen-entreno" class="screen active">
             <div class="card">
                 <h2><span class="material-icons-round" style="color: var(--accent-color)">fitness_center</span> Nueva Serie</h2>
@@ -91,7 +96,6 @@
             </div>
         </div>
 
-        <!-- PANTALLA COMIDAS -->
         <div id="screen-comidas" class="screen">
             <div class="card">
                 <h2><span class="material-icons-round" style="color: var(--nutrition-color)">local_fire_department</span> Registro de Kcal</h2>
@@ -104,6 +108,12 @@
                     <option value="Snack Pre-Entreno">Snack Pre-Entreno</option>
                     <option value="Comida Extra">Comida Extra</option>
                 </select>
+
+                <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
+                <button class="btn btn-ia" onclick="activarEscanerIA()">
+                    <span class="material-icons-round">photo_camera</span> Escanear Plato con IA
+                </button>
+                <div id="ia-status"></div>
                 
                 <label>Calorías (kcal)</label>
                 <input type="number" id="comida-kcal" placeholder="Ej: 500">
@@ -112,16 +122,16 @@
                     <span class="material-icons-round">restaurant</span> Añadir Kcal
                 </button>
             </div>
+            
+            <div class="config-link" onclick="configurarApiKey()">Configurar Gemini API Key</div>
         </div>
 
-        <!-- PANTALLA HISTORIAL -->
         <div id="screen-historial" class="screen">
             <h2 style="font-size:1.2rem; margin-bottom:12px;">Historial de Hoy</h2>
             <div id="lista-historial"></div>
         </div>
     </div>
 
-    <!-- NAVEGACIÓN -->
     <nav>
         <button class="nav-item active" onclick="cambiarPantalla('screen-entreno', this)">
             <span class="material-icons-round">fitness_center</span>Entreno
@@ -292,6 +302,96 @@
             localStorage.setItem('adri_datos', JSON.stringify(hist));
             renderHistorial();
             showToast('Registro eliminado', '#ff453a');
+        }
+
+        // ==========================================
+        // NUEVA LÓGICA DE IA (GEMINI)
+        // ==========================================
+        
+        const cameraInput = document.getElementById('cameraInput');
+        const iaStatus = document.getElementById('ia-status');
+        const comidaKcalInput = document.getElementById('comida-kcal');
+
+        function configurarApiKey() {
+            const key = prompt("Introduce tu API Key de Gemini (se guardará de forma segura en este navegador):");
+            if (key) {
+                localStorage.setItem('adri_gemini_key', key.trim());
+                showToast('API Key guardada', '#5ea8ff');
+            }
+        }
+
+        function activarEscanerIA() {
+            if (!localStorage.getItem('adri_gemini_key')) {
+                configurarApiKey();
+                if (!localStorage.getItem('adri_gemini_key')) return;
+            }
+            cameraInput.click();
+        }
+
+        cameraInput.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            iaStatus.style.display = "block";
+            iaStatus.innerText = "⏳ Procesando imagen...";
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = async () => {
+                const base64Image = reader.result.split(',')[1];
+                await analizarPlatoConIA(base64Image, file.type);
+            };
+        });
+
+        async function analizarPlatoConIA(base64Data, mimeType) {
+            const apiKey = localStorage.getItem('adri_gemini_key');
+            iaStatus.innerText = "🧠 Analizando calorías con IA...";
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{
+                    parts: [
+                        { text: "Actúa como un experto en nutrición y fitness. Analiza rigurosamente la imagen de este plato de comida. Estima de forma precisa el contenido total de calorías (kcal). Devuelve UNICAMENTE un número entero que represente el total de kcal. No añadas texto, ni explicaciones, ni la palabra 'kcal', solo el número." },
+                        {
+                            inlineData: {
+                                mimeType: mimeType,
+                                data: base64Data
+                            }
+                        }
+                    ]
+                }]
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    const respuestaTexto = data.candidates[0].content.parts[0].text.trim();
+                    // Extraer solo los números por si la IA añade espacios o saltos de línea
+                    const kcalCalculadas = respuestaTexto.match(/\d+/);
+
+                    if (kcalCalculadas) {
+                        comidaKcalInput.value = kcalCalculadas[0];
+                        iaStatus.innerText = `✅ ¡Completado! Estimación: ${kcalCalculadas[0]} kcal`;
+                        showToast('Calorías estimadas por IA', '#5ea8ff');
+                    } else {
+                        throw new Error("No se detectó un número válido");
+                    }
+                } else {
+                    throw new Error("Respuesta incompleta de la IA");
+                }
+            } catch (error) {
+                console.error(error);
+                iaStatus.innerText = "❌ Error al analizar la imagen. Revisa tu API Key.";
+                showToast('Error en el escáner', '#ff453a');
+            }
         }
     </script>
 </body>
