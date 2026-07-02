@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AdriAPP Pro</title>
-    <!-- Iconos de Google -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     
     <style>
+        /* ... (CSS sin cambios, se mantiene igual) ... */
         :root { 
             --bg-color: #000000; 
             --card-bg: #1c1c1e; 
@@ -41,7 +41,6 @@
         .btn-danger { background-color: var(--danger); color: white; margin-top: 10px; }
         .btn-coach { background-color: var(--coach-color); color: white; }
         
-        /* Barra de Progreso Circular / Visual */
         .progress-box { display: flex; align-items: center; gap: 20px; background-color: var(--card-bg-inner); padding: 16px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #3a3a3c; }
         .progress-bar-container { flex: 1; height: 12px; background-color: #3a3a3c; border-radius: 6px; overflow: hidden; position: relative; }
         .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #ff9500, #ffcc00); width: 0%; transition: width 0.5s ease-out; }
@@ -56,12 +55,10 @@
         .log-details { font-size: 0.9rem; margin-top: 2px; color: #e5e5ea; }
         .btn-delete { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--danger); background: none; border: none; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; }
         
-        /* Controles de Rango iOS */
         .ios-slider { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
         .ios-slider input[type="range"] { flex: 1; background: var(--card-bg-inner); border: none; height: 6px; border-radius: 3px; accent-color: var(--coach-color); }
         .ios-slider span { font-weight: 600; font-size: 1.1rem; width: 35px; text-align: right; }
 
-        /* Estilos del coach */
         .feedback-box { background-color: var(--card-bg-inner); padding: 14px; border-radius: 10px; border: 1px dashed var(--coach-color); margin-top: 15px; font-size: 0.9rem; line-height: 1.45; color: #f2f2f7; }
         .coach-badge { background-color: rgba(191, 90, 242, 0.2); color: #d6a1f8; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; display: inline-block; margin-bottom: 8px; }
 
@@ -177,7 +174,6 @@
 
         <!-- PANTALLA COMIDAS -->
         <div id="screen-comidas" class="screen">
-            <!-- Barra de progreso principal -->
             <div class="card">
                 <h2><span class="material-icons-round" style="color: var(--nutrition-color)">local_dining</span> Seguimiento de Calorías</h2>
                 <div class="progress-box">
@@ -191,7 +187,6 @@
                 </div>
             </div>
 
-            <!-- Escáner IA de Comida -->
             <div class="card" style="border: 1px dashed var(--nutrition-color); background-color: rgba(255, 149, 0, 0.05);">
                 <h2 style="color: var(--nutrition-color);"><span class="material-icons-round">photo_camera</span> Escáner de Comida IA</h2>
                 <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.35;">
@@ -210,7 +205,6 @@
                 </div>
             </div>
 
-            <!-- Registro Manual de Comidas -->
             <div class="card">
                 <h2><span class="material-icons-round">edit_note</span> Registro Manual</h2>
                 <label>Descripción / Nombre del Alimento</label>
@@ -227,7 +221,6 @@
 
         <!-- PANTALLA COACH (ASESORÍA) -->
         <div id="screen-coach" class="screen">
-            <!-- Caso 1: Todavía no ha completado el punto de partida (Fase Inicial) -->
             <div id="coach-onboarding" style="display: none;">
                 <div class="card" style="border-top: 4px solid var(--coach-color);">
                     <h2 style="color: var(--coach-color);"><span class="material-icons-round">support_agent</span> Fase Inicial: Tu Punto de Partida</h2>
@@ -240,7 +233,6 @@
                         <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:2px;">El coach usará la misma API Key de Gemini que configures en Ajustes para darte análisis detallados.</p>
                     </div>
 
-                    <!-- Paso 1: Datos Biométricos -->
                     <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 15px; display: flex; align-items: center; gap: 6px;"><span class="material-icons-round" style="font-size: 1.1rem; color: var(--coach-color);">person_outline</span> 1. Datos Biométricos</h3>
                     <div style="display: flex; gap: 10px;">
                         <div style="flex: 1;">
@@ -267,7 +259,6 @@
                         </div>
                     </div>
 
-                    <!-- Paso 2: Historial de Entrenamiento -->
                     <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 20px; display: flex; align-items: center; gap: 6px;"><span class="material-icons-round" style="font-size: 1.1rem; color: var(--coach-color);">fitness_center</span> 2. Experiencia deportiva</h3>
                     <label>¿Cuánto tiempo llevas entrenando?</label>
                     <select id="coach-ini-experiencia">
@@ -284,7 +275,6 @@
                         <option value="Tengo buena técnica dominada">Sí, la tengo dominada</option>
                     </select>
 
-                    <!-- Paso 3: Rutina Diaria -->
                     <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 20px; display: flex; align-items: center; gap: 6px;"><span class="material-icons-round" style="font-size: 1.1rem; color: var(--coach-color);">calendar_today</span> 3. Disponibilidad y Rutina</h3>
                     <label>Tu ocupación diaria es normalmente:</label>
                     <select id="coach-ini-sedentarismo">
@@ -315,7 +305,6 @@
                         </div>
                     </div>
 
-                    <!-- Paso 4: Nutrición y Lesiones -->
                     <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 20px; display: flex; align-items: center; gap: 6px;"><span class="material-icons-round" style="font-size: 1.1rem; color: var(--coach-color);">local_dining</span> 4. Nutrición, Lesiones y Descanso</h3>
                     
                     <label>¿Cómo comes normalmente? (Preferencias / alergias / si cocinas o comes fuera)</label>
@@ -345,9 +334,7 @@
                 </div>
             </div>
 
-            <!-- Caso 2: Onboarding completado -> Dashboard de Asesoría -->
             <div id="coach-dashboard" style="display: none;">
-                <!-- Panel Principal: Reporte Semanal -->
                 <div class="card" style="border-top: 4px solid var(--coach-color);">
                     <h2 style="color: var(--coach-color);"><span class="material-icons-round">support_agent</span> Tu Coach Personal</h2>
                     
@@ -361,14 +348,12 @@
                     </div>
                 </div>
 
-                <!-- Historial de Reportes -->
                 <h2 style="font-size:1.1rem; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
                     <span class="material-icons-round" style="color: var(--coach-color)">history</span> Reportes Semanales
                 </h2>
                 <div id="lista-reportes"></div>
             </div>
 
-            <!-- Caso 3: Formulario de Reporte Semanal (Check-In) -->
             <div id="coach-report-form" style="display: none;">
                 <div class="card">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -376,7 +361,6 @@
                         <button class="btn-secondary" style="margin-top: 0; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem;" onclick="volverAlCoachDashboard()">Cancelar</button>
                     </div>
 
-                    <!-- Cuantitativos -->
                     <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 15px; display: flex; align-items: center; gap: 6px;"><span class="material-icons-round" style="font-size: 1.1rem; color: var(--coach-color);">analytics</span> Datos Cuantitativos</h3>
                     
                     <label>Peso Medio Semanal (kg)</label>
@@ -389,7 +373,6 @@
                     <label>Medidas Corporales en cm (Opcional - cuello, cintura, etc.)</label>
                     <input type="text" id="coach-rep-medidas" placeholder="Ej: Cintura: 82cm, Pecho: 98cm, Brazo: 35cm">
 
-                    <!-- Cualitativos -->
                     <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 20px; display: flex; align-items: center; gap: 6px;"><span class="material-icons-round" style="font-size: 1.1rem; color: var(--coach-color);">psychology</span> Datos Cualitativos (Tus sensaciones)</h3>
                     
                     <label>Nivel de Energía y Fatiga (1 = Cansado, 10 = A tope)</label>
@@ -434,7 +417,6 @@
 
         <!-- PANTALLA AJUSTES -->
         <div id="screen-ajustes" class="screen">
-            <!-- Registrar Peso Corporal -->
             <div class="card">
                 <h2><span class="material-icons-round" style="color: #5ac8fa">scale</span> Control de Peso</h2>
                 <div style="display: flex; gap: 10px; align-items: flex-end;">
@@ -448,14 +430,12 @@
                 </div>
             </div>
 
-            <!-- Meta de Calorías -->
             <div class="card">
                 <h2><span class="material-icons-round" style="color: var(--nutrition-color)">adjust</span> Meta de Calorías</h2>
                 <label>Objetivo Diario (kcal)</label>
                 <input type="number" id="meta-calorias-input" placeholder="Ej: 2000" onchange="guardarMetaCalorias()">
             </div>
 
-            <!-- Creador de Ejercicios Custom -->
             <div class="card">
                 <h2><span class="material-icons-round" style="color: var(--accent-color)">add_task</span> Añadir Ejercicio Personalizado</h2>
                 <label>Bloque al que pertenece</label>
@@ -473,7 +453,6 @@
                 <button class="btn" onclick="crearEjercicioCustom()">Añadir Ejercicio</button>
             </div>
 
-            <!-- Copias de Seguridad -->
             <div class="card">
                 <h2><span class="material-icons-round" style="color: #0b57d0">backup</span> Copia de Seguridad</h2>
                 <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.4; margin-bottom: 12px;">Descarga tus datos en un archivo para guardarlos a buen recaudo o pasarlos a otro móvil.</p>
@@ -488,7 +467,6 @@
                 <input type="file" id="importar-archivo" accept=".json" style="display:none;" onchange="importarHistorial(event)">
             </div>
 
-            <!-- Ajustes de API y Borrado -->
             <div class="card">
                 <h2><span class="material-icons-round" style="color: var(--accent-color)">settings</span> Ajustes Generales</h2>
                 <label>Estado de Gemini Vision IA</label>
@@ -511,7 +489,6 @@
         </div>
     </div>
 
-    <!-- NAVEGACIÓN -->
     <nav>
         <button class="nav-item active" onclick="cambiarPantalla('screen-entreno', this)">
             <span class="material-icons-round">fitness_center</span>Entreno
@@ -618,7 +595,7 @@
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
             document.getElementById(sId).classList.add('active');
-            btn.classList.add('active');
+            if (btn) btn.classList.add('active');
             if(sId === 'screen-historial') renderHistorial();
             if(sId === 'screen-comidas') actualizarBarraDeCalorias();
             if(sId === 'screen-coach') renderCoachUI();
@@ -626,13 +603,16 @@
 
         function showToast(msj, color = '#30d158') {
             const t = document.getElementById('toast');
-            t.innerText = msj; t.style.backgroundColor = color;
-            t.style.color = (color === '#30d158' || color === '#ff9500' || color === '#5ac8fa' || color === '#bf5af2') ? 'black' : 'white';
+            t.innerText = msj;
+            t.style.backgroundColor = color;
+            // Determinar color de texto apropiado
+            const darkColors = ['#30d158', '#ff9500', '#5ac8fa', '#bf5af2', '#0b57d0'];
+            t.style.color = darkColors.includes(color) ? 'black' : 'white';
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 2000);
         }
 
-        // Sistema de Confirmación Nativo con Modales (evita usar confirm() o alert())
+        // Sistema de Confirmación Nativo con Modales
         let callbackConfirmacion = null;
         function mostrarConfirmacion(titulo, texto, callback) {
             document.getElementById('confirm-title').innerText = titulo;
@@ -642,9 +622,15 @@
         }
 
         document.getElementById('confirm-btn').onclick = function() {
-            if(callbackConfirmacion) callbackConfirmacion();
+            if(callbackConfirmacion) {
+                try {
+                    callbackConfirmacion();
+                } catch(e) {
+                    console.error('Error en callback de confirmación:', e);
+                }
+            }
             cerrarConfirmacion();
-        }
+        };
 
         function cerrarConfirmacion() {
             document.getElementById('confirm-modal').style.display = 'none';
@@ -708,7 +694,7 @@
             document.getElementById('comida-kcal').value = '';
 
             actualizarBarraDeCalorias();
-            showToast('Alimento Registrado', 'var(--nutrition-color)');
+            showToast('Alimento Registrado', '#ff9500');
         }
 
         function analizarComidaConIA(event) {
@@ -717,8 +703,10 @@
 
             const apiKey = localStorage.getItem('adri_gemini_key');
             if(!apiKey) {
-                showToast('Configura tu API Key en Ajustes primero', 'var(--danger)');
+                showToast('Configura tu API Key en Ajustes primero', '#ff453a');
                 abrirConfiguracionApi();
+                // Limpiar el input file
+                event.target.value = '';
                 return;
             }
 
@@ -737,8 +725,8 @@
             readerBase64.onload = function() {
                 const base64Data = readerBase64.result.split(',')[1];
                 
-                // Realizar llamada a Gemini con formato JSON estructurado
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+                // Corregido: Usar modelo correcto de Gemini
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
                 const prompt = "Analiza detalladamente esta foto de comida. Estima de forma realista las calorías totales (kcal). Devuelve ESTRICTAMENTE un objeto JSON válido con las claves: 'comida' (nombre del plato estructurado), 'kcal' (número), 'explicacion' (breve resumen nutricional en una línea). No incluyas explicaciones de texto adicionales fuera del JSON.";
 
                 const payload = {
@@ -754,16 +742,7 @@
                         ]
                     }],
                     generationConfig: {
-                        responseMimeType: "application/json",
-                        responseSchema: {
-                            type: "OBJECT",
-                            properties: {
-                                comida: { type: "STRING" },
-                                kcal: { type: "NUMBER" },
-                                explicacion: { type: "STRING" }
-                            },
-                            required: ["comida", "kcal", "explicacion"]
-                        }
+                        responseMimeType: "application/json"
                     }
                 };
 
@@ -772,27 +751,53 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 })
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`Error HTTP: ${res.status}`);
+                    }
+                    return res.json();
+                })
                 .then(data => {
                     document.getElementById('loader').style.display = 'none';
+                    
+                    // Validar estructura de respuesta
+                    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+                        throw new Error('Respuesta de API inválida');
+                    }
+                    
                     try {
-                        const responseJson = JSON.parse(data.candidates[0].content.parts[0].text);
+                        const responseText = data.candidates[0].content.parts[0].text;
+                        const responseJson = JSON.parse(responseText);
                         
-                        // Auto-rellenar formulario manual con las sugerencias para confirmar
+                        // Validar campos requeridos
+                        if (!responseJson.comida || !responseJson.kcal) {
+                            throw new Error('JSON incompleto');
+                        }
+                        
+                        // Auto-rellenar formulario manual con las sugerencias
                         document.getElementById('comida-nombre').value = responseJson.comida;
                         document.getElementById('comida-kcal').value = responseJson.kcal;
 
-                        showToast("¡Análisis completado! Confirma y añade tu plato.", "var(--nutrition-color)");
+                        showToast("¡Análisis completado! Confirma y añade tu plato.", "#ff9500");
                     } catch(e) {
-                        console.error(e);
-                        showToast("No se pudo estructurar el plato. Inténtalo de nuevo.", "var(--danger)");
+                        console.error('Error parseando respuesta:', e);
+                        showToast("No se pudo estructurar el plato. Inténtalo de nuevo.", "#ff453a");
                     }
                 })
                 .catch(err => {
                     document.getElementById('loader').style.display = 'none';
-                    console.error(err);
-                    showToast("Error de conexión con la IA", "var(--danger)");
+                    console.error('Error en fetch:', err);
+                    showToast("Error de conexión con la IA. Verifica tu API Key.", "#ff453a");
+                })
+                .finally(() => {
+                    // Limpiar el input file para permitir re-seleccionar
+                    event.target.value = '';
                 });
+            };
+            readerBase64.onerror = function() {
+                document.getElementById('loader').style.display = 'none';
+                showToast("Error al leer la imagen", "#ff453a");
+                event.target.value = '';
             };
             readerBase64.readAsDataURL(file);
         }
@@ -808,7 +813,7 @@
 
             data.forEach(item => {
                 if(item.tipo === 'comida' && item.fecha === hoyStr) {
-                    consumido += item.kcal;
+                    consumido += (item.kcal || 0);
                 }
             });
 
@@ -817,6 +822,7 @@
             
             let porcentaje = (consumido / metaKcal) * 100;
             if(porcentaje > 100) porcentaje = 100;
+            if(porcentaje < 0) porcentaje = 0;
             document.getElementById('progreso-kcal-barra').style.width = `${porcentaje}%`;
         }
 
@@ -831,7 +837,7 @@
 
         function guardarPeso() {
             const p = document.getElementById('peso-corporal').value;
-            if(!p) {
+            if(!p || p <= 0) {
                 showToast('Introduce un peso válido', '#ff453a');
                 return;
             }
@@ -862,6 +868,13 @@
 
             let custom = JSON.parse(localStorage.getItem('adri_ejercicios_custom') || '{}');
             if(!custom[bloque]) custom[bloque] = [];
+            
+            // Evitar duplicados
+            if(custom[bloque].includes(nombre)) {
+                showToast('Este ejercicio ya existe en este bloque', '#ff453a');
+                return;
+            }
+            
             custom[bloque].push(nombre);
 
             localStorage.setItem('adri_ejercicios_custom', JSON.stringify(custom));
@@ -902,26 +915,26 @@
                 let inner = '';
                 if(item.tipo === 'entreno') {
                     inner = `
-                        <div class="log-header"><span>${item.bloque} - Entrenamiento</span></div>
-                        <div class="log-title">${item.ejercicio}</div>
-                        <div class="log-details">${item.peso} kg x ${item.repes} reps</div>
+                        <div class="log-header"><span>${item.bloque || 'Entrenamiento'} - Entrenamiento</span></div>
+                        <div class="log-title">${item.ejercicio || 'Ejercicio'}</div>
+                        <div class="log-details">${item.peso || 0} kg x ${item.repes || 0} reps</div>
                     `;
                 } else if(item.tipo === 'comida') {
                     inner = `
                         <div class="log-header"><span>Nutrición - Calorías</span></div>
-                        <div class="log-title" style="color: var(--nutrition-color)">${item.comida}</div>
-                        <div class="log-details">⚡ ${item.kcal} kcal</div>
+                        <div class="log-title" style="color: var(--nutrition-color)">${item.comida || 'Comida'}</div>
+                        <div class="log-details">⚡ ${item.kcal || 0} kcal</div>
                     `;
                 } else if(item.tipo === 'peso') {
                     inner = `
                         <div class="log-header"><span>Biométrico - Peso</span></div>
-                        <div class="log-title" style="color: #5ac8fa">${item.peso} kg</div>
+                        <div class="log-title" style="color: #5ac8fa">${item.peso || 0} kg</div>
                         <div class="log-details">Peso corporal diario registrado</div>
                     `;
                 } else if(item.tipo === 'reporte_semanal') {
                     inner = `
                         <div class="log-header"><span>Seguimiento - Reporte Semanal</span></div>
-                        <div class="log-title" style="color: var(--coach-color)">Peso Promedio: ${item.pesoMedio} kg</div>
+                        <div class="log-title" style="color: var(--coach-color)">Peso Promedio: ${item.pesoMedio || 0} kg</div>
                         <div class="log-details">Evaluación completada</div>
                     `;
                 }
@@ -948,12 +961,19 @@
         }
 
         function exportarHistorial() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(localStorage));
-            const dlAnchor = document.createElement('a');
-            dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", `adriapp_backup_${new Date().toISOString().split('T')[0]}.json`);
-            dlAnchor.click();
-            showToast('Copia descargada', '#0b57d0');
+            try {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(localStorage));
+                const dlAnchor = document.createElement('a');
+                dlAnchor.setAttribute("href", dataStr);
+                dlAnchor.setAttribute("download", `adriapp_backup_${new Date().toISOString().split('T')[0]}.json`);
+                document.body.appendChild(dlAnchor);
+                dlAnchor.click();
+                document.body.removeChild(dlAnchor);
+                showToast('Copia descargada', '#0b57d0');
+            } catch(e) {
+                console.error('Error exportando:', e);
+                showToast('Error al exportar datos', '#ff453a');
+            }
         }
 
         function activarSelectorArchivo() {
@@ -968,18 +988,37 @@
             reader.onload = function(e) {
                 try {
                     const parsed = JSON.parse(e.target.result);
+                    
+                    // Validar que sea un objeto válido
+                    if (typeof parsed !== 'object' || parsed === null) {
+                        throw new Error('Formato inválido');
+                    }
+                    
                     mostrarConfirmacion('¿Importar Datos?', 'Esta acción reemplazará la base de datos actual por completo.', () => {
-                        localStorage.clear();
-                        for (const key in parsed) {
-                            localStorage.setItem(key, parsed[key]);
+                        try {
+                            localStorage.clear();
+                            for (const key in parsed) {
+                                if (parsed.hasOwnProperty(key)) {
+                                    localStorage.setItem(key, parsed[key]);
+                                }
+                            }
+                            location.reload();
+                        } catch(err) {
+                            showToast('Error al importar datos', '#ff453a');
                         }
-                        location.reload();
                     });
                 } catch(err) {
-                    showToast('Copia de seguridad inválida', '#ff453a');
+                    console.error('Error importando:', err);
+                    showToast('Copia de seguridad inválida o corrupta', '#ff453a');
                 }
             };
+            reader.onerror = function() {
+                showToast('Error al leer el archivo', '#ff453a');
+            };
             reader.readAsText(file);
+            
+            // Limpiar input
+            event.target.value = '';
         }
 
         function abrirConfiguracionApi() {
@@ -994,7 +1033,11 @@
 
         function guardarApiKey() {
             const k = document.getElementById('api-key-input').value.trim();
-            if(!k.startsWith('AIzaSy')) {
+            if(!k) {
+                showToast('Introduce una API Key', '#ff453a');
+                return;
+            }
+            if(!k.startsWith('AIza')) {
                 showToast('La Clave no parece una API Key de Google válida', '#ff453a');
                 return;
             }
@@ -1017,10 +1060,10 @@
             const el = document.getElementById('api-status-text');
             if (k) {
                 el.innerText = '✅ API Activa (Escáner e Inteligencia Artificial Habilitados)';
-                el.style.color = 'var(--accent-color)';
+                el.style.color = '#30d158';
             } else {
                 el.innerText = '❌ Sin API Key (Escáner e Inteligencia Artificial Deshabilitados)';
-                el.style.color = 'var(--text-secondary)';
+                el.style.color = '#8e8e93';
             }
         }
 
@@ -1084,7 +1127,7 @@
             };
 
             localStorage.setItem('adri_fase_inicial', JSON.stringify(ficha));
-            showToast('Perfil de Asesoría guardado', 'var(--coach-color)');
+            showToast('Perfil de Asesoría guardado', '#bf5af2');
             
             const apiKey = localStorage.getItem('adri_gemini_key');
             if(apiKey) {
@@ -1126,23 +1169,30 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json();
+            })
             .then(data => {
                 document.getElementById('loader').style.display = 'none';
                 try {
+                    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+                        throw new Error('Respuesta inválida');
+                    }
                     const responseText = data.candidates[0].content.parts[0].text;
                     localStorage.setItem('adri_coach_feedback_inicial', responseText);
                     
                     abrirFeedbackModal(responseText);
                     renderCoachUI();
                 } catch(e) {
-                    console.error(e);
+                    console.error('Error procesando respuesta:', e);
                     renderCoachUI();
                 }
             })
             .catch(err => {
                 document.getElementById('loader').style.display = 'none';
-                console.error(err);
+                console.error('Error en fetch:', err);
+                showToast('Error al conectar con la IA', '#ff453a');
                 renderCoachUI();
             });
         }
@@ -1177,11 +1227,11 @@
             if (pesoMedio) {
                 document.getElementById('coach-rep-peso').value = pesoMedio;
                 helper.innerText = `Autocalculado en base a tus registros de peso recientes en la app.`;
-                helper.style.color = "var(--accent-color)";
+                helper.style.color = "#30d158";
             } else {
                 document.getElementById('coach-rep-peso').value = '';
                 helper.innerText = `No has registrado pesos esta semana en Ajustes. Introduce un peso promedio estimado manualmente.`;
-                helper.style.color = "var(--text-secondary)";
+                helper.style.color = "#8e8e93";
             }
 
             document.getElementById('coach-rep-energia').value = 8;
@@ -1211,7 +1261,7 @@
             const saciedad = document.getElementById('coach-rep-saciedad').value;
             const adherencia = document.getElementById('coach-rep-adherencia').value;
 
-            if(!peso) {
+            if(!peso || peso <= 0) {
                 showToast('Introduce tu peso medio semanal', '#ff453a');
                 return;
             }
@@ -1233,7 +1283,7 @@
             let hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
             hist.unshift(reporte);
             localStorage.setItem('adri_datos', JSON.stringify(hist));
-            showToast('Reporte guardado con éxito', 'var(--coach-color)');
+            showToast('Reporte guardado con éxito', '#bf5af2');
 
             const apiKey = localStorage.getItem('adri_gemini_key');
             if (apiKey) {
@@ -1256,7 +1306,7 @@
             const prompt = `Actúa como un preparador físico de élite y asesor nutricional. Evalúa el reporte semanal de tu atleta con los siguientes datos:
             
             **Contexto inicial del atleta:**
-            - Edad: ${ficha.edad} años, Sexo: ${ficha.sexo}, Altura: ${ficha.estatura}cm, Peso Inicial: ${ficha.peso}kg. Molestias/Lesiones: ${ficha.lesiones}.
+            - Edad: ${ficha.edad || 'No especificada'} años, Sexo: ${ficha.sexo || 'No especificado'}, Altura: ${ficha.estatura || 'No especificada'}cm, Peso Inicial: ${ficha.peso || 'No especificado'}kg. Molestias/Lesiones: ${ficha.lesiones || 'Ninguna'}.
 
             **Datos del reporte semanal de esta semana:**
             - Peso Medio Semanal: ${reporte.pesoMedio} kg
@@ -1284,10 +1334,16 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json();
+            })
             .then(data => {
                 document.getElementById('loader').style.display = 'none';
                 try {
+                    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+                        throw new Error('Respuesta inválida');
+                    }
                     const fb = data.candidates[0].content.parts[0].text;
                     
                     let hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
@@ -1300,13 +1356,14 @@
                     abrirFeedbackModal(fb);
                     renderCoachUI();
                 } catch(e) {
-                    console.error(e);
+                    console.error('Error procesando feedback:', e);
                     renderCoachUI();
                 }
             })
             .catch(err => {
                 document.getElementById('loader').style.display = 'none';
-                console.error(err);
+                console.error('Error generando feedback:', err);
+                showToast('Error al generar feedback con IA', '#ff453a');
                 renderCoachUI();
             });
         }
@@ -1333,13 +1390,23 @@
                 
                 let feedbackPreview = '';
                 if(rep.feedback) {
+                    // Corregido: Usar data attribute para almacenar el feedback de forma segura
+                    const feedbackId = `feedback-${rep.id}`;
                     feedbackPreview = `
                         <div class="feedback-box">
                             <span class="coach-badge">COACH IA</span>
                             <p style="font-size: 0.82rem; color: #fff; line-height: 1.45;">${rep.feedback.substring(0, 150)}...</p>
-                            <button class="btn btn-secondary" style="margin-top: 10px; padding: 6px; font-size: 0.75rem;" onclick="abrirFeedbackModal(\`${rep.feedback.replace(/`/g, '\\`').replace(/\n/g, '\\n')}\`)">Leer análisis completo</button>
+                            <button class="btn btn-secondary" style="margin-top: 10px; padding: 6px; font-size: 0.75rem;" data-feedback-id="${feedbackId}">Leer análisis completo</button>
                         </div>
                     `;
+                    
+                    // Almacenar el feedback completo temporalmente
+                    setTimeout(() => {
+                        const btn = card.querySelector(`[data-feedback-id="${feedbackId}"]`);
+                        if (btn) {
+                            btn.addEventListener('click', () => abrirFeedbackModal(rep.feedback));
+                        }
+                    }, 0);
                 } else {
                     feedbackPreview = `
                         <div style="background-color: var(--card-bg-inner); padding: 10px; border-radius: 8px; margin-top: 10px; text-align: center; font-size: 0.75rem; color: var(--text-secondary);">
@@ -1378,8 +1445,13 @@
         function abrirFeedbackModal(texto) {
             const content = document.getElementById('feedback-modal-content');
             
-            let formatted = texto.replace(/\n/g, '<br>');
-            formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            // Sanitizar y formatear el texto
+            let formatted = texto
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             
             content.innerHTML = formatted;
             document.getElementById('feedback-modal').style.display = 'flex';
@@ -1395,22 +1467,22 @@
 
             let contenido = `
                 <div style="font-size:0.85rem; background-color: var(--card-bg-inner); padding: 12px; border-radius: 8px; margin-bottom: 15px;">
-                    <div><strong>Edad:</strong> ${ficha.edad} años | <strong>Sexo:</strong> ${ficha.sexo}</div>
-                    <div><strong>Estatura:</strong> ${ficha.estatura} cm | <strong>Peso Inicial:</strong> ${ficha.peso} kg</div>
-                    <div><strong>Experiencia:</strong> ${ficha.experiencia}</div>
-                    <div><strong>Técnica de Básicos:</strong> ${ficha.tecnica}</div>
-                    <div><strong>Actividad diaria:</strong> ${ficha.sedentarismo}</div>
-                    <div><strong>Disponibilidad:</strong> ${ficha.dias} (${ficha.tiempo}/sesión)</div>
+                    <div><strong>Edad:</strong> ${ficha.edad || 'N/A'} años | <strong>Sexo:</strong> ${ficha.sexo || 'N/A'}</div>
+                    <div><strong>Estatura:</strong> ${ficha.estatura || 'N/A'} cm | <strong>Peso Inicial:</strong> ${ficha.peso || 'N/A'} kg</div>
+                    <div><strong>Experiencia:</strong> ${ficha.experiencia || 'N/A'}</div>
+                    <div><strong>Técnica de Básicos:</strong> ${ficha.tecnica || 'N/A'}</div>
+                    <div><strong>Actividad diaria:</strong> ${ficha.sedentarismo || 'N/A'}</div>
+                    <div><strong>Disponibilidad:</strong> ${ficha.dias || 'N/A'} (${ficha.tiempo || 'N/A'}/sesión)</div>
                     <div style="margin-top: 5px;"><strong>Nutrición actual:</strong> ${ficha.nutricion || 'No especificada'}</div>
                     <div style="margin-top: 5px;"><strong>Molestias/Lesiones:</strong> ${ficha.lesiones || 'Ninguna'}</div>
-                    <div style="margin-top: 5px;"><strong>Sueño diario:</strong> ${ficha.sueno}h de media | <strong>Estrés:</strong> ${ficha.estres}</div>
+                    <div style="margin-top: 5px;"><strong>Sueño diario:</strong> ${ficha.sueno || 'N/A'}h de media | <strong>Estrés:</strong> ${ficha.estres || 'N/A'}</div>
                 </div>
             `;
 
             if(feedbackInicial) {
                 contenido += `
                     <h4 style="font-size:0.9rem; color: var(--coach-color); margin-bottom: 5px; border-top: 1px solid #3a3a3c; padding-top:10px;">Análisis Inicial del Coach:</h4>
-                    <div style="font-size:0.85rem; line-height:1.4; color: #f2f2f7;">${feedbackInicial.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+                    <div style="font-size:0.85rem; line-height:1.4; color: #f2f2f7;">${feedbackInicial.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
                 `;
             }
 
@@ -1437,7 +1509,7 @@
         actualizarEjercicios();
         inicializarAjustesValores();
         actualizarBarraDeCalorias();
-        renderCoachUI(); 
+        renderCoachUI();
     </script>
 </body>
 </html>
