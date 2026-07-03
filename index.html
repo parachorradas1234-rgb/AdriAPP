@@ -2,158 +2,334 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>AdriAPP Pro</title>
-    <!-- Iconos de Google -->
+    <!-- Iconos nativos estilo Apple -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-    
     <style>
         :root { 
             --bg-color: #000000; 
             --card-bg: #1c1c1e; 
             --card-bg-inner: #2c2c2e; 
-            --accent-color: #30d158; 
+            --accent-color: #30d158; /* Verde Fitness */
             --text-color: #ffffff; 
             --text-secondary: #8e8e93; 
             --danger: #ff453a; 
-            --nutrition-color: #ff9500;
-            --coach-color: #bf5af2;
+            --nutrition-color: #ff9500; /* Naranja Nutrición */
+            --coach-color: #af52de; /* Morado Coach */
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 100px; overflow-x: hidden; }
-        header { background-color: var(--card-bg); padding: 20px; text-align: center; border-bottom: 1px solid #2c2c2e; position: sticky; top: 0; z-index: 100; }
-        header h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.5px; }
-        header p { color: var(--accent-color); font-size: 0.85rem; margin-top: 4px; font-weight: 600; text-transform: uppercase; }
+        
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+        
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            padding-bottom: 100px; 
+            overflow-x: hidden;
+        }
+        
+        /* Cabecera iOS */
+        header { 
+            background-color: var(--card-bg); 
+            padding: 20px 16px 14px 16px; 
+            text-align: center; 
+            border-bottom: 1px solid #2c2c2e; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+        }
+        header h1 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
+        header p { color: var(--accent-color); font-size: 0.85rem; margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        
         .container { padding: 16px; max-width: 500px; margin: 0 auto; }
         .screen { display: none; } 
         .screen.active { display: block; }
         
-        .card { background-color: var(--card-bg); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
-        .card h2 { font-size: 1.1rem; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-        label { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; display: block; margin-top: 10px; }
-        input, select, textarea { width: 100%; background-color: var(--card-bg-inner); border: 1px solid #3a3a3c; border-radius: 10px; padding: 12px; color: var(--text-color); font-size: 1rem; margin-top: 4px; outline: none; transition: border-color 0.2s; }
-        input:focus, select:focus, textarea:focus { border-color: var(--accent-color); }
-        textarea { height: 80px; resize: none; font-family: inherit; }
+        /* Tarjetas estilo Apple Watch / Fitness */
+        .card { 
+            background-color: var(--card-bg); 
+            border-radius: 16px; 
+            padding: 18px; 
+            margin-bottom: 16px; 
+            border: 1px solid #2c2c2e;
+        }
+        .card h2 { 
+            font-size: 1.15rem; 
+            margin-bottom: 14px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-weight: 700;
+        }
         
-        .btn { background-color: var(--accent-color); color: #000; border: none; width: 100%; padding: 14px; border-radius: 12px; font-weight: 700; margin-top: 18px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: transform 0.1s; }
-        .btn:active { transform: scale(0.98); }
-        .btn-secondary { background-color: var(--card-bg-inner); color: var(--text-color); border: 1px solid #3a3a3c; margin-top: 10px; }
-        .btn-danger { background-color: var(--danger); color: white; margin-top: 10px; }
-        .btn-coach { background-color: var(--coach-color); color: white; }
+        label { 
+            font-size: 0.82rem; 
+            color: var(--text-secondary); 
+            font-weight: 600; 
+            display: block; 
+            margin-top: 12px; 
+            margin-bottom: 4px;
+        }
         
-        /* Barra de Progreso Circular / Visual */
-        .progress-box { display: flex; align-items: center; gap: 20px; background-color: var(--card-bg-inner); padding: 16px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #3a3a3c; }
-        .progress-bar-container { flex: 1; height: 12px; background-color: #3a3a3c; border-radius: 6px; overflow: hidden; position: relative; }
-        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #ff9500, #ffcc00); width: 0%; transition: width 0.5s ease-out; }
-        .progress-text { font-size: 1.2rem; font-weight: 700; color: var(--nutrition-color); white-space: nowrap; }
-
-        .log-item { background-color: var(--card-bg-inner); padding: 12px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--accent-color); position: relative; }
+        input, select, textarea { 
+            width: 100%; 
+            background-color: var(--card-bg-inner); 
+            border: 1px solid #3a3a3c; 
+            border-radius: 12px; 
+            padding: 12px 14px; 
+            color: var(--text-color); 
+            font-size: 1rem; 
+            outline: none; 
+            transition: border-color 0.2s, box-shadow 0.2s; 
+        }
+        input:focus, select:focus, textarea:focus { 
+            border-color: var(--accent-color); 
+        }
+        
+        /* Contenedor de progreso de calorías */
+        .calorie-progress-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, #2c1a04 0%, #1c1c1e 100%);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 149, 0, 0.2);
+        }
+        .calorie-progress-bar-bg {
+            background-color: #3a3a3c;
+            border-radius: 10px;
+            height: 10px;
+            width: 100%;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .calorie-progress-bar-fill {
+            background-color: var(--nutrition-color);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        
+        /* Botones táctiles iOS */
+        .btn { 
+            background-color: var(--accent-color); 
+            color: #000000; 
+            border: none; 
+            width: 100%; 
+            padding: 14px; 
+            border-radius: 14px; 
+            font-weight: 700; 
+            font-size: 1rem;
+            margin-top: 16px; 
+            cursor: pointer; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 8px; 
+            transition: transform 0.1s, opacity 0.2s;
+        }
+        .btn:active { transform: scale(0.97); opacity: 0.9; }
+        .btn-secondary { background-color: var(--card-bg-inner); color: var(--text-color); border: 1px solid #3a3a3c; }
+        .btn-danger { background-color: var(--danger); color: #ffffff; }
+        .btn-coach { background-color: var(--coach-color); color: #ffffff; }
+        
+        /* Historial de elementos */
+        .log-item { 
+            background-color: var(--card-bg); 
+            padding: 14px; 
+            border-radius: 14px; 
+            margin-bottom: 12px; 
+            border-left: 4px solid var(--accent-color); 
+            position: relative; 
+            border: 1px solid #2c2c2e;
+            border-left-width: 5px;
+        }
         .log-item.comida { border-left-color: var(--nutrition-color); }
-        .log-item.peso { border-left-color: #5ac8fa; }
-        .log-item.reporte { border-left-color: var(--coach-color); }
-        .log-header { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px; padding-right: 28px; }
-        .log-title { font-weight: 600; font-size: 1rem; }
-        .log-details { font-size: 0.9rem; margin-top: 2px; color: #e5e5ea; }
-        .btn-delete { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--danger); background: none; border: none; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; }
+        .log-item.peso { border-left-color: #5856d6; }
+        .log-header { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px; padding-right: 30px; }
+        .log-title { font-weight: 700; font-size: 1.05rem; }
+        .log-details { font-size: 0.9rem; margin-top: 4px; color: #e5e5ea; }
         
-        /* Controles de Rango iOS */
-        .ios-slider { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
-        .ios-slider input[type="range"] { flex: 1; background: var(--card-bg-inner); border: none; height: 6px; border-radius: 3px; accent-color: var(--coach-color); }
-        .ios-slider span { font-weight: 600; font-size: 1.1rem; width: 35px; text-align: right; }
-
-        /* Estilos del coach */
-        .feedback-box { background-color: var(--card-bg-inner); padding: 14px; border-radius: 10px; border: 1px dashed var(--coach-color); margin-top: 15px; font-size: 0.9rem; line-height: 1.45; color: #f2f2f7; }
-        .coach-badge { background-color: rgba(191, 90, 242, 0.2); color: #d6a1f8; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; display: inline-block; margin-bottom: 8px; }
-
-        nav { position: fixed; bottom: 0; width: 100%; background-color: var(--card-bg); border-top: 1px solid #2c2c2e; display: flex; justify-content: space-around; padding: 12px 0 calc(12px + env(safe-area-inset-bottom)); z-index: 100; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-secondary); background: none; border: none; font-size: 0.7rem; font-weight: 500; flex: 1; cursor: pointer; }
-        .nav-item .material-icons-round { font-size: 1.5rem; margin-bottom: 2px; }
+        .btn-delete { 
+            position: absolute; 
+            right: 12px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            color: var(--text-secondary); 
+            background: none; 
+            border: none; 
+            cursor: pointer; 
+            padding: 6px;
+        }
+        .btn-delete:active { color: var(--danger); }
+        
+        /* Navegación Inferior Estilo iPhone */
+        nav { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0;
+            width: 100%; 
+            background-color: var(--card-bg); 
+            border-top: 1px solid #2c2c2e; 
+            display: flex; 
+            justify-content: space-around; 
+            padding: 10px 0 calc(10px + env(safe-area-inset-bottom)); 
+            z-index: 100; 
+        }
+        .nav-item { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            color: var(--text-secondary); 
+            background: none; 
+            border: none; 
+            font-size: 0.65rem; 
+            font-weight: 600; 
+            width: 20%; 
+            cursor: pointer; 
+        }
+        .nav-item .material-icons-round { font-size: 1.6rem; margin-bottom: 3px; }
         .nav-item.active { color: var(--accent-color); }
+        .nav-item.active.coach-tab { color: var(--coach-color); }
+        .nav-item.active.comida-tab { color: var(--nutrition-color); }
         
-        #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background-color: var(--accent-color); color: black; padding: 12px 24px; border-radius: 30px; font-weight: 600; z-index: 10000; transition: transform 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        /* Notificación flotante Toast */
+        #toast { 
+            position: fixed; 
+            top: 25px; 
+            left: 50%; 
+            transform: translateX(-50%) translateY(-100px); 
+            background-color: var(--accent-color); 
+            color: #000000; 
+            padding: 12px 24px; 
+            border-radius: 30px; 
+            font-weight: 700; 
+            z-index: 1000; 
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            font-size: 0.95rem;
+        }
         #toast.show { transform: translateX(-50%) translateY(0); }
         
-        #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; flex-direction: column; justify-content: center; align-items: center; }
-        .spinner { border: 4px solid rgba(255,255,255,0.1); width: 50px; height: 50px; border-radius: 50%; border-left-color: var(--accent-color); animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* Modales Premium iOS */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 500;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-box {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 22px;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #3a3a3c;
+            transform: scale(0.9);
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+        .modal-overlay.active .modal-box {
+            transform: scale(1);
+        }
+        .modal-box h3 { font-size: 1.2rem; margin-bottom: 8px; font-weight: 700; }
+        .modal-box p { font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 18px; line-height: 1.4; }
+        .modal-buttons { display: flex; gap: 10px; }
+        .modal-buttons button { flex: 1; margin: 0; padding: 12px; border-radius: 10px; font-size: 0.95rem; font-weight: 600; cursor: pointer; border: none; }
         
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9990; justify-content: center; align-items: center; padding: 20px; }
-        .modal-card { background-color: var(--card-bg); width: 100%; max-width: 400px; border-radius: 14px; padding: 20px; box-shadow: 0 4px 25px rgba(0,0,0,0.5); overflow-y: auto; max-height: 90vh; }
-        .modal-card h3 { font-size: 1.2rem; margin-bottom: 10px; }
-        .modal-card p { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 15px; line-height: 1.4; }
-        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
-        .modal-actions .btn { margin-top: 0; }
+        /* Pantalla Coach Estilo */
+        .coach-chat-history {
+            background-color: var(--card-bg-inner);
+            border-radius: 14px;
+            padding: 12px;
+            height: 250px;
+            overflow-y: auto;
+            border: 1px solid #3a3a3c;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        .chat-bubble {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 12px;
+            max-width: 85%;
+            line-height: 1.4;
+        }
+        .chat-bubble.user {
+            background-color: var(--coach-color);
+            color: #ffffff;
+            margin-left: auto;
+            border-bottom-right-radius: 2px;
+        }
+        .chat-bubble.bot {
+            background-color: #3a3a3c;
+            color: #ffffff;
+            margin-right: auto;
+            border-bottom-left-radius: 2px;
+        }
+        
+        /* Spinner */
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.1);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border-left-color: var(--accent-color);
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <!-- Indicador de carga para la IA -->
-    <div id="loader">
-        <div class="spinner"></div>
-        <p style="margin-top: 15px; font-weight: 600; color: white; text-align: center; padding: 0 20px;" id="loader-text">Analizando tu plato con IA...</p>
-    </div>
+    <div id="toast">¡Hecho!</div>
 
-    <!-- Alerta flotante -->
-    <div id="toast">¡Registrado!</div>
-
-    <!-- Modal Detalle Feedback Coach -->
-    <div id="feedback-modal" class="modal-overlay">
-        <div class="modal-card" style="max-width: 450px;">
-            <h3 style="color: var(--coach-color); display:flex; align-items:center; gap:8px;">
-                <span class="material-icons-round">support_agent</span> Análisis de tu Coach IA
-            </h3>
-            <div id="feedback-modal-content" style="font-size: 0.95rem; line-height: 1.5; color: #e5e5ea; margin-top: 15px;"></div>
-            <button class="btn btn-secondary" style="margin-top: 25px;" onclick="cerrarFeedbackModal()">Entendido</button>
-        </div>
-    </div>
-
-    <!-- Modal de Confirmación Nivel App -->
-    <div id="confirm-modal" class="modal-overlay">
-        <div class="modal-card">
-            <h3 id="confirm-title">¿Estás seguro?</h3>
-            <p id="confirm-text">Esta acción no se puede deshacer.</p>
-            <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="cerrarConfirmacion()">Cancelar</button>
-                <button class="btn btn-danger" id="confirm-btn">Confirmar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para configurar API Key de Gemini -->
-    <div id="api-modal" class="modal-overlay">
-        <div class="modal-card">
-            <h3>Activar Escáner IA</h3>
-            <p>Introduce tu API Key gratuita de Google AI Studio para que la inteligencia artificial pueda analizar tus fotos.</p>
-            <input type="text" id="api-key-input" placeholder="AIzaSyD..." autocomplete="off">
-            <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="cerrarApiModal()">Cancelar</button>
-                <button class="btn" style="background-color: var(--accent-color); color: black;" onclick="guardarApiKey()">Guardar Clave</button>
+    <!-- MODAL PERSONALIZADO (Reemplaza alert/confirm) -->
+    <div id="ios-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 id="modal-title">Título</h3>
+            <p id="modal-desc">Descripción del modal.</p>
+            <div class="modal-buttons" id="modal-actions">
+                <button class="btn-secondary" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn" id="modal-confirm-btn">Confirmar</button>
             </div>
         </div>
     </div>
 
     <header>
-        <h1>AdriAPP</h1>
+        <h1>AdriAPP Pro</h1>
         <p id="header-date"></p>
     </header>
 
     <div class="container">
         
-        <!-- PANTALLA ENTRENOS -->
+        <!-- PANTALLA 1: ENTRENAMIENTOS -->
         <div id="screen-entreno" class="screen active">
             <div class="card">
-                <h2><span class="material-icons-round" style="color: var(--accent-color)">fitness_center</span> Nueva Serie</h2>
+                <h2><span class="material-icons-round" style="color: var(--accent-color)">fitness_center</span> Registrar Serie</h2>
                 
                 <label>Bloque de Entrenamiento</label>
-                <select id="entreno-bloque" onchange="actualizarEjercicios()">
-                    <option value="Torso">Torso</option>
-                    <option value="Espalda y Bíceps">Espalda y Bíceps</option>
-                    <option value="Recuperación Activa y Core">Recuperación Activa y Core</option>
-                    <option value="Torso Completo">Torso Completo</option>
-                    <option value="Hombros y Brazos">Hombros y Brazos</option>
-                    <option value="Pierna Completa">Pierna Completa</option>
-                    <option value="Full Body + Cardio">Full Body + Cardio</option>
-                </select>
+                <select id="entreno-bloque" onchange="actualizarEjerciciosSelect()"></select>
                 
                 <label>Ejercicio</label>
                 <select id="entreno-ejercicio"></select>
@@ -161,13 +337,21 @@
                 <div style="display:flex; gap:12px;">
                     <div style="flex:1;">
                         <label>Peso (kg)</label>
-                        <input type="number" id="entreno-peso" placeholder="0" step="0.5">
+                        <input type="number" id="entreno-peso" placeholder="0" step="0.5" inputmode="decimal">
                     </div>
                     <div style="flex:1;">
-                        <label>Reps</label>
-                        <input type="number" id="entreno-repes" placeholder="0">
+                        <label>Repeticiones</label>
+                        <input type="number" id="entreno-repes" placeholder="0" inputmode="numeric">
                     </div>
                 </div>
+                
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; background-color: var(--card-bg-inner); padding:10px; border-radius:10px; border: 1px solid #3a3a3c;">
+                    <span style="font-size:0.9rem; font-weight:600;">¿Al Fallo?</span>
+                    <input type="checkbox" id="entreno-fallo" style="width:24px; height:24px; accent-color: var(--accent-color);">
+                </div>
+
+                <label>Notas cortas</label>
+                <input type="text" id="entreno-notas" placeholder="Ej: RPE 9, última costó mucho">
                 
                 <button class="btn" onclick="guardarEntreno()">
                     <span class="material-icons-round">add_circle</span> Registrar Serie
@@ -175,355 +359,294 @@
             </div>
         </div>
 
-        <!-- PANTALLA COMIDAS -->
+        <!-- PANTALLA 2: NUTRICIÓN -->
         <div id="screen-comidas" class="screen">
-            <!-- Barra de progreso principal -->
-            <div class="card">
-                <h2><span class="material-icons-round" style="color: var(--nutrition-color)">local_dining</span> Seguimiento de Calorías</h2>
-                <div class="progress-box">
-                    <div style="flex: 1;">
-                        <span style="font-size: 0.82rem; color: var(--text-secondary);">Consumido hoy</span>
-                        <div class="progress-text" id="progreso-kcal-texto">0 / 2000 kcal</div>
-                        <div class="progress-bar-container" style="margin-top: 8px;">
-                            <div class="progress-bar-fill" id="progreso-kcal-barra"></div>
-                        </div>
+            <!-- Barra de progreso diario de calorías -->
+            <div class="calorie-progress-container">
+                <div style="flex: 1; padding-right: 12px;">
+                    <span style="font-size:0.85rem; color:var(--text-secondary); font-weight:700; text-transform:uppercase;">Calorías de Hoy</span>
+                    <h3 style="font-size:1.6rem; font-weight:800; margin-top:2px;" id="comida-progreso-num">0 / 2000 kcal</h3>
+                    <div class="calorie-progress-bar-bg">
+                        <div class="calorie-progress-bar-fill" id="comida-progreso-fill"></div>
                     </div>
+                </div>
+                <div style="text-align: right;">
+                    <span id="comida-porcentaje" style="color:var(--nutrition-color); font-weight:800; font-size:1.4rem;">0%</span>
                 </div>
             </div>
 
-            <!-- Escáner IA de Comida -->
-            <div class="card" style="border: 1px dashed var(--nutrition-color); background-color: rgba(255, 149, 0, 0.05);">
-                <h2 style="color: var(--nutrition-color);"><span class="material-icons-round">photo_camera</span> Escáner de Comida IA</h2>
-                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.35;">
-                    Saca una foto o selecciona una imagen de tu plato. Nuestra IA analizará la imagen, estimará las calorías y extraerá los macronutrientes aproximados.
-                </p>
-                <div style="display: flex; gap: 10px; align-items: center; justify-content: center; background-color: var(--card-bg-inner); border-radius: 10px; padding: 15px; cursor: pointer; border: 1px solid #3a3a3c;" onclick="document.getElementById('input-foto-comida').click()">
-                    <span class="material-icons-round" style="font-size: 2.2rem; color: var(--nutrition-color);">add_a_photo</span>
-                    <div style="text-align: left;">
-                        <div style="font-size: 0.9rem; font-weight: 600;">Escanear plato</div>
-                        <div style="font-size: 0.75rem; color: var(--text-secondary);">Cámara o galería</div>
-                    </div>
-                    <input type="file" id="input-foto-comida" accept="image/*" style="display: none;" onchange="analizarComidaConIA(event)">
-                </div>
-                <div id="preview-contenedor" style="display: none; margin-top: 12px; text-align: center;">
-                    <img id="preview-foto-comida" style="max-height: 150px; border-radius: 8px; border: 1px solid #3a3a3c; width: auto; max-width: 100%; object-fit: cover;">
-                </div>
-            </div>
-
-            <!-- Registro Manual de Comidas -->
             <div class="card">
-                <h2><span class="material-icons-round">edit_note</span> Registro Manual</h2>
-                <label>Descripción / Nombre del Alimento</label>
-                <input type="text" id="comida-nombre" placeholder="Ej: Pechuga de pollo con arroz">
+                <h2><span class="material-icons-round" style="color: var(--nutrition-color)">local_fire_department</span> Registro manual / IA</h2>
+                
+                <label>Momento</label>
+                <select id="comida-momento">
+                    <option value="Desayuno">Desayuno</option>
+                    <option value="Comida">Comida</option>
+                    <option value="Cena">Cena</option>
+                    <option value="Snack Pre-Entreno">Snack Pre-Entreno</option>
+                    <option value="Comida Extra">Comida Extra</option>
+                </select>
                 
                 <label>Calorías (kcal)</label>
-                <input type="number" id="comida-kcal" placeholder="Ej: 450">
+                <input type="number" id="comida-kcal" placeholder="Ej: 520" inputmode="numeric">
+                
+                <label>Detalle o alimento</label>
+                <input type="text" id="comida-detalle" placeholder="Ej: Tortilla con pavo y tostada">
+                
+                <button class="btn" style="background-color: var(--nutrition-color); color: #000;" onclick="guardarComidaManual()">
+                    <span class="material-icons-round">restaurant</span> Añadir Calorías
+                </button>
 
-                <button class="btn" style="background-color: var(--nutrition-color); color: black;" onclick="guardarComidaManual()">
-                    <span class="material-icons-round">add_circle</span> Registrar Comida
+                <!-- Escáner IA -->
+                <div style="border-top:1px solid #3a3a3c; margin-top:20px; padding-top:16px;">
+                    <button class="btn btn-secondary" onclick="activarEscaneoIA()">
+                        <span class="material-icons-round" style="color:var(--nutrition-color)">photo_camera</span> Escanear Plato con IA
+                    </button>
+                    <input type="file" id="comida-file-input" accept="image/*" style="display:none;" onchange="procesarFotoComida(event)">
+                    <div id="ia-loading-status" style="display:none; text-align:center; margin-top:12px; font-size:0.9rem; color:var(--text-secondary);">
+                        <span class="spinner" style="margin-right:8px;"></span> Analizando el plato con Gemini...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA 3: HISTORIAL -->
+        <div id="screen-historial" class="screen">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                <h2 style="font-size:1.25rem; font-weight:800;">Historial de Hoy</h2>
+                <button class="btn btn-secondary" style="width:auto; margin:0; padding:6px 12px; font-size:0.8rem;" onclick="abrirModalRegistrarPeso()">
+                    <span class="material-icons-round" style="font-size:1rem; vertical-align:middle;">scale</span> Registrar Peso
                 </button>
             </div>
-        </div>
-
-        <!-- PANTALLA COACH (ASESORÍA) -->
-        <div id="screen-coach" class="screen">
-            <!-- Caso 1: Todavía no ha completado el punto de partida (Fase Inicial) -->
-            <div id="coach-onboarding" style="display: none;">
-                <div class="card" style="border-top: 4px solid var(--coach-color);">
-                    <h2 style="color: var(--coach-color);"><span class="material-icons-round">support_agent</span> Fase Inicial: Tu Punto de Partida</h2>
-                    <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.4; margin-bottom: 15px;">
-                        Antes de entrenar o pautar nutrición, necesito analizar tu contexto actual para darte un plan personalizado óptimo.
-                    </p>
-                    
-                    <div style="background-color: var(--card-bg-inner); padding: 12px; border-radius: 10px; margin-bottom: 15px; border-left: 3px solid var(--coach-color);">
-                        <span style="font-size:0.75rem; font-weight:700; color:var(--coach-color);">¿TIENES API KEY?</span>
-                        <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:2px;">El coach usará la misma API Key de Gemini que configures en Ajustes para darte análisis detallados.</p>
-                    </div>
-
-                    <!-- Paso 1: Datos Biométricos -->
-                    <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 15px; display: flex; align-items: center; gap: 6px;"><span class="material-icons-round" style="font-size: 1.1rem; color: var(--coach-color);">person_outline</span> 1. Datos Biométricos</h3>
-                    <div style="display: flex; gap: 10px;">
-                        <div style="flex: 1;">
-                            <label>Edad</label>
-                            <input type="number" id="coach-ini-edad" placeholder="Años">
-                        </div>
-                        <div style="flex: 1;">
-                            <label>Sexo</label>
-                            <select id="coach-ini-sexo">
-                                <option value="Masculino">Masculino</option>
-                                <option value="Femenino">Femenino</option>
-                                <option value="Otro">Otro</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 10px;">
-                        <div style="flex: 1;">
-                            <label>Estatura (cm)</label>
-                            <input type="number" id="coach-ini-estatura" placeholder="Ej: 175">
-                        </div>
-                        <div style="flex: 1;">
-                            <label>Peso Inicial (kg)</label>
-                            <input type="number" id="coach-ini-peso" placeholder="Prefijar..." step="0.1">
-                        </div>
-                    </div>
-
-                    <!-- Paso 2: Historial de Entrenamiento -->
-                    <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 20px; display: flex; align-items: center; gap: 6px;"><span class="material-icons-round" style="font-size: 1.1rem; color: var(--coach-color);">fitness_center</span> 2. Experiencia deportiva</h3>
-                    <label>¿Cuánto tiempo llevas entrenando?</label>
-                    <select id="coach-ini-experiencia">
-                        <option value="Empiezo de cero">Empiezo de cero</option>
-                        <option value="Menos de 6 meses (Principiante)">Menos de 6 meses (Principiante)</option>
-                        <option value="Entre 6 meses y 2 años (Intermedio)">Entre 6 meses y 2 años (Intermedio)</option>
-                        <option value="Más de 2 años entrenando duro (Avanzado)">Más de 2 años entrenando duro (Avanzado)</option>
-                    </select>
-
-                    <label>¿Conoces la técnica de Sentadilla, Peso Muerto o Banca?</label>
-                    <select id="coach-ini-tecnica">
-                        <option value="No conozco la técnica">No, no los he hecho nunca</option>
-                        <option value="Conozco la técnica pero me falta práctica">Conozco la técnica pero me falta práctica</option>
-                        <option value="Tengo buena técnica dominada">Sí, la tengo dominada</option>
-                    </select>
-
-                    <!-- Paso 3: Rutina Diaria -->
-                    <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 20px; display: flex; align-items: center; gap: 6px;"><span class="material-icons-round" style="font-size: 1.1rem; color: var(--coach-color);">calendar_today</span> 3. Disponibilidad y Rutina</h3>
-                    <label>Tu ocupación diaria es normalmente:</label>
-                    <select id="coach-ini-sedentarismo">
-                        <option value="Muy sedentario (Trabajo de oficina / Sentado todo el día)">Muy sedentario (Oficina / sentado)</option>
-                        <option value="Moderadamente activo (De pie a ratos / Pasos moderados)">Moderadamente activo</option>
-                        <option value="Muy activo (Trabajo físico / Mover bultos / No paro)">Muy activo (Trabajo físico)</option>
-                    </select>
-
-                    <div style="display: flex; gap: 10px;">
-                        <div style="flex: 1.2;">
-                            <label>Días para entrenar</label>
-                            <select id="coach-ini-dias">
-                                <option value="2 días a la semana">2 días / semana</option>
-                                <option value="3 días a la semana">3 días / semana</option>
-                                <option value="4 días a la semana">4 días / semana</option>
-                                <option value="5 días a la semana">5 días / semana</option>
-                                <option value="6 días a la semana">6 días / semana</option>
-                                <option value="7 días a la semana">7 días / semana</option>
-                            </select>
-                        </div>
-                        <div style="flex: 0.8;">
-                            <label>Tiempo / Sesión</label>
-                            <select id="coach-ini-tiempo">
-                                <option value="45 min">45 min</option>
-                                <option value="1 hora">1 hora</option>
-                                <option value="1h 30min">1.5 horas</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Paso 4: Nutrición y Lesiones -->
-                    <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 20px; display: flex; align-items: center; gap: 6px;"><span class="material-icons-round" style="font-size: 1.1rem; color: var(--coach-color);">local_dining</span> 4. Nutrición, Lesiones y Descanso</h3>
-                    
-                    <label>¿Cómo comes normalmente? (Preferencias / alergias / si cocinas o comes fuera)</label>
-                    <textarea id="coach-ini-nutricion" placeholder="Ej: Como de todo, sin alergias. Suelo cocinar en casa entre semana pero los fines de semana ceno fuera."></textarea>
-                    
-                    <label>¿Tienes alguna molestia, lesión o dolor articular?</label>
-                    <textarea id="coach-ini-lesiones" placeholder="Ej: Ligera molestia en rodilla derecha al bajar profundo, nada grave. Sin lesiones de espalda."></textarea>
-
-                    <div style="display: flex; gap: 10px;">
-                        <div style="flex: 1.2;">
-                            <label>Horas de sueño media</label>
-                            <input type="number" id="coach-ini-sueno" placeholder="Ej: 7" min="4" max="12">
-                        </div>
-                        <div style="flex: 0.8;">
-                            <label>Nivel de Estrés</label>
-                            <select id="coach-ini-estres">
-                                <option value="Bajo">Bajo</option>
-                                <option value="Medio">Medio</option>
-                                <option value="Alto">Alto</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <button class="btn btn-coach" onclick="guardarFaseInicial()">
-                        <span class="material-icons-round">analytics</span> Analizar y Crear Mi Perfil
-                    </button>
-                </div>
-            </div>
-
-            <!-- Caso 2: Onboarding completado -> Dashboard de Asesoría -->
-            <div id="coach-dashboard" style="display: none;">
-                <!-- Panel Principal: Reporte Semanal -->
-                <div class="card" style="border-top: 4px solid var(--coach-color);">
-                    <h2 style="color: var(--coach-color);"><span class="material-icons-round">support_agent</span> Tu Coach Personal</h2>
-                    
-                    <div style="display: flex; gap: 10px; margin-top: 10px;">
-                        <button class="btn btn-coach" style="margin-top:0; flex:1;" onclick="abrirReporteSemanal()">
-                            <span class="material-icons-round">assignment_turned_in</span> Nuevo Reporte Semanal
-                        </button>
-                        <button class="btn btn-secondary" style="margin-top:0; width:auto; padding: 10px 15px;" onclick="verFichaInicial()" title="Ver mi Ficha de Inicio">
-                            <span class="material-icons-round">assignment_ind</span> Ficha
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Historial de Reportes -->
-                <h2 style="font-size:1.1rem; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
-                    <span class="material-icons-round" style="color: var(--coach-color)">history</span> Reportes Semanales
-                </h2>
-                <div id="lista-reportes"></div>
-            </div>
-
-            <!-- Caso 3: Formulario de Reporte Semanal (Check-In) -->
-            <div id="coach-report-form" style="display: none;">
-                <div class="card">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <h2 style="color: var(--coach-color); margin-bottom: 0;"><span class="material-icons-round">edit_note</span> Reporte Semanal</h2>
-                        <button class="btn-secondary" style="margin-top: 0; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem;" onclick="volverAlCoachDashboard()">Cancelar</button>
-                    </div>
-
-                    <!-- Cuantitativos -->
-                    <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 15px; display: flex; align-items: center; gap: 6px;"><span class="material-icons-round" style="font-size: 1.1rem; color: var(--coach-color);">analytics</span> Datos Cuantitativos</h3>
-                    
-                    <label>Peso Medio Semanal (kg)</label>
-                    <input type="number" id="coach-rep-peso" placeholder="Autocalculado..." step="0.1">
-                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;" id="coach-rep-peso-helper"></p>
-
-                    <label>Progreso de Fuerza y Entrenamiento (¿Levantas más peso/reps?)</label>
-                    <textarea id="coach-rep-fuerza" placeholder="Ej: He subido 2kg en el press de banca y he hecho una repetición extra en sentadillas."></textarea>
-
-                    <label>Medidas Corporales en cm (Opcional - cuello, cintura, etc.)</label>
-                    <input type="text" id="coach-rep-medidas" placeholder="Ej: Cintura: 82cm, Pecho: 98cm, Brazo: 35cm">
-
-                    <!-- Cualitativos -->
-                    <h3 style="font-size: 0.95rem; color: #e5e5ea; margin-top: 20px; display: flex; align-items: center; gap: 6px;"><span class="material-icons-round" style="font-size: 1.1rem; color: var(--coach-color);">psychology</span> Datos Cualitativos (Tus sensaciones)</h3>
-                    
-                    <label>Nivel de Energía y Fatiga (1 = Cansado, 10 = A tope)</label>
-                    <div class="ios-slider">
-                        <input type="range" id="coach-rep-energia" min="1" max="10" value="8" oninput="document.getElementById('val-energia').innerText = this.value">
-                        <span id="val-energia">8</span>
-                    </div>
-
-                    <label>Calidad del Sueño (1 = Fatal, 10 = Excelente)</label>
-                    <div class="ios-slider">
-                        <input type="range" id="coach-rep-sueno" min="1" max="10" value="8" oninput="document.getElementById('val-sueno').innerText = this.value">
-                        <span id="val-sueno">8</span>
-                    </div>
-
-                    <label>Saciedad y Hambre (1 = Mucha hambre, 10 = Satisfecho)</label>
-                    <div class="ios-slider">
-                        <input type="range" id="coach-rep-saciedad" min="1" max="10" value="8" oninput="document.getElementById('val-saciedad').innerText = this.value">
-                        <span id="val-saciedad">8</span>
-                    </div>
-
-                    <label>Adherencia al plan (1 = Nula, 10 = Total cumplimiento)</label>
-                    <div class="ios-slider">
-                        <input type="range" id="coach-rep-adherencia" min="1" max="10" value="9" oninput="document.getElementById('val-adherencia').innerText = this.value">
-                        <span id="val-adherencia">9</span>
-                    </div>
-
-                    <button class="btn btn-coach" onclick="guardarReporteSemanal()">
-                        <span class="material-icons-round">cloud_upload</span> Enviar Reporte a Coach IA
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- PANTALLA HISTORIAL -->
-        <div id="screen-historial" class="screen">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <h2 style="font-size:1.2rem;">Historial Diario</h2>
-                <input type="date" id="historial-fecha-filtro" style="width: auto; padding: 6px; font-size: 0.9rem; margin-top: 0;" onchange="renderHistorial()">
-            </div>
+            
             <div id="lista-historial"></div>
         </div>
 
-        <!-- PANTALLA AJUSTES -->
-        <div id="screen-ajustes" class="screen">
-            <!-- Registrar Peso Corporal -->
-            <div class="card">
-                <h2><span class="material-icons-round" style="color: #5ac8fa">scale</span> Control de Peso</h2>
-                <div style="display: flex; gap: 10px; align-items: flex-end;">
-                    <div style="flex: 1;">
-                        <label>Peso Actual (kg)</label>
-                        <input type="number" id="peso-corporal" placeholder="Ej: 75.5" step="0.1">
-                    </div>
-                    <button class="btn" style="background-color: #5ac8fa; color: black; margin-top: 0; width: auto; padding: 12px 20px;" onclick="guardarPeso()">
-                        Registrar
-                    </button>
-                </div>
-            </div>
-
-            <!-- Meta de Calorías -->
-            <div class="card">
-                <h2><span class="material-icons-round" style="color: var(--nutrition-color)">adjust</span> Meta de Calorías</h2>
-                <label>Objetivo Diario (kcal)</label>
-                <input type="number" id="meta-calorias-input" placeholder="Ej: 2000" onchange="guardarMetaCalorias()">
-            </div>
-
-            <!-- Creador de Ejercicios Custom -->
-            <div class="card">
-                <h2><span class="material-icons-round" style="color: var(--accent-color)">add_task</span> Añadir Ejercicio Personalizado</h2>
-                <label>Bloque al que pertenece</label>
-                <select id="custom-ejercicio-bloque">
-                    <option value="Torso">Torso</option>
-                    <option value="Espalda y Bíceps">Espalda y Bíceps</option>
-                    <option value="Recuperación Activa y Core">Recuperación Activa y Core</option>
-                    <option value="Torso Completo">Torso Completo</option>
-                    <option value="Hombros y Brazos">Hombros y Brazos</option>
-                    <option value="Pierna Completa">Pierna Completa</option>
-                    <option value="Full Body + Cardio">Full Body + Cardio</option>
+        <!-- PANTALLA 4: COACH (ASESORÍA) -->
+        <div id="screen-coach" class="screen">
+            <!-- Caso A: Perfil inicial no configurado -->
+            <div id="coach-setup-box" class="card" style="display:none;">
+                <h2 style="color:var(--coach-color);"><span class="material-icons-round">assignment_ind</span> Perfil de Inicio Coach IA</h2>
+                <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:14px;">La IA necesita conocer tu contexto físico y vital para personalizar tus objetivos diarios.</p>
+                
+                <label>Edad</label>
+                <input type="number" id="coach-ini-edad" placeholder="Ej: 24" inputmode="numeric">
+                
+                <label>Sexo</label>
+                <select id="coach-ini-sexo">
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
                 </select>
-                <label>Nombre del Ejercicio</label>
-                <input type="text" id="custom-ejercicio-nombre" placeholder="Ej: Cruces en polea baja">
-                <button class="btn" onclick="crearEjercicioCustom()">Añadir Ejercicio</button>
+                
+                <div style="display:flex; gap:10px;">
+                    <div style="flex:1;">
+                        <label>Estatura (cm)</label>
+                        <input type="number" id="coach-ini-estatura" placeholder="Ej: 178" inputmode="numeric">
+                    </div>
+                    <div style="flex:1;">
+                        <label>Peso inicial (kg)</label>
+                        <input type="number" id="coach-ini-peso" placeholder="Ej: 75.5" step="0.1" inputmode="decimal">
+                    </div>
+                </div>
+                
+                <label>Experiencia de Entrenamiento</label>
+                <select id="coach-ini-experiencia">
+                    <option value="Principiante (Empiezo de cero)">Empiezo de cero</option>
+                    <option value="Intermedio (Llevo unos meses)">Intermedio (Llevo unos meses)</option>
+                    <option value="Avanzado (Llevo más de 2 años)">Avanzado (Llevo más de 2 años)</option>
+                </select>
+
+                <label>¿Conoces la técnica de los básicos?</label>
+                <select id="coach-ini-tecnica">
+                    <option value="Tengo buena técnica dominada">Tengo buena técnica dominada</option>
+                    <option value="Conozco la técnica pero me falta práctica">La conozco, pero me falta práctica</option>
+                    <option value="No conozco la técnica">No conozco la técnica</option>
+                </select>
+
+                <label>Disponibilidad de Entrenamiento Semanal</label>
+                <select id="coach-ini-dias">
+                    <option value="3 días a la semana">3 días a la semana</option>
+                    <option value="4 días a la semana">4 días a la semana</option>
+                    <option value="5 días a la semana">5 días a la semana</option>
+                    <option value="6 días a la semana">6 días a la semana</option>
+                    <option value="7 días a la semana">7 días a la semana</option>
+                </select>
+                
+                <label>Estilo de Vida / Actividad diaria</label>
+                <select id="coach-ini-actividad">
+                    <option value="Sedentario (Trabajo de oficina / Sentado)">Sedentario (Oficina / Sentado)</option>
+                    <option value="Moderadamente activo (De pie a ratos / Camino bastante)">Moderadamente activo (Camino bastante)</option>
+                    <option value="Muy activo (Trabajo físico pesado)">Muy activo (Trabajo físico / De pie)</option>
+                </select>
+                
+                <label>Historial médico / Lesiones / Molestias</label>
+                <input type="text" id="coach-ini-lesiones" placeholder="Ej: Dolor lumbar al agacharme, ninguna...">
+
+                <label>Horas de Sueño promedio</label>
+                <input type="number" id="coach-ini-sueno" placeholder="Ej: 7" inputmode="numeric">
+
+                <label>Nivel de Estrés vital actual</label>
+                <select id="coach-ini-estres">
+                    <option value="Bajo">Bajo</option>
+                    <option value="Medio">Medio</option>
+                    <option value="Alto">Alto</option>
+                </select>
+
+                <button class="btn btn-coach" onclick="guardarPerfilInicialCoach()">
+                    <span class="material-icons-round">save</span> Guardar Ficha e Iniciar
+                </button>
             </div>
 
-            <!-- Copias de Seguridad -->
-            <div class="card">
-                <h2><span class="material-icons-round" style="color: #0b57d0">backup</span> Copia de Seguridad</h2>
-                <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.4; margin-bottom: 12px;">Descarga tus datos en un archivo para guardarlos a buen recaudo o pasarlos a otro móvil.</p>
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn btn-secondary" style="flex: 1; margin-top: 0; font-size: 0.9rem;" onclick="exportarHistorial()">
-                        <span class="material-icons-round">download</span> Guardar Copia
-                    </button>
-                    <button class="btn btn-secondary" style="flex: 1; margin-top: 0; font-size: 0.9rem;" onclick="activarSelectorArchivo()">
-                        <span class="material-icons-round">upload</span> Cargar Copia
+            <!-- Caso B: Perfil configurado, panel de control -->
+            <div id="coach-active-box" style="display:none;">
+                <!-- Mini-ficha actual -->
+                <div class="card" style="border-left: 4px solid var(--coach-color);">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h2><span class="material-icons-round" style="color:var(--coach-color)">sports</span> Coach Integrado</h2>
+                        <button class="btn-delete" style="position:static; transform:none;" onclick="reiniciarPerfilCoach()"><span class="material-icons-round" style="color:var(--danger)">restart_alt</span></button>
+                    </div>
+                    <div id="coach-resumen-perfil" style="font-size:0.85rem; color:var(--text-secondary); line-height:1.4;"></div>
+                </div>
+
+                <!-- Check-In Semanal -->
+                <div class="card">
+                    <h2><span class="material-icons-round" style="color:#5856d6">analytics</span> Check-In Semanal</h2>
+                    <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:12px;">Reporta tu semana para recibir un reajuste inteligente.</p>
+                    
+                    <div style="background-color:var(--card-bg-inner); padding:10px; border-radius:10px; margin-bottom:10px; border:1px solid #3a3a3c;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Peso Medio Semanal:</span>
+                        <strong style="color:#5856d6; display:block; font-size:1.1rem; margin-top:2px;" id="coach-peso-medio-auto">Calculando...</strong>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <div>
+                            <label>Cintura (cm)</label>
+                            <input type="number" id="check-cintura" placeholder="Ombligo" step="0.1" inputmode="decimal">
+                        </div>
+                        <div>
+                            <label>Pecho (cm)</label>
+                            <input type="number" id="check-pecho" placeholder="cm" step="0.1" inputmode="decimal">
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <div>
+                            <label>Muslo (cm)</label>
+                            <input type="number" id="check-muslo" placeholder="cm" step="0.1" inputmode="decimal">
+                        </div>
+                        <div>
+                            <label>Brazo (cm)</label>
+                            <input type="number" id="check-brazo" placeholder="cm" step="0.1" inputmode="decimal">
+                        </div>
+                    </div>
+
+                    <label>Progreso de fuerza (ejercicios principales)</label>
+                    <input type="text" id="check-progreso-fuerza" placeholder="Ej: He subido 2kg en Press Banca">
+
+                    <label>Energía y fatiga (1 al 10)</label>
+                    <input type="range" id="check-energia" min="1" max="10" value="8" style="accent-color: var(--coach-color);">
+                    <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-secondary);"><span>Arrastrándome</span><span>A tope</span></div>
+
+                    <label>Calidad del Sueño (1 al 10)</label>
+                    <input type="range" id="check-sueno" min="1" max="10" value="8" style="accent-color: var(--coach-color);">
+                    <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-secondary);"><span>Insomnio</span><span>Duermo del tirón</span></div>
+
+                    <label>Hambre y Ansiedad (1 al 10)</label>
+                    <input type="range" id="check-hambre" min="1" max="10" value="4" style="accent-color: var(--coach-color);">
+                    <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-secondary);"><span>Saciado</span><span>Mucha hambre / antojos</span></div>
+
+                    <label>Adherencia a la dieta (1 al 10)</label>
+                    <input type="range" id="check-adherencia" min="1" max="10" value="9" style="accent-color: var(--coach-color);">
+                    <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-secondary);"><span>Muy mala</span><span>Perfecta</span></div>
+
+                    <button class="btn btn-coach" onclick="enviarCheckInCoach()">
+                        <span class="material-icons-round">rocket_launch</span> Enviar Reporte Semanal
                     </button>
                 </div>
-                <input type="file" id="importar-archivo" accept=".json" style="display:none;" onchange="importarHistorial(event)">
+
+                <!-- Chat interactivo con el Coach -->
+                <div class="card">
+                    <h2><span class="material-icons-round" style="color:var(--coach-color)">chat</span> Consultar al Coach</h2>
+                    <p style="font-size:0.85rem; color:var(--text-secondary);">Pregúntale dudas sobre tu progreso, dolores de técnica, cambios de dieta, etc.</p>
+                    
+                    <div class="coach-chat-history" id="coach-chat-window">
+                        <div class="chat-bubble bot">¡Hola Adri! Soy tu entrenador inteligente. Puedes preguntarme lo que quieras sobre tu entrenamiento de esta semana.</div>
+                    </div>
+                    
+                    <div style="display:flex; gap:8px; margin-top:10px;">
+                        <input type="text" id="coach-user-msg" placeholder="Ej: Me duelen los hombros en press banca...">
+                        <button class="btn" style="width:auto; margin:0; padding:12px; background-color:var(--coach-color); color:white;" onclick="enviarMensajeChatCoach()">
+                            <span class="material-icons-round">send</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA 5: AJUSTES -->
+        <div id="screen-ajustes" class="screen">
+            <!-- API Key -->
+            <div class="card">
+                <h2><span class="material-icons-round">vpn_key</span> Clave de Inteligencia (API Key)</h2>
+                <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:12px;">Necesaria para habilitar la Asesoría IA y el escáner de fotos de comidas.</p>
+                <input type="password" id="ajustes-api-key" placeholder="Pega tu API Key de Gemini">
+                <button class="btn" onclick="guardarApiKey()">Guardar API Key</button>
             </div>
 
-            <!-- Ajustes de API y Borrado -->
+            <!-- Objetivo diario de calorías -->
             <div class="card">
-                <h2><span class="material-icons-round" style="color: var(--accent-color)">settings</span> Ajustes Generales</h2>
-                <label>Estado de Gemini Vision IA</label>
-                <div style="display: flex; gap: 10px; margin-top: 6px;">
-                    <button class="btn btn-secondary" style="margin-top: 0; padding: 10px; font-size: 0.9rem; flex: 1;" onclick="abrirConfiguracionApi()">
-                        <span class="material-icons-round">vpn_key</span> Clave API Gemini
-                    </button>
-                    <button class="btn btn-danger" style="margin-top:0; padding: 10px; width: auto; font-size: 0.9rem;" onclick="borrarApiKey()">
-                        <span class="material-icons-round">delete_outline</span>
-                    </button>
+                <h2><span class="material-icons-round">adjust</span> Objetivo Calórico</h2>
+                <label>Objetivo de calorías diario (kcal)</label>
+                <input type="number" id="ajustes-kcal-objetivo" placeholder="Ej: 2000" inputmode="numeric">
+                <button class="btn btn-secondary" onclick="guardarMetaCalorias()">Actualizar Objetivo</button>
+            </div>
+
+            <!-- Gestor de Ejercicios -->
+            <div class="card">
+                <h2><span class="material-icons-round">playlist_add_check</span> Gestor de Ejercicios</h2>
+                <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:10px;">Modifica o añade tus propios ejercicios.</p>
+                
+                <label>Seleccionar Bloque</label>
+                <select id="ajustes-bloque-ej" onchange="listarEjerciciosEdicion()"></select>
+                
+                <div id="lista-ejercicios-ajustes" style="margin-top:12px; display:flex; flex-direction:column; gap:8px;"></div>
+                
+                <div style="border-top:1px solid #3a3a3c; margin-top:16px; padding-top:14px;">
+                    <label>Nuevo Ejercicio en este bloque</label>
+                    <input type="text" id="ajustes-nuevo-ej-nombre" placeholder="Nombre del ejercicio">
+                    <button class="btn" onclick="crearEjercicioCustom()">Añadir Ejercicio</button>
                 </div>
-                <div id="api-status-text" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 6px;">Cargando estado...</div>
+            </div>
 
-                <hr style="border: 0; border-top: 1px solid #2c2c2e; margin: 25px 0;">
-
-                <button class="btn btn-danger" style="background-color: #3a3a3c; color: var(--danger); border: 1px solid #3a3a3c;" onclick="confirmarBorradoCompleto()">
-                    <span class="material-icons-round">delete_forever</span> Borrar Todo el Historial
+            <!-- Copias de seguridad y Reset -->
+            <div class="card">
+                <h2><span class="material-icons-round">shield</span> Copias de Seguridad</h2>
+                <button class="btn btn-secondary" onclick="exportarBackup()"><span class="material-icons-round" style="font-size:1.1rem; vertical-align:middle;">download</span> Descargar Copia</button>
+                
+                <label style="margin-top:14px;">Restaurar Copia</label>
+                <input type="file" id="import-backup-file" accept=".json" onchange="importarBackup(event)">
+                
+                <button class="btn btn-danger" style="margin-top:30px;" onclick="confirmarBorrarTodo()">
+                    <span class="material-icons-round">delete_forever</span> Restablecer Todo de Fábrica
                 </button>
             </div>
         </div>
+
     </div>
 
-    <!-- NAVEGACIÓN -->
+    <!-- MENÚ DE NAVEGACIÓN -->
     <nav>
         <button class="nav-item active" onclick="cambiarPantalla('screen-entreno', this)">
             <span class="material-icons-round">fitness_center</span>Entreno
         </button>
-        <button class="nav-item" onclick="cambiarPantalla('screen-comidas', this)">
+        <button class="nav-item comida-tab" onclick="cambiarPantalla('screen-comidas', this)">
             <span class="material-icons-round">local_dining</span>Calorías
-        </button>
-        <button class="nav-item" onclick="cambiarPantalla('screen-coach', this)">
-            <span class="material-icons-round">support_agent</span>Coach
         </button>
         <button class="nav-item" onclick="cambiarPantalla('screen-historial', this)">
             <span class="material-icons-round">history</span>Historial
+        </button>
+        <button class="nav-item coach-tab" onclick="cambiarPantalla('screen-coach', this)">
+            <span class="material-icons-round">sports</span>Coach
         </button>
         <button class="nav-item" onclick="cambiarPantalla('screen-ajustes', this)">
             <span class="material-icons-round">settings</span>Ajustes
@@ -531,8 +654,8 @@
     </nav>
 
     <script>
-        // Ejercicios base mapeados de tu rutina nativa
-        const ejerciciosDB_Original = {
+        // --- 1. CONFIGURACIÓN BASE Y EJERCICIOS ---
+        const ejerciciosDefault = {
             "Torso": [
                 "Press de banca con mancuernas",
                 "Press militar sentado con mancuernas",
@@ -576,40 +699,136 @@
             ]
         };
 
-        // Mostrar fecha formateada
-        document.getElementById('header-date').innerText = new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'short' }).toUpperCase();
-        
-        // Sincronizar campo de filtro del historial con la fecha de hoy por defecto
-        const hoyIso = new Date().toISOString().split('T')[0];
-        document.getElementById('historial-fecha-filtro').value = hoyIso;
+        // Inicializar almacenamiento local unificado bajo un namespace seguro
+        let appState = {
+            ejercicios: { ...ejerciciosDefault },
+            entrenos: [],
+            comidas: [],
+            pesos: [],
+            metaKcal: 2000,
+            apiKey: "",
+            perfilCoach: null,
+            historialCheckins: [],
+            historialConversacionCoach: [
+                { role: "bot", text: "¡Hola Adri! Soy tu entrenador inteligente. Puedes preguntarme lo que quieras sobre tu entrenamiento de esta semana." }
+            ]
+        };
 
-        // Obtener base de datos unificada (con los personalizados que el usuario agregue)
-        function obtenerEjerciciosUnificados() {
-            const custom = JSON.parse(localStorage.getItem('adri_ejercicios_custom') || '{}');
-            const unificados = JSON.parse(JSON.stringify(ejerciciosDB_Original)); // clonar objeto base
-            
-            for (const bloque in custom) {
-                if (unificados[bloque]) {
-                    unificados[bloque] = [...unificados[bloque], ...custom[bloque]];
-                } else {
-                    unificados[bloque] = custom[bloque];
+        // Cargar estado inicial
+        function cargarEstado() {
+            const guardado = localStorage.getItem('adriapp_master_state_v3');
+            if (guardado) {
+                try {
+                    const parsed = JSON.parse(guardado);
+                    // Asegurar combinación de campos para que no rompa si faltaban campos previos
+                    appState = { ...appState, ...parsed };
+                    if (!appState.ejercicios || Object.keys(appState.ejercicios).length === 0) {
+                        appState.ejercicios = { ...ejerciciosDefault };
+                    }
+                } catch (e) {
+                    console.error("Error al cargar localStorage, cargando valores por defecto.", e);
                 }
+            } else {
+                guardarEstado();
             }
-            return unificados;
         }
 
-        function actualizarEjercicios() {
+        function guardarEstado() {
+            localStorage.setItem('adriapp_master_state_v3', JSON.stringify(appState));
+        }
+
+        // --- 2. GESTION DE MODALES iOS (Erradicando alerts) ---
+        let callbackModalConfirmacion = null;
+
+        function mostrarModal(titulo, descripcion, esConfirmacion = false, confirmText = "Aceptar", onConfirm = null) {
+            document.getElementById('modal-title').innerText = titulo;
+            document.getElementById('modal-desc').innerText = descripcion;
+            
+            const btnConfirmar = document.getElementById('modal-confirm-btn');
+            btnConfirmar.innerText = confirmText;
+            btnConfirmar.style.backgroundColor = esConfirmacion ? 'var(--accent-color)' : 'var(--accent-color)';
+            
+            const actionsDiv = document.getElementById('modal-actions');
+            // Si es simple aviso, solo mostrar botón Aceptar (reemplazando el botón cancelar)
+            const btnCancelar = actionsDiv.querySelector('.btn-secondary');
+            if (!esConfirmacion) {
+                btnCancelar.style.display = 'none';
+            } else {
+                btnCancelar.style.display = 'block';
+            }
+            
+            callbackModalConfirmacion = onConfirm;
+            btnConfirmar.onclick = function() {
+                cerrarModal();
+                if (callbackModalConfirmacion) callbackModalConfirmacion();
+            };
+            
+            document.getElementById('ios-modal').classList.add('active');
+        }
+
+        function cerrarModal() {
+            document.getElementById('ios-modal').classList.remove('active');
+            callbackModalConfirmacion = null;
+        }
+
+        function showToast(msj, color = 'var(--accent-color)', textColor = '#000000') {
+            const t = document.getElementById('toast');
+            t.innerText = msj;
+            t.style.backgroundColor = color;
+            t.style.color = textColor;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2200);
+        }
+
+        // --- 3. LOGICA Y RENDERIZADO DE INTERFAZ ---
+        window.onload = function() {
+            cargarEstado();
+            
+            // Mostrar fecha actual
+            const opcFecha = { weekday: 'long', day: 'numeric', month: 'short' };
+            document.getElementById('header-date').innerText = new Date().toLocaleDateString('es-ES', opcFecha).toUpperCase();
+            
+            // Inicializar Selects
+            poblarSelectsBloques();
+            actualizarEjerciciosSelect();
+            actualizarProgresoCalorias();
+            
+            // Inicializar inputs de Ajustes con los datos cargados
+            document.getElementById('ajustes-api-key').value = appState.apiKey || "";
+            document.getElementById('ajustes-kcal-objetivo').value = appState.metaKcal || 2000;
+            
+            // Render del Coach según estado
+            evaluarEstadoPantallaCoach();
+        };
+
+        function poblarSelectsBloques() {
+            const selectEntreno = document.getElementById('entreno-bloque');
+            const selectAjustes = document.getElementById('ajustes-bloque-ej');
+            
+            selectEntreno.innerHTML = '';
+            selectAjustes.innerHTML = '';
+            
+            Object.keys(appState.ejercicios).forEach(bloque => {
+                const opt1 = document.createElement('option');
+                opt1.value = bloque; opt1.innerText = bloque;
+                selectEntreno.appendChild(opt1);
+                
+                const opt2 = document.createElement('option');
+                opt2.value = bloque; opt2.innerText = bloque;
+                selectAjustes.appendChild(opt2);
+            });
+        }
+
+        function actualizarEjerciciosSelect() {
             const bloque = document.getElementById('entreno-bloque').value;
-            const selector = document.getElementById('entreno-ejercicio');
-            selector.innerHTML = '';
+            const selectEj = document.getElementById('entreno-ejercicio');
+            selectEj.innerHTML = '';
             
-            const db = obtenerEjerciciosUnificados();
-            
-            if (db[bloque]) {
-                db[bloque].forEach(ej => {
+            if (appState.ejercicios[bloque]) {
+                appState.ejercicios[bloque].forEach(ej => {
                     const opt = document.createElement('option');
                     opt.value = ej; opt.innerText = ej;
-                    selector.appendChild(opt);
+                    selectEj.appendChild(opt);
                 });
             }
         }
@@ -617,138 +836,323 @@
         function cambiarPantalla(sId, btn) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            
             document.getElementById(sId).classList.add('active');
             btn.classList.add('active');
-            if(sId === 'screen-historial') renderHistorial();
-            if(sId === 'screen-comidas') actualizarBarraDeCalorias();
-            if(sId === 'screen-coach') renderCoachUI();
+            
+            if (sId === 'screen-historial') {
+                renderHistorial();
+            } else if (sId === 'screen-comidas') {
+                actualizarProgresoCalorias();
+            } else if (sId === 'screen-coach') {
+                evaluarEstadoPantallaCoach();
+            } else if (sId === 'screen-ajustes') {
+                listarEjerciciosEdicion();
+            }
         }
 
-        function showToast(msj, color = '#30d158') {
-            const t = document.getElementById('toast');
-            t.innerText = msj; t.style.backgroundColor = color;
-            t.style.color = (color === '#30d158' || color === '#ff9500' || color === '#5ac8fa' || color === '#bf5af2') ? 'black' : 'white';
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2000);
-        }
-
-        // Sistema de Confirmación Nativo con Modales (evita usar confirm() o alert())
-        let callbackConfirmacion = null;
-        function mostrarConfirmacion(titulo, texto, callback) {
-            document.getElementById('confirm-title').innerText = titulo;
-            document.getElementById('confirm-text').innerText = texto;
-            callbackConfirmacion = callback;
-            document.getElementById('confirm-modal').style.display = 'flex';
-        }
-
-        document.getElementById('confirm-btn').onclick = function() {
-            if(callbackConfirmacion) callbackConfirmacion();
-            cerrarConfirmacion();
-        }
-
-        function cerrarConfirmacion() {
-            document.getElementById('confirm-modal').style.display = 'none';
-            callbackConfirmacion = null;
-        }
-
+        // --- 4. REGISTROS (EJERCICIOS, COMIDAS, PESOS) ---
         function guardarEntreno() {
-            const bloque = document.getElementById('entreno-bloque').value;
-            const ejercicio = document.getElementById('entreno-ejercicio').value;
-            const peso = document.getElementById('entreno-peso').value;
-            const repes = document.getElementById('entreno-repes').value;
-
-            if(!peso || !repes) {
-                showToast('Introduce Peso y Repeticiones', '#ff453a');
+            const peso = parseFloat(document.getElementById('entreno-peso').value);
+            const repes = parseInt(document.getElementById('entreno-repes').value);
+            
+            if (isNaN(peso) || isNaN(repes) || peso <= 0 || repes <= 0) {
+                mostrarModal("Datos incompletos", "Por favor ingresa un peso y repeticiones válidos.");
                 return;
             }
 
-            const nuevoLog = {
+            const item = {
                 id: Date.now(),
                 tipo: 'entreno',
+                bloque: document.getElementById('entreno-bloque').value,
+                ejercicio: document.getElementById('entreno-ejercicio').value,
+                peso: peso,
+                repes: repes,
+                fallo: document.getElementById('entreno-fallo').checked,
+                notas: document.getElementById('entreno-notas').value.trim(),
                 fecha: new Date().toLocaleDateString('es-ES'),
-                bloque: bloque,
-                ejercicio: ejercicio,
-                peso: parseFloat(peso),
-                repes: parseInt(repes)
+                hora: new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})
             };
 
-            let hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
-            hist.unshift(nuevoLog);
-            localStorage.setItem('adri_datos', JSON.stringify(hist));
-
+            appState.entrenos.unshift(item);
+            guardarEstado();
+            showToast("Serie registrada");
+            
+            // LIMPIAR CAMPOS AUTOMÁTICAMENTE
             document.getElementById('entreno-peso').value = '';
             document.getElementById('entreno-repes').value = '';
-
-            showToast('Serie Guardada con Éxito');
+            document.getElementById('entreno-fallo').checked = false;
+            document.getElementById('entreno-notas').value = '';
         }
 
         function guardarComidaManual() {
-            const nombre = document.getElementById('comida-nombre').value.trim();
-            const kcal = document.getElementById('comida-kcal').value;
-
-            if(!nombre || !kcal) {
-                showToast('Introduce Nombre y Calorías', '#ff453a');
+            const kcal = parseInt(document.getElementById('comida-kcal').value);
+            const detalle = document.getElementById('comida-detalle').value.trim();
+            
+            if (isNaN(kcal) || kcal <= 0 || !detalle) {
+                mostrarModal("Datos incompletos", "Por favor ingresa el nombre del alimento/comida y sus calorías.");
                 return;
             }
 
-            const comidaLog = {
+            const item = {
                 id: Date.now(),
                 tipo: 'comida',
+                momento: document.getElementById('comida-momento').value,
+                kcal: kcal,
+                detalle: detalle,
                 fecha: new Date().toLocaleDateString('es-ES'),
-                comida: nombre,
-                kcal: parseInt(kcal)
+                hora: new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})
             };
 
-            let hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
-            hist.unshift(comidaLog);
-            localStorage.setItem('adri_datos', JSON.stringify(hist));
-
-            // Limpiar inputs
-            document.getElementById('comida-nombre').value = '';
+            appState.comidas.unshift(item);
+            guardarEstado();
+            actualizarProgresoCalorias();
+            showToast("Comida registrada", "var(--nutrition-color)");
+            
+            // LIMPIAR CAMPOS AUTOMÁTICAMENTE
             document.getElementById('comida-kcal').value = '';
-
-            actualizarBarraDeCalorias();
-            showToast('Alimento Registrado', 'var(--nutrition-color)');
+            document.getElementById('comida-detalle').value = '';
         }
 
-        function analizarComidaConIA(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        function abrirModalRegistrarPeso() {
+            const layout = `
+                <div style="margin-top:10px;">
+                    <label>Introduce tu peso de hoy (kg):</label>
+                    <input type="number" id="peso-modal-input" placeholder="Ej: 74.3" step="0.1" inputmode="decimal" style="margin-top:4px;">
+                </div>
+            `;
+            mostrarModal("Registrar Peso Corporal", "Introduce tu pesaje actual.", true, "Guardar Peso", () => {
+                const inputVal = parseFloat(document.getElementById('peso-modal-input').value);
+                if (isNaN(inputVal) || inputVal <= 0) {
+                    showToast("Peso inválido", "var(--danger)", "#fff");
+                    return;
+                }
+                const item = {
+                    id: Date.now(),
+                    tipo: 'peso',
+                    peso: inputVal,
+                    fecha: new Date().toLocaleDateString('es-ES'),
+                    hora: new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})
+                };
+                appState.pesos.unshift(item);
+                guardarEstado();
+                showToast(`Peso ${inputVal} kg guardado`, "#5856d6", "#fff");
+                renderHistorial();
+            });
+            // Inyectar el input personalizado en el modal
+            document.getElementById('modal-desc').innerHTML = layout;
+        }
 
-            const apiKey = localStorage.getItem('adri_gemini_key');
-            if(!apiKey) {
-                showToast('Configura tu API Key en Ajustes primero', 'var(--danger)');
-                abrirConfiguracionApi();
+        function actualizarProgresoCalorias() {
+            const hoy = new Date().toLocaleDateString('es-ES');
+            // Filtrar comidas de hoy
+            const comidaHoy = appState.comidas.filter(c => c.fecha === hoy);
+            const sumKcal = comidaHoy.reduce((acc, c) => acc + c.kcal, 0);
+            
+            const meta = appState.metaKcal || 2000;
+            const pct = Math.min(Math.round((sumKcal / meta) * 100), 100);
+            
+            document.getElementById('comida-progreso-num').innerText = `${sumKcal} / ${meta} kcal`;
+            document.getElementById('comida-porcentaje').innerText = `${pct}%`;
+            document.getElementById('comida-progreso-fill').style.width = `${pct}%`;
+        }
+
+        // --- 5. RENDERIZADO DEL HISTORIAL ---
+        function renderHistorial() {
+            const lista = document.getElementById('lista-historial');
+            lista.innerHTML = '';
+            
+            const hoy = new Date().toLocaleDateString('es-ES');
+            
+            // Filtrar todos los elementos registrados para HOY
+            const entrenosHoy = appState.entrenos.filter(e => e.fecha === hoy);
+            const comidasHoy = appState.comidas.filter(c => c.fecha === hoy);
+            const pesosHoy = appState.pesos.filter(p => p.fecha === hoy);
+            
+            // Combinar todos los registros de hoy ordenados por el más reciente
+            const todoHoy = [...entrenosHoy, ...comidasHoy, ...pesosHoy].sort((a,b) => b.id - a.id);
+            
+            if (todoHoy.length === 0) {
+                lista.innerHTML = `<p style="color:var(--text-secondary); text-align:center; padding-top:40px; font-size:0.95rem;">No tienes registros anotados para hoy.</p>`;
+                return;
+            }
+            
+            todoHoy.forEach(item => {
+                const el = document.createElement('div');
+                if (item.tipo === 'entreno') {
+                    el.className = 'log-item';
+                    el.innerHTML = `
+                        <div class="log-header">
+                            <span>${item.hora} - ${item.bloque}</span>
+                        </div>
+                        <div class="log-title">${item.ejercicio}</div>
+                        <div class="log-details">
+                            Serie ${item.repes} reps x <strong>${item.peso} kg</strong> 
+                            ${item.fallo ? '<span style="color:var(--danger); font-weight:800; margin-left:8px; font-size:0.75rem; background:rgba(255,69,58,0.15); padding:2px 6px; border-radius:4px;">FALLO</span>' : ''}
+                        </div>
+                        ${item.notes ? `<div style="font-size:0.8rem; color:var(--text-secondary); margin-top:4px;">💬 ${item.notes}</div>` : ''}
+                        <button class="btn-delete" onclick="borrarRegistro('entrenos', ${item.id})">
+                            <span class="material-icons-round" style="font-size:1.2rem;">delete</span>
+                        </button>
+                    `;
+                } else if (item.tipo === 'comida') {
+                    el.className = 'log-item comida';
+                    el.innerHTML = `
+                        <div class="log-header">
+                            <span>${item.hora} - ${item.momento}</span>
+                        </div>
+                        <div class="log-title">${item.detalle}</div>
+                        <div class="log-details" style="color:var(--nutrition-color); font-weight:700;">${item.kcal} kcal</div>
+                        <button class="btn-delete" onclick="borrarRegistro('comidas', ${item.id})">
+                            <span class="material-icons-round" style="font-size:1.2rem;">delete</span>
+                        </button>
+                    `;
+                } else if (item.tipo === 'peso') {
+                    el.className = 'log-item peso';
+                    el.innerHTML = `
+                        <div class="log-header">
+                            <span>${item.hora} - Pesaje Corporal</span>
+                        </div>
+                        <div class="log-title">${item.peso} kg</div>
+                        <button class="btn-delete" onclick="borrarRegistro('pesos', ${item.id})">
+                            <span class="material-icons-round" style="font-size:1.2rem;">delete</span>
+                        </button>
+                    `;
+                }
+                lista.appendChild(el);
+            });
+        }
+
+        function borrarRegistro(arrayName, id) {
+            mostrarModal("¿Borrar registro?", "Esta acción eliminará el registro seleccionado permanentemente.", true, "Eliminar", () => {
+                appState[arrayName] = appState[arrayName].filter(item => item.id !== id);
+                guardarEstado();
+                renderHistorial();
+                actualizarProgresoCalorias();
+                showToast("Registro eliminado", "var(--danger)", "#fff");
+            });
+        }
+
+        // --- 6. INTEGRACIÓN INTELIGENTE DE COACH IA (Gemini API) ---
+        function evaluarEstadoPantallaCoach() {
+            const setupBox = document.getElementById('coach-setup-box');
+            const activeBox = document.getElementById('coach-active-box');
+            
+            if (appState.perfilCoach) {
+                setupBox.style.display = 'none';
+                activeBox.style.display = 'block';
+                
+                // Mostrar datos en mini-ficha
+                const p = appState.perfilCoach;
+                document.getElementById('coach-resumen-perfil').innerHTML = `
+                    🎯 <strong>Objetivo Activo:</strong> Mantener / Evolucionar<br>
+                    👤 <strong>Perfil:</strong> ${p.edad} años | ${p.sexo} | ${p.estatura}cm | Inicial: ${p.peso}kg<br>
+                    🏃‍♂️ <strong>Estilo de Vida:</strong> ${p.actividad}<br>
+                    🏋️‍♂️ <strong>Entrenamiento:</strong> ${p.dias} | Exp: ${p.experiencia}
+                `;
+                
+                // Calcular Peso Medio de la semana
+                calcularPesoMedioSemanal();
+                
+                // Render historial chat
+                renderConversacionCoach();
+            } else {
+                setupBox.style.display = 'block';
+                activeBox.style.display = 'none';
+            }
+        }
+
+        function guardarPerfilInicialCoach() {
+            const edad = parseInt(document.getElementById('coach-ini-edad').value);
+            const sexo = document.getElementById('coach-ini-sexo').value;
+            const estatura = parseInt(document.getElementById('coach-ini-estatura').value);
+            const peso = parseFloat(document.getElementById('coach-ini-peso').value);
+            
+            if (isNaN(edad) || isNaN(estatura) || isNaN(peso) || edad <= 0 || estatura <= 0 || peso <= 0) {
+                mostrarModal("Datos incompletos", "Por favor completa la edad, sexo, estatura y peso inicial.");
                 return;
             }
 
-            // Mostrar preview local de la imagen
-            const readerLocal = new FileReader();
-            readerLocal.onload = function(e) {
-                document.getElementById('preview-foto-comida').src = e.target.result;
-                document.getElementById('preview-contenedor').style.display = 'block';
+            appState.perfilCoach = {
+                edad,
+                sexo,
+                estatura,
+                peso,
+                experiencia: document.getElementById('coach-ini-experiencia').value,
+                tecnica: document.getElementById('coach-ini-tecnica').value,
+                dias: document.getElementById('coach-ini-dias').value,
+                actividad: document.getElementById('coach-ini-actividad').value,
+                lesiones: document.getElementById('coach-ini-lesiones').value.trim() || "Ninguna",
+                sueno: document.getElementById('coach-ini-sueno').value || "7",
+                estres: document.getElementById('coach-ini-estres').value
             };
-            readerLocal.readAsDataURL(file);
 
-            document.getElementById('loader-text').innerText = "Nuestra IA está analizando tu plato...";
-            document.getElementById('loader').style.display = 'flex';
+            guardarEstado();
+            showToast("Perfil inicial guardado", "var(--coach-color)", "#fff");
+            evaluarEstadoPantallaCoach();
+            
+            // Generar Onboarding Inteligente con la IA
+            solicitarOnboardingCoachIA();
+        }
 
-            const readerBase64 = new FileReader();
-            readerBase64.onload = function() {
-                const base64Data = readerBase64.result.split(',')[1];
-                
-                // Realizar llamada a Gemini con formato JSON estructurado
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-                const prompt = "Analiza detalladamente esta foto de comida. Estima de forma realista las calorías totales (kcal). Devuelve ESTRICTAMENTE un objeto JSON válido con las claves: 'comida' (nombre del plato estructurado), 'kcal' (número), 'explicacion' (breve resumen nutricional en una línea). No incluyas explicaciones de texto adicionales fuera del JSON.";
+        function reiniciarPerfilCoach() {
+            mostrarModal("¿Reiniciar Coach?", "¿Estás seguro de que quieres restablecer tu ficha inicial y borrar tu historial de reportes semanales?", true, "Reiniciar", () => {
+                appState.perfilCoach = null;
+                appState.historialCheckins = [];
+                appState.historialConversacionCoach = [
+                    { role: "bot", text: "¡Hola Adri! Soy tu entrenador inteligente. Puedes preguntarme lo que quieras sobre tu entrenamiento de esta semana." }
+                ];
+                guardarEstado();
+                evaluarEstadoPantallaCoach();
+                showToast("Ficha restablecida", "var(--danger)", "#fff");
+            });
+        }
 
-                const payload = {
+        function calcularPesoMedioSemanal() {
+            const hoy = new Date();
+            const haceSieteDias = new Date(hoy.getTime() - (7 * 24 * 60 * 60 * 1000));
+            
+            // Buscar pesajes en los últimos 7 días
+            const pesajesSemana = appState.pesos.filter(p => {
+                // Convertir fecha de formato DD/MM/AAAA a Date
+                const partes = p.fecha.split('/');
+                const fechaPesaje = new Date(partes[2], partes[1] - 1, partes[0]);
+                return fechaPesaje >= haceSieteDias;
+            });
+            
+            const display = document.getElementById('coach-peso-medio-auto');
+            if (pesajesSemana.length === 0) {
+                // Si no hay pesajes semanales, tomar el peso del perfil inicial
+                display.innerHTML = `Sin registros semanales (Usa: ${appState.perfilCoach.peso} kg de ficha)`;
+                return appState.perfilCoach.peso;
+            } else {
+                const suma = pesajesSemana.reduce((acc, p) => acc + p.peso, 0);
+                const avg = (suma / pesajesSemana.length).toFixed(2);
+                display.innerHTML = `${avg} kg <span style="font-size:0.75rem; color:var(--text-secondary);">(${pesajesSemana.length} pesajes de 7 días)</span>`;
+                return avg;
+            }
+        }
+
+        // --- SISTEMA DE LLAMADAS API DE GEMINI ---
+        async function llamarGemini(prompt, isImage = false, base64Img = "") {
+            const apiKey = (appState.apiKey || "").trim();
+            if (!apiKey) {
+                mostrarModal("API Key Requerida", "Para usar la inteligencia artificial de Gemini debes configurar tu API Key en la pestaña de Ajustes.");
+                return null;
+            }
+            
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
+            let payload = {};
+            if (isImage) {
+                payload = {
                     contents: [{
                         parts: [
                             { text: prompt },
                             {
                                 inlineData: {
-                                    mimeType: file.type,
-                                    data: base64Data
+                                    mimeType: "image/jpeg",
+                                    data: base64Img
                                 }
                             }
                         ]
@@ -758,209 +1162,354 @@
                         responseSchema: {
                             type: "OBJECT",
                             properties: {
-                                comida: { type: "STRING" },
-                                kcal: { type: "NUMBER" },
-                                explicacion: { type: "STRING" }
+                                plato: { type: "STRING" },
+                                kcal: { type: "INTEGER" }
                             },
-                            required: ["comida", "kcal", "explicacion"]
+                            required: ["plato", "kcal"]
                         }
                     }
                 };
+            } else {
+                payload = {
+                    contents: [{
+                        parts: [{ text: prompt }]
+                    }]
+                };
+            }
 
-                fetch(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                })
-                .then(res => res.json())
-                .then(data => {
-                    document.getElementById('loader').style.display = 'none';
-                    try {
-                        const responseJson = JSON.parse(data.candidates[0].content.parts[0].text);
-                        
-                        // Auto-rellenar formulario manual con las sugerencias para confirmar
-                        document.getElementById('comida-nombre').value = responseJson.comida;
-                        document.getElementById('comida-kcal').value = responseJson.kcal;
-
-                        showToast("¡Análisis completado! Confirma y añade tu plato.", "var(--nutrition-color)");
-                    } catch(e) {
-                        console.error(e);
-                        showToast("No se pudo estructurar el plato. Inténtalo de nuevo.", "var(--danger)");
+            // Implementar reintentos con exponencial backoff
+            let retries = 5;
+            let delay = 1000;
+            
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (response.ok) {
+                        const resJson = await response.json();
+                        const textResponse = resJson.candidates?.[0]?.content?.parts?.[0]?.text;
+                        return textResponse;
+                    } else if (response.status === 400 || response.status === 403) {
+                        // Key incorrecta o error de permisos directo
+                        mostrarModal("Error de Autenticación", "Tu API Key de Gemini no parece correcta o no tiene permisos. Por favor revísala en la pestaña Ajustes.");
+                        return null;
                     }
-                })
-                .catch(err => {
-                    document.getElementById('loader').style.display = 'none';
-                    console.error(err);
-                    showToast("Error de conexión con la IA", "var(--danger)");
-                });
-            };
-            readerBase64.readAsDataURL(file);
-        }
-
-        function actualizarBarraDeCalorias() {
-            const hoyStr = new Date().toLocaleDateString('es-ES');
-            const data = JSON.parse(localStorage.getItem('adri_datos') || '[]');
-            
-            const metaKcal = parseInt(localStorage.getItem('adri_meta_calorias') || '2000');
-            document.getElementById('meta-calorias-input').value = metaKcal;
-
-            let consumido = 0;
-
-            data.forEach(item => {
-                if(item.tipo === 'comida' && item.fecha === hoyStr) {
-                    consumido += item.kcal;
+                } catch (e) {
+                    console.error("Fallo de conexión en reintento " + (i+1), e);
                 }
-            });
-
-            // Actualizar interfaz
-            document.getElementById('progreso-kcal-texto').innerText = `${consumido} / ${metaKcal} kcal`;
+                // Backoff delay
+                await new Promise(res => setTimeout(res, delay));
+                delay *= 2;
+            }
             
-            let porcentaje = (consumido / metaKcal) * 100;
-            if(porcentaje > 100) porcentaje = 100;
-            document.getElementById('progreso-kcal-barra').style.width = `${porcentaje}%`;
+            mostrarModal("Error de Conexión", "No se ha podido conectar con Gemini tras varios intentos. Revisa tu conexión a internet.");
+            return null;
         }
 
-        function guardarMetaCalorias() {
-            const m = document.getElementById('meta-calorias-input').value;
-            if (m && m > 0) {
-                localStorage.setItem('adri_meta_calorias', m);
-                actualizarBarraDeCalorias();
-                showToast('Meta de calorías actualizada');
+        async function solicitarOnboardingCoachIA() {
+            const p = appState.perfilCoach;
+            const prompt = `Actúa como mi entrenador y nutriólogo personal inteligente de élite. He creado mi ficha inicial en mi app de entrenamiento y quiero que analices mi punto de partida. 
+            Mis datos:
+            - Edad: ${p.edad} años
+            - Sexo: ${p.sexo}
+            - Estatura: ${p.estatura} cm
+            - Peso Inicial: ${p.peso} kg
+            - Experiencia: ${p.experiencia}
+            - Dominio técnico: ${p.tecnica}
+            - Disponibilidad: ${p.dias}
+            - Actividad diaria: ${p.actividad}
+            - Lesiones/Molestias: ${p.lesiones}
+            - Horas de sueño: ${p.sueno}
+            - Nivel de estrés: ${p.estres}
+
+            Por favor, dame un análisis inicial que contenga:
+            1. Un saludo motivador.
+            2. Estimación de mi gasto energético diario (TDEE) recomendado simplificado.
+            3. Meta de calorías diarias recomendadas para mí.
+            4. Un consejo clave para mi rutina y técnica.
+            Sé conciso pero muy profesional.`;
+
+            // Mostrar burbuja de carga en el chat
+            appState.historialConversacionCoach.push({ role: "user", text: "Generar ficha y recomendaciones iniciales..." });
+            appState.historialConversacionCoach.push({ role: "bot", text: "Analizando tu ficha inicial, espera un momento..." });
+            renderConversacionCoach();
+
+            const respuesta = await llamarGemini(prompt);
+            if (respuesta) {
+                // Reemplazar la burbuja de carga con la respuesta real
+                appState.historialConversacionCoach.pop();
+                appState.historialConversacionCoach.push({ role: "bot", text: respuesta });
+                guardarEstado();
+                renderConversacionCoach();
             }
         }
 
-        function guardarPeso() {
-            const p = document.getElementById('peso-corporal').value;
-            if(!p) {
-                showToast('Introduce un peso válido', '#ff453a');
+        async function enviarCheckInCoach() {
+            const pesoMedio = calcularPesoMedioSemanal();
+            const cintura = document.getElementById('check-cintura').value;
+            const pecho = document.getElementById('check-pecho').value;
+            const muslo = document.getElementById('check-muslo').value;
+            const brazo = document.getElementById('check-brazo').value;
+            const progresoFuerza = document.getElementById('check-progreso-fuerza').value.trim();
+            const energia = document.getElementById('check-energia').value;
+            const sueno = document.getElementById('check-sueno').value;
+            const hambre = document.getElementById('check-hambre').value;
+            const adherencia = document.getElementById('check-adherencia').value;
+
+            if (!cintura || !progresoFuerza) {
+                mostrarModal("Reporte incompleto", "Ingresa al menos la medida de tu cintura y tus sensaciones/progreso de fuerza de la semana.");
                 return;
             }
 
-            const nuevoPeso = {
-                id: Date.now(),
-                tipo: 'peso',
-                fecha: new Date().toLocaleDateString('es-ES'),
-                peso: parseFloat(p)
+            const prompt = `Analiza mi Reporte de Progreso Semanal para evaluar mis ajustes.
+            Mis métricas cuantitativas:
+            - Peso medio de esta semana: ${pesoMedio} kg
+            - Cintura: ${cintura} cm | Pecho: ${pecho || "No medido"} cm
+            - Muslo: ${muslo || "No medido"} cm | Brazo: ${brazo || "No medido"} cm
+            - Progreso en entrenamientos de fuerza: ${progresoFuerza}
+
+            Mis datos cualitativos (en escala de 1 a 10):
+            - Energía y Fatiga: ${energia} (10 es excelente/con fuerzas)
+            - Calidad del Sueño: ${sueno} (10 es dormir perfecto)
+            - Saciedad/Ansiedad: ${hambre} (10 es mucha ansiedad/hambre)
+            - Adherencia a la dieta: ${adherencia} (10 es perfecta adherencia)
+
+            Dame una valoración nutricional y de entrenamiento basada en la sobrecarga progresiva. Dime si voy por buen camino y sugiéreme modificaciones de calorías o ejercicios basándote en la adherencia y el sueño. Sé directo, breve y directo al grano como un entrenador real.`;
+
+            // Agregar al chat
+            appState.historialConversacionCoach.push({ role: "user", text: `Enviando Check-In semanal (Peso Medio: ${pesoMedio}kg, Cintura: ${cintura}cm)` });
+            appState.historialConversacionCoach.push({ role: "bot", text: "Procesando tus reportes de medidas y fuerza, dame unos segundos..." });
+            renderConversacionCoach();
+
+            // Desplazar chat hacia abajo
+            const chatWindow = document.getElementById('coach-chat-window');
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+
+            const respuesta = await llamarGemini(prompt);
+            if (respuesta) {
+                appState.historialConversacionCoach.pop();
+                appState.historialConversacionCoach.push({ role: "bot", text: respuesta });
+                
+                // Guardar checkin en el historial
+                appState.historialCheckins.push({
+                    id: Date.now(),
+                    fecha: new Date().toLocaleDateString('es-ES'),
+                    pesoMedio,
+                    cintura,
+                    adherencia,
+                    respuestaIA: respuesta
+                });
+                
+                guardarEstado();
+                renderConversacionCoach();
+                
+                // LIMPIAR CAMPOS DEL CHECK-IN
+                document.getElementById('check-cintura').value = '';
+                document.getElementById('check-pecho').value = '';
+                document.getElementById('check-muslo').value = '';
+                document.getElementById('check-brazo').value = '';
+                document.getElementById('check-progreso-fuerza').value = '';
+            }
+        }
+
+        async function enviarMensajeChatCoach() {
+            const txt = document.getElementById('coach-user-msg').value.trim();
+            if (!txt) return;
+
+            appState.historialConversacionCoach.push({ role: "user", text: txt });
+            document.getElementById('coach-user-msg').value = ''; // LIMPIAR CUADRO DE TEXTO AUTOMÁTICAMENTE
+            
+            // Agregar burbuja temporal de carga
+            appState.historialConversacionCoach.push({ role: "bot", text: "Escribiendo..." });
+            renderConversacionCoach();
+
+            const prompt = `Contexto del usuario Adri: peso corporal inicial de ${appState.perfilCoach?.peso || "desconocido"} kg, entrena ${appState.perfilCoach?.dias || "varios"} días, con historial de dolores/lesiones: ${appState.perfilCoach?.lesiones || "ninguna"}.
+            Duda de Adri: "${txt}".
+            Responde como su coach experto en biomecánica y fuerza de forma muy directa, aplicable y motivadora.`;
+
+            const respuesta = await llamarGemini(prompt);
+            if (respuesta) {
+                appState.historialConversacionCoach.pop(); // quitar "Escribiendo..."
+                appState.historialConversacionCoach.push({ role: "bot", text: respuesta });
+                guardarEstado();
+                renderConversacionCoach();
+            }
+        }
+
+        function renderConversacionCoach() {
+            const windowChat = document.getElementById('coach-chat-window');
+            windowChat.innerHTML = '';
+            
+            appState.historialConversacionCoach.forEach(msg => {
+                const b = document.createElement('div');
+                b.className = msg.role === 'user' ? 'chat-bubble user' : 'chat-bubble bot';
+                b.innerText = msg.text;
+                windowChat.appendChild(b);
+            });
+            // Auto scroll
+            windowChat.scrollTop = windowChat.scrollHeight;
+        }
+
+        // --- 7. ESCÁNER IA DE FOTOS DE COMIDAS ---
+        function activarEscaneoIA() {
+            document.getElementById('comida-file-input').click();
+        }
+
+        function procesarFotoComida(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const base64Img = e.target.result.split(',')[1];
+                
+                // Mostrar spinner de carga
+                document.getElementById('ia-loading-status').style.display = 'block';
+                
+                const prompt = "Analiza la comida de la foto. Identifica qué plato es y estima de la forma más realista posible las calorías (kcal) totales. Devuelve la información estrictamente en un JSON con este formato: { \"plato\": \"Nombre de la comida\", \"kcal\": número_calorías }";
+                
+                const respuestaJsonText = await llamarGemini(prompt, true, base64Img);
+                
+                document.getElementById('ia-loading-status').style.display = 'none';
+                
+                if (respuestaJsonText) {
+                    try {
+                        const parsed = JSON.parse(respuestaJsonText);
+                        if (parsed.plato && parsed.kcal) {
+                            // Cargar datos en los inputs para que Adri los vea antes de guardar
+                            document.getElementById('comida-kcal').value = parsed.kcal;
+                            document.getElementById('comida-detalle').value = parsed.plato;
+                            showToast(`Identificado: ${parsed.plato} (${parsed.kcal} kcal)`, "var(--nutrition-color)");
+                        }
+                    } catch (err) {
+                        console.error("Error decodificando respuesta estructurada de Gemini", err);
+                        mostrarModal("Error de lectura", "No se pudo estimar las calorías de la imagen con precisión. Por favor, escribe el plato manualmente.");
+                    }
+                }
             };
+            reader.readAsDataURL(file);
+        }
 
-            let hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
-            hist.unshift(nuevoPeso);
-            localStorage.setItem('adri_datos', JSON.stringify(hist));
+        // --- 8. GESTOR DE EJERCICIOS PERSONALIZADOS ---
+        function listarEjerciciosEdicion() {
+            const bloque = document.getElementById('ajustes-bloque-ej').value;
+            const container = document.getElementById('lista-ejercicios-ajustes');
+            container.innerHTML = '';
+            
+            if (appState.ejercicios[bloque]) {
+                appState.ejercicios[bloque].forEach((ej, index) => {
+                    const el = document.createElement('div');
+                    el.style.cssText = "display:flex; justify-content:space-between; align-items:center; background-color:var(--card-bg-inner); padding:10px 12px; border-radius:10px; border:1px solid #3a3a3c;";
+                    el.innerHTML = `
+                        <span style="font-size:0.95rem; font-weight:600; flex:1; padding-right:10px;">${ej}</span>
+                        <div style="display:flex; gap:6px;">
+                            <button class="btn btn-secondary" style="width:auto; margin:0; padding:6px 10px;" onclick="renombrarEjercicio('${bloque}', ${index})">
+                                <span class="material-icons-round" style="font-size:1.1rem; color:var(--accent-color);">edit</span>
+                            </button>
+                            <button class="btn btn-secondary" style="width:auto; margin:0; padding:6px 10px;" onclick="eliminarEjercicio('${bloque}', ${index})">
+                                <span class="material-icons-round" style="font-size:1.1rem; color:var(--danger);">delete</span>
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(el);
+                });
+            }
+        }
 
-            document.getElementById('peso-corporal').value = '';
-            showToast('Peso corporal registrado', '#5ac8fa');
+        function renombrarEjercicio(bloque, index) {
+            const ejActual = appState.ejercicios[bloque][index];
+            const layout = `
+                <div style="margin-top:10px;">
+                    <label>Nuevo nombre para el ejercicio:</label>
+                    <input type="text" id="rename-exercise-input" value="${ejActual}" style="margin-top:4px;">
+                </div>
+            `;
+            mostrarModal("Editar Ejercicio", "Modifica el nombre del movimiento.", true, "Guardar", () => {
+                const nuevoNombre = document.getElementById('rename-exercise-input').value.trim();
+                if (!nuevoNombre) {
+                    showToast("El nombre no puede estar vacío", "var(--danger)", "#fff");
+                    return;
+                }
+                appState.ejercicios[bloque][index] = nuevoNombre;
+                guardarEstado();
+                listarEjerciciosEdicion();
+                actualizarEjerciciosSelect();
+                showToast("Ejercicio editado con éxito");
+            });
+            document.getElementById('modal-desc').innerHTML = layout;
+        }
+
+        function eliminarEjercicio(bloque, index) {
+            const ejActual = appState.ejercicios[bloque][index];
+            mostrarModal("¿Eliminar ejercicio?", `¿Quieres borrar "${ejActual}" de la lista?`, true, "Eliminar", () => {
+                appState.ejercicios[bloque].splice(index, 1);
+                guardarEstado();
+                listarEjerciciosEdicion();
+                actualizarEjerciciosSelect();
+                showToast("Ejercicio eliminado", "var(--danger)", "#fff");
+            });
         }
 
         function crearEjercicioCustom() {
-            const bloque = document.getElementById('custom-ejercicio-bloque').value;
-            const nombre = document.getElementById('custom-ejercicio-nombre').value.trim();
-
-            if(!nombre) {
-                showToast('Escribe el nombre del ejercicio', '#ff453a');
-                return;
-            }
-
-            let custom = JSON.parse(localStorage.getItem('adri_ejercicios_custom') || '{}');
-            if(!custom[bloque]) custom[bloque] = [];
-            custom[bloque].push(nombre);
-
-            localStorage.setItem('adri_ejercicios_custom', JSON.stringify(custom));
-            document.getElementById('custom-ejercicio-nombre').value = '';
-
-            actualizarEjercicios();
-            showToast('Ejercicio añadido con éxito');
-        }
-
-        function renderHistorial() {
-            const filtroFechaInput = document.getElementById('historial-fecha-filtro').value;
-            let fechaObjetivo = new Date().toLocaleDateString('es-ES');
+            const bloque = document.getElementById('ajustes-bloque-ej').value;
+            const inputNew = document.getElementById('ajustes-nuevo-ej-nombre');
+            const nuevoNombre = inputNew.value.trim();
             
-            if (filtroFechaInput) {
-                const [y, m, d] = filtroFechaInput.split('-');
-                fechaObjetivo = `${parseInt(d)}/${parseInt(m)}/${y}`;
-            }
-
-            const list = document.getElementById('lista-historial');
-            list.innerHTML = '';
-
-            const hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
-            const logsHoy = hist.filter(item => item.fecha === fechaObjetivo);
-
-            if(logsHoy.length === 0) {
-                list.innerHTML = `
-                    <p style="text-align: center; color: var(--text-secondary); padding: 40px 0; font-size: 0.9rem;">
-                        No hay registros para este día.<br>¡Comienza a entrenar o registra tu nutrición!
-                    </p>
-                `;
+            if (!nuevoNombre) {
+                mostrarModal("Vacío", "Por favor ingresa un nombre para el nuevo ejercicio.");
                 return;
             }
 
-            logsHoy.forEach(item => {
-                const div = document.createElement('div');
-                div.className = `log-item ${item.tipo}`;
-                
-                let inner = '';
-                if(item.tipo === 'entreno') {
-                    inner = `
-                        <div class="log-header"><span>${item.bloque} - Entrenamiento</span></div>
-                        <div class="log-title">${item.ejercicio}</div>
-                        <div class="log-details">${item.peso} kg x ${item.repes} reps</div>
-                    `;
-                } else if(item.tipo === 'comida') {
-                    inner = `
-                        <div class="log-header"><span>Nutrición - Calorías</span></div>
-                        <div class="log-title" style="color: var(--nutrition-color)">${item.comida}</div>
-                        <div class="log-details">⚡ ${item.kcal} kcal</div>
-                    `;
-                } else if(item.tipo === 'peso') {
-                    inner = `
-                        <div class="log-header"><span>Biométrico - Peso</span></div>
-                        <div class="log-title" style="color: #5ac8fa">${item.peso} kg</div>
-                        <div class="log-details">Peso corporal diario registrado</div>
-                    `;
-                } else if(item.tipo === 'reporte_semanal') {
-                    inner = `
-                        <div class="log-header"><span>Seguimiento - Reporte Semanal</span></div>
-                        <div class="log-title" style="color: var(--coach-color)">Peso Promedio: ${item.pesoMedio} kg</div>
-                        <div class="log-details">Evaluación completada</div>
-                    `;
-                }
-
-                div.innerHTML = `
-                    ${inner}
-                    <button class="btn-delete" onclick="borrarLogItem(${item.id})">
-                        <span class="material-icons-round">delete</span>
-                    </button>
-                `;
-                list.appendChild(div);
-            });
+            if (!appState.ejercicios[bloque]) {
+                appState.ejercicios[bloque] = [];
+            }
+            
+            appState.ejercicios[bloque].push(nuevoNombre);
+            guardarEstado();
+            
+            inputNew.value = ''; // LIMPIAR CAMPO AUTOMÁTICAMENTE
+            listarEjerciciosEdicion();
+            actualizarEjerciciosSelect();
+            showToast("Ejercicio añadido al bloque");
         }
 
-        function borrarLogItem(id) {
-            mostrarConfirmacion('¿Eliminar registro?', 'Este elemento se eliminará permanentemente de tu historial diario.', () => {
-                let hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
-                hist = hist.filter(item => item.id !== id);
-                localStorage.setItem('adri_datos', JSON.stringify(hist));
-                renderHistorial();
-                actualizarBarraDeCalorias();
-                showToast('Registro eliminado', '#ff453a');
-            });
+        // --- 9. AJUSTES COMPLEMENTARIOS (Meta calorias, API Key) ---
+        function guardarApiKey() {
+            const val = document.getElementById('ajustes-api-key').value.trim();
+            appState.apiKey = val;
+            guardarEstado();
+            showToast("API Key guardada de forma segura");
         }
 
-        function exportarHistorial() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(localStorage));
-            const dlAnchor = document.createElement('a');
-            dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", `adriapp_backup_${new Date().toISOString().split('T')[0]}.json`);
-            dlAnchor.click();
-            showToast('Copia descargada', '#0b57d0');
+        function guardarMetaCalorias() {
+            const val = parseInt(document.getElementById('ajustes-kcal-objetivo').value);
+            if (isNaN(val) || val <= 500) {
+                mostrarModal("Objetivo incorrecto", "Por favor, ingresa una meta calórica diaria coherente.");
+                return;
+            }
+            appState.metaKcal = val;
+            guardarEstado();
+            actualizarProgresoCalorias();
+            showToast("Meta calórica actualizada");
         }
 
-        function activarSelectorArchivo() {
-            document.getElementById('importar-archivo').click();
+        // --- 10. BACKUP Y RESTABLECER DE FÁBRICA ---
+        function exportarBackup() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "adriapp_respaldo.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            showToast("Backup descargado");
         }
 
-        function importarHistorial(event) {
+        function importarBackup(event) {
             const file = event.target.files[0];
             if (!file) return;
 
@@ -968,476 +1517,61 @@
             reader.onload = function(e) {
                 try {
                     const parsed = JSON.parse(e.target.result);
-                    mostrarConfirmacion('¿Importar Datos?', 'Esta acción reemplazará la base de datos actual por completo.', () => {
-                        localStorage.clear();
-                        for (const key in parsed) {
-                            localStorage.setItem(key, parsed[key]);
-                        }
-                        location.reload();
-                    });
-                } catch(err) {
-                    showToast('Copia de seguridad inválida', '#ff453a');
+                    if (parsed.ejercicios && parsed.entrenos && parsed.comidas) {
+                        appState = { ...appState, ...parsed };
+                        guardarEstado();
+                        
+                        // Recargar todo
+                        poblarSelectsBloques();
+                        actualizarEjerciciosSelect();
+                        actualizarProgresoCalorias();
+                        evaluarEstadoPantallaCoach();
+                        
+                        document.getElementById('ajustes-api-key').value = appState.apiKey || "";
+                        document.getElementById('ajustes-kcal-objetivo').value = appState.metaKcal || 2000;
+                        
+                        showToast("Copia restaurada con éxito");
+                    } else {
+                        mostrarModal("Archivo corrupto", "El archivo JSON no tiene la estructura correcta de AdriAPP.");
+                    }
+                } catch (err) {
+                    mostrarModal("Error de lectura", "No se pudo leer el archivo JSON de copia de seguridad.");
                 }
             };
             reader.readAsText(file);
         }
 
-        function abrirConfiguracionApi() {
-            const key = localStorage.getItem('adri_gemini_key') || '';
-            document.getElementById('api-key-input').value = key;
-            document.getElementById('api-modal').style.display = 'flex';
-        }
-
-        function cerrarApiModal() {
-            document.getElementById('api-modal').style.display = 'none';
-        }
-
-        function guardarApiKey() {
-            const k = document.getElementById('api-key-input').value.trim();
-            if(!k.startsWith('AIzaSy')) {
-                showToast('La Clave no parece una API Key de Google válida', '#ff453a');
-                return;
-            }
-            localStorage.setItem('adri_gemini_key', k);
-            cerrarApiModal();
-            actualizarEstadoApiKey();
-            showToast('Clave API guardada con éxito');
-        }
-
-        function borrarApiKey() {
-            mostrarConfirmacion('¿Borrar API Key?', 'Esto desactivará los escáneres inteligentes y feedbacks automáticos del coach.', () => {
-                localStorage.removeItem('adri_gemini_key');
-                actualizarEstadoApiKey();
-                showToast('Clave API eliminada', '#ff453a');
-            });
-        }
-
-        function actualizarEstadoApiKey() {
-            const k = localStorage.getItem('adri_gemini_key');
-            const el = document.getElementById('api-status-text');
-            if (k) {
-                el.innerText = '✅ API Activa (Escáner e Inteligencia Artificial Habilitados)';
-                el.style.color = 'var(--accent-color)';
-            } else {
-                el.innerText = '❌ Sin API Key (Escáner e Inteligencia Artificial Deshabilitados)';
-                el.style.color = 'var(--text-secondary)';
-            }
-        }
-
-        function confirmarBorradoCompleto() {
-            mostrarConfirmacion('¿BORRAR TODO EL HISTORIAL?', 'Esta acción restablecerá AdriAPP de fábrica eliminando todas las series, comidas, pesos y perfiles.', () => {
-                localStorage.clear();
-                location.reload();
-            });
-        }
-
-        function inicializarAjustesValores() {
-            const meta = localStorage.getItem('adri_meta_calorias') || '2000';
-            document.getElementById('meta-calorias-input').value = meta;
-            actualizarEstadoApiKey();
-        }
-
-        // LÓGICA DE COACHING INTELIGENTE (COACH)
-        function renderCoachUI() {
-            const ficha = localStorage.getItem('adri_fase_inicial');
-            
-            document.getElementById('coach-onboarding').style.display = 'none';
-            document.getElementById('coach-dashboard').style.display = 'none';
-            document.getElementById('coach-report-form').style.display = 'none';
-
-            if (!ficha) {
-                const pesos = obtenerPesosRecientes();
-                if (pesos.length > 0) {
-                    document.getElementById('coach-ini-peso').value = pesos[0].peso;
-                }
-                document.getElementById('coach-onboarding').style.display = 'block';
-            } else {
-                document.getElementById('coach-dashboard').style.display = 'block';
-                renderHistorialReportes();
-            }
-        }
-
-        function guardarFaseInicial() {
-            const edad = document.getElementById('coach-ini-edad').value;
-            const sexo = document.getElementById('coach-ini-sexo').value;
-            const estatura = document.getElementById('coach-ini-estatura').value;
-            const peso = document.getElementById('coach-ini-peso').value;
-            const experiencia = document.getElementById('coach-ini-experiencia').value;
-            const tecnica = document.getElementById('coach-ini-tecnica').value;
-            const sedentarismo = document.getElementById('coach-ini-sedentarismo').value;
-            const dias = document.getElementById('coach-ini-dias').value;
-            const tiempo = document.getElementById('coach-ini-tiempo').value;
-            const nutricion = document.getElementById('coach-ini-nutricion').value;
-            const lesiones = document.getElementById('coach-ini-lesiones').value;
-            const sueno = document.getElementById('coach-ini-sueno').value;
-            const estres = document.getElementById('coach-ini-estres').value;
-
-            if(!edad || !estatura || !peso) {
-                showToast('Rellena al menos Edad, Estatura y Peso', '#ff453a');
-                return;
-            }
-
-            const ficha = {
-                edad, sexo, estatura, peso, experiencia, tecnica,
-                sedentarismo, dias, tiempo, nutricion, lesiones, sueno, estres,
-                fechaCreacion: new Date().toLocaleDateString('es-ES')
-            };
-
-            localStorage.setItem('adri_fase_inicial', JSON.stringify(ficha));
-            showToast('Perfil de Asesoría guardado', 'var(--coach-color)');
-            
-            const apiKey = localStorage.getItem('adri_gemini_key');
-            if(apiKey) {
-                analizarFaseInicialConIA(ficha);
-            } else {
-                renderCoachUI();
-            }
-        }
-
-        function analizarFaseInicialConIA(ficha) {
-            const apiKey = localStorage.getItem('adri_gemini_key');
-            if(!apiKey) return;
-
-            document.getElementById('loader-text').innerText = "Tu Coach de IA está analizando tu perfil y diseñando tu plan...";
-            document.getElementById('loader').style.display = 'flex';
-
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-            const prompt = `Actúa como un preparador físico y nutricionista deportivo de élite. Analiza la siguiente ficha inicial del cliente y diseña un breve plan introductorio en español:
-            - Edad: ${ficha.edad} años, Sexo: ${ficha.sexo}, Altura: ${ficha.estatura}cm, Peso: ${ficha.peso}kg.
-            - Nivel de actividad diaria: ${ficha.sedentarismo}
-            - Disponibilidad: ${ficha.dias} para entrenar, durante ${ficha.tiempo} por sesión.
-            - Historial de entrenamiento: ${ficha.experiencia}. Técnica de básicos: ${ficha.tecnica}.
-            - Alimentación actual: ${ficha.nutricion}
-            - Lesiones o molestias: ${ficha.lesiones}
-            - Sueño diario: ${ficha.sueno} horas de media. Nivel de estrés: ${ficha.estres}.
-
-            Proporciona una respuesta motivadora de unas 150-200 palabras. Divide la respuesta en:
-            1. **Análisis y Recomendación de Calorías y Macronutrientes** (Propón metas aproximadas para un objetivo de recomposición corporal).
-            2. **Directrices de Entrenamiento** (Teniendo en cuenta su experiencia, lesiones y días disponibles).
-            3. **Hábitos y Recuperación** (Pautas para el sueño/estrés).
-            Usa un tono profesional, cercano, motivador e instructivo. Usa negrita para los puntos importantes. No uses encabezados markdown raros.`;
-
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }]
-            };
-
-            fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            })
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('loader').style.display = 'none';
-                try {
-                    const responseText = data.candidates[0].content.parts[0].text;
-                    localStorage.setItem('adri_coach_feedback_inicial', responseText);
-                    
-                    abrirFeedbackModal(responseText);
-                    renderCoachUI();
-                } catch(e) {
-                    console.error(e);
-                    renderCoachUI();
-                }
-            })
-            .catch(err => {
-                document.getElementById('loader').style.display = 'none';
-                console.error(err);
-                renderCoachUI();
-            });
-        }
-
-        function obtenerPesosRecientes() {
-            const hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
-            return hist.filter(item => item.tipo === 'peso');
-        }
-
-        function calcularPesoMedioSemanal() {
-            const pesos = obtenerPesosRecientes();
-            if (pesos.length === 0) return null;
-
-            const sieteDiasAtras = Date.now() - (7 * 24 * 60 * 60 * 1000);
-            const pesosSemana = pesos.filter(p => p.id >= sieteDiasAtras);
-
-            if (pesosSemana.length === 0) {
-                return Number(pesos[0].peso);
-            }
-
-            const suma = pesosSemana.reduce((sum, p) => sum + Number(p.peso), 0);
-            return (suma / pesosSemana.length).toFixed(2);
-        }
-
-        function abrirReporteSemanal() {
-            document.getElementById('coach-dashboard').style.display = 'none';
-            document.getElementById('coach-report-form').style.display = 'block';
-
-            const pesoMedio = calcularPesoMedioSemanal();
-            const helper = document.getElementById('coach-rep-peso-helper');
-            
-            if (pesoMedio) {
-                document.getElementById('coach-rep-peso').value = pesoMedio;
-                helper.innerText = `Autocalculado en base a tus registros de peso recientes en la app.`;
-                helper.style.color = "var(--accent-color)";
-            } else {
-                document.getElementById('coach-rep-peso').value = '';
-                helper.innerText = `No has registrado pesos esta semana en Ajustes. Introduce un peso promedio estimado manualmente.`;
-                helper.style.color = "var(--text-secondary)";
-            }
-
-            document.getElementById('coach-rep-energia').value = 8;
-            document.getElementById('val-energia').innerText = 8;
-            document.getElementById('coach-rep-sueno').value = 8;
-            document.getElementById('val-sueno').innerText = 8;
-            document.getElementById('coach-rep-saciedad').value = 8;
-            document.getElementById('val-saciedad').innerText = 8;
-            document.getElementById('coach-rep-adherencia').value = 9;
-            document.getElementById('val-adherencia').innerText = 9;
-
-            document.getElementById('coach-rep-fuerza').value = '';
-            document.getElementById('coach-rep-medidas').value = '';
-        }
-
-        function volverAlCoachDashboard() {
-            renderCoachUI();
-        }
-
-        function guardarReporteSemanal() {
-            const peso = document.getElementById('coach-rep-peso').value;
-            const fuerza = document.getElementById('coach-rep-fuerza').value.trim();
-            const medidas = document.getElementById('coach-rep-medidas').value.trim();
-            
-            const energia = document.getElementById('coach-rep-energia').value;
-            const sueno = document.getElementById('coach-rep-sueno').value;
-            const saciedad = document.getElementById('coach-rep-saciedad').value;
-            const adherencia = document.getElementById('coach-rep-adherencia').value;
-
-            if(!peso) {
-                showToast('Introduce tu peso medio semanal', '#ff453a');
-                return;
-            }
-
-            const reporte = {
-                id: Date.now(),
-                tipo: 'reporte_semanal',
-                fecha: new Date().toLocaleDateString('es-ES'),
-                pesoMedio: peso,
-                fuerza,
-                medidas,
-                energia,
-                sueno,
-                saciedad,
-                adherencia,
-                feedback: null
-            };
-
-            let hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
-            hist.unshift(reporte);
-            localStorage.setItem('adri_datos', JSON.stringify(hist));
-            showToast('Reporte guardado con éxito', 'var(--coach-color)');
-
-            const apiKey = localStorage.getItem('adri_gemini_key');
-            if (apiKey) {
-                generarFeedbackReporteIA(reporte);
-            } else {
-                renderCoachUI();
-            }
-        }
-
-        function generarFeedbackReporteIA(reporte) {
-            const apiKey = localStorage.getItem('adri_gemini_key');
-            if(!apiKey) return;
-
-            document.getElementById('loader-text').innerText = "Tu Coach de IA está evaluando tu semana y redactando tus pautas de ajuste...";
-            document.getElementById('loader').style.display = 'flex';
-
-            const ficha = JSON.parse(localStorage.getItem('adri_fase_inicial') || '{}');
-
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-            const prompt = `Actúa como un preparador físico de élite y asesor nutricional. Evalúa el reporte semanal de tu atleta con los siguientes datos:
-            
-            **Contexto inicial del atleta:**
-            - Edad: ${ficha.edad} años, Sexo: ${ficha.sexo}, Altura: ${ficha.estatura}cm, Peso Inicial: ${ficha.peso}kg. Molestias/Lesiones: ${ficha.lesiones}.
-
-            **Datos del reporte semanal de esta semana:**
-            - Peso Medio Semanal: ${reporte.pesoMedio} kg
-            - Progreso en Fuerza/Gimnasio: ${reporte.fuerza || 'No especifica'}
-            - Medidas corporales: ${reporte.medidas || 'No especificadas'}
-            
-            **Métricas cualitativas de la semana (escala 1 a 10):**
-            - Nivel de energía y fatiga: ${reporte.energia}/10 (Bajo significa muy cansado, alto excelente energía).
-            - Calidad del sueño: ${reporte.sueno}/10
-            - Saciedad y hambre: ${reporte.saciedad}/10 (Bajo significa mucha hambre, alto excelente saciedad).
-            - Adherencia general: ${reporte.adherencia}/10
-
-            Proporciona un feedback constructivo y profesional de 150-180 palabras en español.
-            1. **Evaluación del progreso**: Analiza si el peso fluctúa bien, evalúa las medidas o la fuerza reportada de manera científica.
-            2. **Análisis de sensaciones**: Valora su energía, sueño, saciedad y adherencia. Dale consejos prácticos para mejorar aquello en lo que tenga menor puntuación.
-            3. **Ajustes y motivación**: Indica de forma asertiva si mantenemos pautas, reajustamos calorías o cambiamos alguna variable del entreno/descanso.
-            Sé sumamente alentador, profesional y directo. No uses sintaxis markdown compleja, sólo negritas para resaltar ideas clave.`;
-
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }]
-            };
-
-            fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            })
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('loader').style.display = 'none';
-                try {
-                    const fb = data.candidates[0].content.parts[0].text;
-                    
-                    let hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
-                    const idx = hist.findIndex(item => item.id === reporte.id);
-                    if(idx !== -1) {
-                        hist[idx].feedback = fb;
-                        localStorage.setItem('adri_datos', JSON.stringify(hist));
-                    }
-                    
-                    abrirFeedbackModal(fb);
-                    renderCoachUI();
-                } catch(e) {
-                    console.error(e);
-                    renderCoachUI();
-                }
-            })
-            .catch(err => {
-                document.getElementById('loader').style.display = 'none';
-                console.error(err);
-                renderCoachUI();
-            });
-        }
-
-        function renderHistorialReportes() {
-            const listContainer = document.getElementById('lista-reportes');
-            listContainer.innerHTML = '';
-
-            const hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
-            const reportes = hist.filter(item => item.tipo === 'reporte_semanal');
-
-            if(reportes.length === 0) {
-                listContainer.innerHTML = `
-                    <p style="color: var(--text-secondary); font-size: 0.85rem; text-align: center; padding: 20px 0;">
-                        Todavía no has enviado ningún reporte semanal. Haz clic en "Nuevo Reporte Semanal" para mandar tus datos al Coach IA.
-                    </p>
-                `;
-                return;
-            }
-
-            reportes.forEach(rep => {
-                const card = document.createElement('div');
-                card.className = 'log-item reporte';
+        function confirmarBorrarTodo() {
+            mostrarModal("¿Restablecer de fábrica?", "Se eliminarán permanentemente todas tus series de entrenamiento, registros de calorías, pesajes y configuraciones de la IA. Esta acción no se puede deshacer.", true, "Borrar todo", () => {
+                localStorage.removeItem('adriapp_master_state_v3');
+                appState = {
+                    ejercicios: { ...ejerciciosDefault },
+                    entrenos: [],
+                    comidas: [],
+                    pesos: [],
+                    metaKcal: 2000,
+                    apiKey: "",
+                    perfilCoach: null,
+                    historialCheckins: [],
+                    historialConversacionCoach: [
+                        { role: "bot", text: "¡Hola Adri! Soy tu entrenador inteligente. Puedes preguntarme lo que quieras sobre tu entrenamiento de esta semana." }
+                    ]
+                };
+                guardarEstado();
                 
-                let feedbackPreview = '';
-                if(rep.feedback) {
-                    feedbackPreview = `
-                        <div class="feedback-box">
-                            <span class="coach-badge">COACH IA</span>
-                            <p style="font-size: 0.82rem; color: #fff; line-height: 1.45;">${rep.feedback.substring(0, 150)}...</p>
-                            <button class="btn btn-secondary" style="margin-top: 10px; padding: 6px; font-size: 0.75rem;" onclick="abrirFeedbackModal(\`${rep.feedback.replace(/`/g, '\\`').replace(/\n/g, '\\n')}\`)">Leer análisis completo</button>
-                        </div>
-                    `;
-                } else {
-                    feedbackPreview = `
-                        <div style="background-color: var(--card-bg-inner); padding: 10px; border-radius: 8px; margin-top: 10px; text-align: center; font-size: 0.75rem; color: var(--text-secondary);">
-                            No hay análisis disponible. Configura tu API Key en Ajustes para recibir feedback del Coach IA.
-                        </div>
-                    `;
-                }
-
-                card.innerHTML = `
-                    <div class="log-header"><span>${rep.fecha} - Reporte de Seguimiento</span></div>
-                    <div class="log-title" style="color: var(--coach-color)">Peso Promedio: ${rep.pesoMedio} kg</div>
-                    <div class="log-details" style="font-size: 0.85rem; margin-top: 5px;">
-                        <div>⚡ Energía: <strong>${rep.energia}/10</strong> | 😴 Sueño: <strong>${rep.sueno}/10</strong></div>
-                        <div>🍎 Saciedad: <strong>${rep.saciedad}/10</strong> | 🎯 Adherencia: <strong>${rep.adherencia}/10</strong></div>
-                        ${rep.fuerza ? `<div style="margin-top:4px; font-style: italic; color: var(--text-secondary);">"Fuerza: ${rep.fuerza}"</div>` : ''}
-                        ${rep.medidas ? `<div style="margin-top:2px; font-size: 0.75rem; color: var(--text-secondary);">Medidas: ${rep.medidas}</div>` : ''}
-                    </div>
-                    ${feedbackPreview}
-                    <button class="btn-delete" onclick="borrarReporte(${rep.id})"><span class="material-icons-round">delete</span></button>
-                `;
-
-                listContainer.appendChild(card);
+                // Forzar reinicio de interfaz
+                poblarSelectsBloques();
+                actualizarEjerciciosSelect();
+                actualizarProgresoCalorias();
+                evaluarEstadoPantallaCoach();
+                
+                document.getElementById('ajustes-api-key').value = "";
+                document.getElementById('ajustes-kcal-objetivo').value = 2000;
+                
+                cambiarPantalla('screen-entreno', document.querySelector('nav button'));
+                showToast("Aplicación restablecida", "var(--danger)", "#fff");
             });
         }
-
-        function borrarReporte(id) {
-            mostrarConfirmacion('¿Eliminar reporte?', 'Esta acción borrará este reporte semanal y su feedback asociado permanentemente.', () => {
-                let hist = JSON.parse(localStorage.getItem('adri_datos') || '[]');
-                hist = hist.filter(item => item.id !== id);
-                localStorage.setItem('adri_datos', JSON.stringify(hist));
-                renderCoachUI();
-                showToast('Reporte eliminado', '#ff453a');
-            });
-        }
-
-        function abrirFeedbackModal(texto) {
-            const content = document.getElementById('feedback-modal-content');
-            
-            let formatted = texto.replace(/\n/g, '<br>');
-            formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            
-            content.innerHTML = formatted;
-            document.getElementById('feedback-modal').style.display = 'flex';
-        }
-
-        function cerrarFeedbackModal() {
-            document.getElementById('feedback-modal').style.display = 'none';
-        }
-
-        function verFichaInicial() {
-            const ficha = JSON.parse(localStorage.getItem('adri_fase_inicial') || '{}');
-            const feedbackInicial = localStorage.getItem('adri_coach_feedback_inicial') || '';
-
-            let contenido = `
-                <div style="font-size:0.85rem; background-color: var(--card-bg-inner); padding: 12px; border-radius: 8px; margin-bottom: 15px;">
-                    <div><strong>Edad:</strong> ${ficha.edad} años | <strong>Sexo:</strong> ${ficha.sexo}</div>
-                    <div><strong>Estatura:</strong> ${ficha.estatura} cm | <strong>Peso Inicial:</strong> ${ficha.peso} kg</div>
-                    <div><strong>Experiencia:</strong> ${ficha.experiencia}</div>
-                    <div><strong>Técnica de Básicos:</strong> ${ficha.tecnica}</div>
-                    <div><strong>Actividad diaria:</strong> ${ficha.sedentarismo}</div>
-                    <div><strong>Disponibilidad:</strong> ${ficha.dias} (${ficha.tiempo}/sesión)</div>
-                    <div style="margin-top: 5px;"><strong>Nutrición actual:</strong> ${ficha.nutricion || 'No especificada'}</div>
-                    <div style="margin-top: 5px;"><strong>Molestias/Lesiones:</strong> ${ficha.lesiones || 'Ninguna'}</div>
-                    <div style="margin-top: 5px;"><strong>Sueño diario:</strong> ${ficha.sueno}h de media | <strong>Estrés:</strong> ${ficha.estres}</div>
-                </div>
-            `;
-
-            if(feedbackInicial) {
-                contenido += `
-                    <h4 style="font-size:0.9rem; color: var(--coach-color); margin-bottom: 5px; border-top: 1px solid #3a3a3c; padding-top:10px;">Análisis Inicial del Coach:</h4>
-                    <div style="font-size:0.85rem; line-height:1.4; color: #f2f2f7;">${feedbackInicial.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
-                `;
-            }
-
-            contenido += `
-                <button class="btn btn-danger btn-secondary" style="margin-top:15px; background-color:#3a3a3c; border-color:#3a3a3c;" onclick="confirmarReiniciarFicha()">
-                    Reiniciar Ficha y Empezar de Nuevo
-                </button>
-            `;
-
-            abrirFeedbackModal(contenido);
-        }
-
-        function confirmarReiniciarFicha() {
-            cerrarFeedbackModal();
-            mostrarConfirmacion('¿Reiniciar Ficha de Asesoría?', 'Esto eliminará tu perfil inicial de coach. No afectará tus series registradas.', () => {
-                localStorage.removeItem('adri_fase_inicial');
-                localStorage.removeItem('adri_coach_feedback_inicial');
-                renderCoachUI();
-                showToast('Ficha de inicio eliminada', '#ff453a');
-            });
-        }
-
-        // Inicialización básica
-        actualizarEjercicios();
-        inicializarAjustesValores();
-        actualizarBarraDeCalorias();
-        renderCoachUI(); 
     </script>
 </body>
 </html>
